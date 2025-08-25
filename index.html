@@ -985,7 +985,7 @@
                 deviceNamePlaceholder: "Living Room TV",
                 deviceNameHint: "For easy identification",
                 m3uUrl: "M3U Playlist URL",
-                m3uHint: "Your IPTV provider's playlist URL (supports dynamic URLs with parameters)",
+                m3uHint: "Your IPTV provider's playlist URL",
                 epgUrl: "EPG URL (Optional)",
                 epgHint: "Electronic Program Guide for TV schedules",
                 registerButton: "Register Device",
@@ -1028,7 +1028,7 @@
                 deviceNamePlaceholder: "TV Salotto",
                 deviceNameHint: "Per identificazione facile",
                 m3uUrl: "URL Playlist M3U",
-                m3uHint: "URL della playlist del tuo provider IPTV (supporta URL dinamici con parametri)",
+                m3uHint: "URL della playlist del tuo provider IPTV",
                 epgUrl: "URL EPG (Opzionale)",
                 epgHint: "Guida Elettronica ai Programmi per gli orari TV",
                 registerButton: "Registra Dispositivo",
@@ -1071,7 +1071,7 @@
                 deviceNamePlaceholder: "Wohnzimmer TV",
                 deviceNameHint: "Zur einfachen Identifizierung",
                 m3uUrl: "M3U Playlist URL",
-                m3uHint: "Playlist-URL Ihres IPTV-Anbieters (unterstützt dynamische URLs mit Parametern)",
+                m3uHint: "Playlist-URL Ihres IPTV-Anbieters",
                 epgUrl: "EPG URL (Optional)",
                 epgHint: "Elektronischer Programmführer für TV-Programme",
                 registerButton: "Gerät Registrieren",
@@ -1114,7 +1114,7 @@
                 deviceNamePlaceholder: "TV Sala de Estar",
                 deviceNameHint: "Para identificación fácil",
                 m3uUrl: "URL de Lista M3U",
-                m3uHint: "URL de lista de tu proveedor IPTV (soporta URLs dinámicas con parámetros)",
+                m3uHint: "URL de lista de tu proveedor IPTV",
                 epgUrl: "URL EPG (Opcional)",
                 epgHint: "Guía Electrónica de Programas para horarios de TV",
                 registerButton: "Registrar Dispositivo",
@@ -1157,7 +1157,7 @@
                 deviceNamePlaceholder: "TV Salon",
                 deviceNameHint: "Pour identification facile",
                 m3uUrl: "URL de la Liste M3U",
-                m3uHint: "URL de la liste de votre fournisseur IPTV (supporte les URLs dynamiques avec paramètres)",
+                m3uHint: "URL de la liste de votre fournisseur IPTV",
                 epgUrl: "URL EPG (Optionnel)",
                 epgHint: "Guide Électronique des Programmes pour les horaires TV",
                 registerButton: "Enregistrer l'Appareil",
@@ -1503,18 +1503,11 @@
             }
         }
         
-        // ===== VALIDAZIONE M3U - FIXED VERSION =====
+        // ===== VALIDAZIONE M3U =====
         async function validateM3uUrl(url) {
-            // Skip validation for ANY URL with query parameters (more permissive)
-            if (url.includes('?')) {
-                console.log('Skipping validation for dynamic URL with parameters');
-                return { isValid: true };
-            }
-            
-            // Skip validation for URLs with common IPTV parameters
-            if (url.includes('username') || url.includes('password') || url.includes('type=m3u') || 
-                url.includes('get.php') || url.includes('panel_api.php') || url.includes('player_api.php')) {
-                console.log('Skipping validation for IPTV URL');
+            // Skip validation for URLs with query parameters (dynamic IPTV URLs)
+            if (url.includes('?') && url.includes('username') && url.includes('password')) {
+                console.log('Skipping validation for dynamic IPTV URL with credentials');
                 return { isValid: true };
             }
             
@@ -1564,8 +1557,19 @@
             formatMacAddress(e.target);
         });
         
-        // Validate M3U URL on blur (when user finishes typing) - COMPLETELY DISABLED
-        // No validation on blur to avoid blocking valid dynamic URLs
+        // Validate M3U URL on blur (when user finishes typing)
+        // DISABLED: This validation can block valid URLs with special parameters
+        /*
+        document.getElementById('m3uUrl').addEventListener('blur', async function(e) {
+            const url = e.target.value.trim();
+            if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+                const validation = await validateM3uUrl(url);
+                if (!validation.isValid) {
+                    showAlert(validation.error || 'Invalid M3U playlist URL', 'warning');
+                }
+            }
+        });
+        */
         
         // ===== HAMBURGER MENU FUNCTIONALITY =====
         function toggleMenu() {
