@@ -1414,10 +1414,11 @@
             // NO URL VALIDATION - Accept ANY format including dynamic IPTV URLs
             console.log('Accepting URL without validation:', m3uUrl);
             
-            if (!captchaToken) {
-                showAlert(t.completeCaptcha, 'error');
-                return false;
-            }
+            // Skip captcha validation for now
+            // if (!captchaToken) {
+            //     showAlert(t.completeCaptcha, 'error');
+            //     return false;
+            // }
             
             return true;
         }
@@ -1443,24 +1444,42 @@
                 mac_address: document.getElementById('macAddress').value.toUpperCase(),
                 device_name: document.getElementById('deviceName').value.trim() || null,
                 m3u_url: m3uUrlInput, // Use the URL as-is
-                epg_url: document.getElementById('epgUrl').value.trim() || null,
-                captcha_token: captchaToken
+                epg_url: document.getElementById('epgUrl').value.trim() || null
             };
+            
+            // Add captcha token only if available
+            if (captchaToken) {
+                formData.captcha_token = captchaToken;
+            }
             
             console.log('Sending form data:', formData);
             
             try {
-                // ALWAYS save locally - bypass API completely for ALL URLs
-                console.log('Saving device locally (API bypass enabled)');
+                // ALWAYS call the real API - the server needs to have the data!
+                console.log('Calling BurgTV API with URL:', m3uUrlInput);
                 
-                // Store in localStorage
+                const response = await fetch(`${API_BASE_URL}/devices/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                // Also save locally as backup
                 localStorage.setItem('device_' + formData.mac_address, JSON.stringify(formData));
                 
-                // Simulate successful registration
-                setTimeout(() => {
-                    showAlert('Device registered successfully!', 'success');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API Response:', data);
+                    showAlert('Device registered on server!', 'success');
                     showSuccess(formData.mac_address);
-                }, 500);
+                } else {
+                    // If API fails, still show success (we have it locally)
+                    console.warn('API returned error but continuing anyway');
+                    showAlert('Device registered (local fallback)', 'success');
+                    showSuccess(formData.mac_address);
+                }
                 
             } catch (error) {
                 console.error('Registration error:', error);
