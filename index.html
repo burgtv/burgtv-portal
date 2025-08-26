@@ -1494,32 +1494,6 @@
             }
         }
         
-        // ===== VALIDAZIONE M3U =====
-        async function validateM3uUrl(url) {
-            // ACCETTA TUTTE LE URL SENZA VALIDAZIONE
-            // Supporta tutti i tipi di liste IPTV inclusi provider con parametri
-            console.log('Validating M3U URL:', url);
-            
-            // Controllo basico che sia un URL
-            if (!url || !url.startsWith('http')) {
-                return { 
-                    isValid: false, 
-                    error: 'Inserisci un URL valido che inizia con http:// o https://' 
-                };
-            }
-            
-            // ACCETTA SEMPRE QUALSIASI URL - Nessuna validazione server
-            // Supporta:
-            // - Liste M3U standard: .m3u, .m3u8
-            // - Liste IPTV con parametri: get.php?username=xxx&password=xxx
-            // - Qualsiasi altro formato di URL
-            return { 
-                isValid: true,
-                channels: 0, // Non contiamo i canali durante la validazione
-                message: 'URL accettato'
-            };
-        }
-        
         function getErrorMessage(error) {
             const t = translations[currentLang].errors;
             const errorMessages = {
@@ -1536,20 +1510,6 @@
         // Format MAC address on input
         document.getElementById('macAddress').addEventListener('input', function(e) {
             formatMacAddress(e.target);
-        });
-        
-        // Validate M3U URL on blur (when user finishes typing)
-        document.getElementById('m3uUrl').addEventListener('blur', async function(e) {
-            const url = e.target.value.trim();
-            if (url) {
-                // Solo controllo basico che sia un URL
-                if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                    showAlert('L\'URL deve iniziare con http:// o https://', 'warning');
-                } else {
-                    // URL valido - accetta qualsiasi formato
-                    console.log('URL IPTV accettato:', url);
-                }
-            }
         });
         
         // ===== HAMBURGER MENU FUNCTIONALITY =====
