@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BurgTV</title>
+    <meta name="description" content="Gestisci i tuoi dispositivi BurgTV Premium">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0b;--bg-secondary:#111113;--text:#fff;--text-secondary:#a0a0a8;--accent:#B94A8E;--accent-light:#d85aa3;--accent-dark:#7B4397;--success:#10b981;--error:#ef4444;--border:rgba(255,255,255,0.12);--card-bg:rgba(255,255,255,0.03);--card-hover:rgba(255,255,255,0.06)}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        .header{background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:100}
+        .header-inner{max-width:900px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between}
+        .logo{height:40px;width:auto}
+        .user-menu{display:flex;align-items:center;gap:16px}
+        .user-email{font-size:14px;color:var(--text-secondary)}
+        .btn-account{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card-hover);border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;font-size:14px;transition:all 0.3s ease}
+        .btn-account:hover{background:rgba(185,74,142,0.1);border-color:var(--accent)}
+        .btn-account svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
+        .main{max-width:900px;margin:0 auto;padding:32px 20px}
+        .sub-card{background:linear-gradient(135deg,rgba(185,74,142,0.15),rgba(123,67,151,0.15));border:1px solid rgba(185,74,142,0.3);border-radius:20px;padding:24px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+        .sub-info{display:flex;align-items:center;gap:16px}
+        .sub-icon{width:56px;height:56px;background:rgba(185,74,142,0.2);border-radius:14px;display:flex;align-items:center;justify-content:center}
+        .sub-icon svg{width:28px;height:28px;stroke:var(--accent);stroke-width:2;fill:none}
+        .sub-title{font-size:20px;font-weight:700;margin-bottom:4px}
+        .sub-status{font-size:14px;color:var(--success);display:flex;align-items:center;gap:6px}
+        .sub-status svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.5;fill:none}
+        .sub-expires{font-size:13px;color:var(--text-secondary);margin-top:2px}
+        .sub-badge{background:var(--accent);color:white;padding:8px 20px;border-radius:10px;font-size:14px;font-weight:600}
+        .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+        .section-title{font-size:18px;font-weight:600}
+        .device-count{font-size:14px;color:var(--text-secondary);background:var(--card-hover);padding:6px 14px;border-radius:20px}
+        .device-list{display:flex;flex-direction:column;gap:12px}
+        .device-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;align-items:center;justify-content:space-between;transition:all 0.3s ease;flex-wrap:wrap;gap:16px}
+        .device-card:hover{border-color:rgba(185,74,142,0.3)}
+        .device-info{display:flex;align-items:center;gap:16px}
+        .device-icon{width:48px;height:48px;background:var(--card-hover);border-radius:12px;display:flex;align-items:center;justify-content:center}
+        .device-icon svg{width:24px;height:24px;stroke:var(--text-secondary);stroke-width:2;fill:none}
+        .device-name{font-size:16px;font-weight:600;margin-bottom:4px}
+        .device-model{font-size:13px;color:var(--text-secondary)}
+        .device-last{font-size:12px;color:var(--text-secondary);margin-top:2px}
+        .device-actions{display:flex;gap:8px}
+        .btn-icon{width:40px;height:40px;border-radius:10px;background:var(--card-hover);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s ease}
+        .btn-icon svg{width:18px;height:18px;stroke:var(--text-secondary);stroke-width:2;fill:none}
+        .btn-icon:hover{background:rgba(185,74,142,0.1);border-color:var(--accent)}
+        .btn-icon:hover svg{stroke:var(--accent)}
+        .btn-icon.delete:hover{background:rgba(239,68,68,0.1);border-color:var(--error)}
+        .btn-icon.delete:hover svg{stroke:var(--error)}
+        .empty-state{text-align:center;padding:60px 20px}
+        .empty-icon{width:80px;height:80px;background:var(--card-hover);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+        .empty-icon svg{width:40px;height:40px;stroke:var(--text-secondary);stroke-width:1.5;fill:none}
+        .empty-title{font-size:18px;font-weight:600;margin-bottom:8px}
+        .empty-text{font-size:14px;color:var(--text-secondary);max-width:300px;margin:0 auto 24px;line-height:1.6}
+        .help-section{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:32px;text-align:center}
+        .help-title{font-size:16px;font-weight:600;margin-bottom:8px}
+        .help-text{font-size:14px;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+        .footer{text-align:center;padding:32px 20px;border-top:1px solid var(--border);margin-top:40px}
+        .footer-links{display:flex;gap:20px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+        .footer-links a{color:var(--text-secondary);text-decoration:none;font-size:13px}
+        .footer-links a:hover{color:var(--accent)}
+        .footer-copy{font-size:12px;color:var(--text-secondary)}
+        .loading{display:flex;align-items:center;justify-content:center;min-height:300px}
+        .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .login-required{text-align:center;padding:80px 20px}
+        .login-required h2{font-size:24px;margin-bottom:12px}
+        .login-required p{color:var(--text-secondary);margin-bottom:24px}
+        .btn-login{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--accent);color:white;border-radius:12px;text-decoration:none;font-weight:600;transition:all 0.3s ease}
+        .btn-login:hover{background:var(--accent-light);transform:translateY(-2px)}
+        .btn-login svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none}
+        @media(max-width:600px){.sub-card{flex-direction:column;text-align:center}.sub-info{flex-direction:column}.device-card{flex-direction:column;text-align:center}.device-info{flex-direction:column}.user-email{display:none}}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="https://burgtv.com"><img src="logo.svg" alt="BurgTV" class="logo"></a>
+            <div class="user-menu">
+                <span class="user-email" id="userEmail"></span>
+                <a href="account.html" class="btn-account"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></a>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="loading" id="loadingState"><div class="spinner"></div></div>
+        <div class="login-required" id="loginRequired" style="display:none;">
+            <img src="logo.svg" alt="BurgTV" style="height:60px;margin-bottom:24px;">
+            <h2>Accedi al tuo account</h2>
+            <p>Per visualizzare i tuoi dispositivi, effettua l'accesso.</p>
+            <a href="login.html" class="btn-login"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>Accedi</span></a>
+        </div>
+        <div id="dashboardContent" style="display:none;">
+            <div class="sub-card">
+                <div class="sub-info">
+                    <div class="sub-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+                    <div>
+                        <div class="sub-title" id="planName">Premium Lifetime</div>
+                        <div class="sub-status"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span>Attivo</span></div>
+                        <div class="sub-expires" id="expiresAt"></div>
+                    </div>
+                </div>
+                <div class="sub-badge">PREMIUM</div>
+            </div>
+            <div class="section-header">
+                <h2 class="section-title">I tuoi dispositivi</h2>
+                <span class="device-count" id="deviceCount">0/5</span>
+            </div>
+            <div class="device-list" id="deviceList"></div>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <div class="empty-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg></div>
+                <h3 class="empty-title">Nessun dispositivo</h3>
+                <p class="empty-text">Per aggiungere un dispositivo, apri BurgTV sulla tua TV e accedi con il tuo account.</p>
+            </div>
+            <div class="help-section">
+                <h3 class="help-title">Aggiungi un dispositivo</h3>
+                <p class="help-text">Per attivare un nuovo dispositivo, apri BurgTV sulla TV, vai in Impostazioni → Accedi e inserisci le tue credenziali.</p>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="legal/terms.html">Termini</a>
+            <a href="legal/privacy.html">Privacy</a>
+            <a href="mailto:info@burgtv.com">info@burgtv.com</a>
+        </div>
+        <div class="footer-copy">© <span id="year"></span> BurgTV</div>
+    </footer>
+    <script>
+        document.getElementById('year').textContent=new Date().getFullYear();
+        const SUPABASE_URL='https://ugspmqfduabfmfsoxqoc.supabase.co';
+        async function loadDashboard(){const token=localStorage.getItem('access_token'),email=localStorage.getItem('user_email');document.getElementById('loadingState').style.display='none';if(!token){document.getElementById('loginRequired').style.display='block';return}document.getElementById('userEmail').textContent=email||'';document.getElementById('dashboardContent').style.display='block';try{const r=await fetch(`${SUPABASE_URL}/functions/v1/list-devices`,{headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}});if(!r.ok)throw new Error('Unauthorized');const d=await r.json();renderDevices(d.devices||[]);renderSubscription(d.subscription);document.getElementById('deviceCount').textContent=`${d.count||0}/${d.max||5}`}catch(e){console.error('Error:',e);localStorage.removeItem('access_token');document.getElementById('dashboardContent').style.display='none';document.getElementById('loginRequired').style.display='block'}}
+        function renderDevices(devices){const list=document.getElementById('deviceList'),empty=document.getElementById('emptyState');if(!devices||devices.length===0){list.innerHTML='';empty.style.display='block';return}empty.style.display='none';list.innerHTML=devices.map(d=>`<div class="device-card" data-id="${d.id}"><div class="device-info"><div class="device-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg></div><div><div class="device-name">${d.device_name||'Dispositivo'}</div><div class="device-model">${d.device_model||''} • ${d.device_code||''}</div><div class="device-last">Ultimo accesso: ${formatDate(d.last_active)}</div></div></div><div class="device-actions"><button class="btn-icon delete" onclick="deleteDevice('${d.id}')" title="Elimina"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></div></div>`).join('')}
+        function renderSubscription(s){if(!s)return;document.getElementById('planName').textContent=s.plan==='lifetime'?'Premium Lifetime':'Premium Annuale';document.getElementById('expiresAt').textContent=s.expires_at?`Scade il: ${formatDate(s.expires_at)}`:'Per sempre'}
+        function formatDate(d){if(!d)return'-';return new Date(d).toLocaleDateString('it-IT')}
+        async function deleteDevice(id){if(!confirm('Rimuovere questo dispositivo?'))return;const token=localStorage.getItem('access_token');try{await fetch(`${SUPABASE_URL}/functions/v1/remove-device`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({device_id:id})});loadDashboard()}catch(e){console.error('Error:',e)}}
+        document.addEventListener('DOMContentLoaded',loadDashboard);
+    </script>
+</body>
+</html>
