@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrati - BurgTV Premium</title>
+    <meta name="description" content="Crea il tuo account BurgTV Premium">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0b;--bg-secondary:#111113;--text:#fff;--text-secondary:#a0a0a8;--accent:#B94A8E;--accent-light:#d85aa3;--accent-dark:#7B4397;--success:#10b981;--error:#ef4444;--border:rgba(255,255,255,0.12);--card-bg:rgba(255,255,255,0.03);--card-hover:rgba(255,255,255,0.06)}
+        body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg) 0%,var(--bg-secondary) 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(185,74,142,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(123,67,151,0.1) 0%,transparent 50%);pointer-events:none;z-index:0}
+        .language-switcher{position:fixed;top:1.5rem;right:1.5rem;display:flex;gap:0.5rem;z-index:1000;background:var(--card-bg);backdrop-filter:blur(10px);padding:0.5rem;border-radius:12px;border:1px solid var(--border)}
+        .lang-btn{padding:0.5rem 1rem;background:transparent;color:var(--text-secondary);border:1px solid transparent;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:500;transition:all 0.3s ease}
+        .lang-btn:hover{background:var(--card-hover);color:var(--text)}
+        .lang-btn.active{background:var(--accent);color:white}
+        .back-btn{position:fixed;top:1.5rem;left:1.5rem;display:none;align-items:center;gap:8px;padding:0.75rem 1.25rem;background:var(--card-bg);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:12px;color:var(--text);text-decoration:none;font-size:0.9rem;transition:all 0.3s ease;z-index:1000}
+        .back-btn:hover{background:var(--card-hover);border-color:var(--accent)}
+        .back-btn svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
+        @media(min-width:769px){.back-btn{display:flex}}
+        .container{width:100%;max-width:480px;background:var(--card-bg);border:1px solid var(--border);border-radius:24px;padding:36px 28px;backdrop-filter:blur(20px);box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);position:relative;z-index:1}
+        @media(min-width:769px){.container{max-width:520px;padding:44px 40px}}
+        .logo-section{text-align:center;margin-bottom:24px}
+        .logo-img{height:56px;width:auto;margin-bottom:10px;filter:drop-shadow(0 6px 20px rgba(185,74,142,0.4))}
+        .logo-section h1{font-size:24px;font-weight:700;margin-bottom:4px}
+        .logo-section p{color:var(--text-secondary);font-size:14px}
+        .tv-code-box{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+        .tv-code-label{font-size:13px;color:var(--text-secondary)}
+        .tv-code-value{font-size:16px;font-weight:700;color:var(--success);display:flex;align-items:center;gap:8px;font-family:monospace}
+        .tv-code-check{width:18px;height:18px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center}
+        .tv-code-check svg{width:12px;height:12px;stroke:white;stroke-width:3;fill:none}
+        .plan-section{margin-bottom:20px}
+        .plan-title{font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:600}
+        .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .plan-card{background:var(--card-hover);border:2px solid var(--border);border-radius:14px;padding:16px 16px 16px 44px;cursor:pointer;transition:all 0.3s ease;position:relative}
+        .plan-card:hover{border-color:rgba(185,74,142,0.4)}
+        .plan-card.selected{border-color:var(--accent);background:rgba(185,74,142,0.1)}
+        .plan-card.popular::before{content:attr(data-badge);position:absolute;top:-10px;right:12px;background:var(--accent);color:white;font-size:10px;font-weight:600;padding:3px 10px;border-radius:10px}
+        .plan-name{font-size:14px;font-weight:600;margin-bottom:4px}
+        .plan-price{font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .plan-period{font-size:12px;color:var(--text-secondary)}
+        .plan-desc{font-size:10px;color:var(--text-secondary);margin-top:4px;line-height:1.3}
+        .plan-trial{font-size:11px;color:var(--success);margin-top:6px;display:flex;align-items:center;gap:4px}
+        .plan-trial svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+        .plan-radio{position:absolute;top:50%;left:14px;transform:translateY(-50%);width:18px;height:18px;border:2px solid var(--border);border-radius:50%;background:transparent;transition:all 0.3s ease}
+        .plan-card.selected .plan-radio{border-color:var(--accent);background:var(--accent)}
+        .plan-card.selected .plan-radio::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;background:white;border-radius:50%}
+        .features-list{margin-bottom:20px}
+        .features-title{font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600}
+        .feature-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;color:var(--text-secondary)}
+        .feature-item svg{width:16px;height:16px;stroke:var(--success);stroke-width:2.5;fill:none;flex-shrink:0}
+        .form-group{position:relative;margin-bottom:18px}
+        .form-input{width:100%;padding:16px 14px;padding-right:48px;font-size:15px;font-family:'Inter',sans-serif;background:transparent;border:2px solid var(--border);border-radius:12px;color:var(--text);outline:none;transition:all 0.3s ease}
+        .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(185,74,142,0.15)}
+        .form-input:focus+.form-label,.form-input:not(:placeholder-shown)+.form-label{top:-9px;left:12px;font-size:11px;background:var(--bg-secondary);padding:0 6px;color:var(--accent)}
+        .form-label{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-secondary);font-size:15px;pointer-events:none;transition:all 0.3s ease}
+        .password-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-secondary);cursor:pointer;padding:4px}
+        .password-toggle:hover{color:var(--text)}
+        .password-toggle svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none}
+        .turnstile-wrapper{display:flex;justify-content:center;margin-bottom:18px}
+        .btn-pay{width:100%;padding:16px;font-size:16px;font-family:'Inter',sans-serif;font-weight:600;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;border:none;border-radius:12px;cursor:pointer;transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(185,74,142,0.3)}
+        .btn-pay:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(185,74,142,0.4)}
+        .btn-pay:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+        .btn-pay svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none}
+        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .secure-badge{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;font-size:12px;color:var(--text-secondary)}
+        .secure-badge svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none}
+        .error-message{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;display:none;align-items:center;gap:10px}
+        .error-message.show{display:flex}
+        .error-message svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;flex-shrink:0}
+        .login-link{text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:14px;color:var(--text-secondary)}
+        .login-link a{color:var(--accent);text-decoration:none;font-weight:500}
+        .login-link a:hover{color:var(--accent-light)}
+        .form-footer{text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--text-secondary)}
+        .form-footer a{color:var(--text-secondary);text-decoration:none}
+        .form-footer a:hover{color:var(--accent)}
+        .form-footer .dot{opacity:0.5}
+        @media(max-width:500px){.container{padding:28px 20px}.plan-grid{grid-template-columns:1fr}.logo-section h1{font-size:20px}.language-switcher{top:1rem;right:1rem;padding:0.4rem}.lang-btn{padding:0.4rem 0.8rem;font-size:0.8rem}}
+    </style>
+</head>
+<body>
+    <a href="https://burgtv.com" class="back-btn">
+        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span data-i18n="back">Indietro</span>
+    </a>
+    <div class="language-switcher">
+        <button class="lang-btn active" id="btn-it" onclick="changeLanguage('it')">IT</button>
+        <button class="lang-btn" id="btn-en" onclick="changeLanguage('en')">EN</button>
+        <button class="lang-btn" id="btn-de" onclick="changeLanguage('de')">DE</button>
+        <button class="lang-btn" id="btn-es" onclick="changeLanguage('es')">ES</button>
+        <button class="lang-btn" id="btn-fr" onclick="changeLanguage('fr')">FR</button>
+    </div>
+    <div class="container">
+        <div class="logo-section">
+            <img src="logo.svg" alt="BurgTV" class="logo-img">
+            <h1 data-i18n="title">Crea il tuo account</h1>
+            <p data-i18n="subtitle">Sblocca tutte le funzionalità Premium</p>
+        </div>
+        <div class="tv-code-box" id="tvCodeBox" style="display:none;">
+            <span class="tv-code-label" data-i18n="tvCodeLabel">Dispositivo collegato</span>
+            <span class="tv-code-value"><span id="tvCode">TV-XXXX</span><span class="tv-code-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+        </div>
+        <div class="plan-section">
+            <div class="plan-title" data-i18n="choosePlan">Scegli il tuo piano</div>
+            <div class="plan-grid">
+                <div class="plan-card selected" id="planAnnual" onclick="selectPlan('annual')">
+                    <div class="plan-radio"></div>
+                    <div class="plan-name" data-i18n="planAnnual">Annuale</div>
+                    <div class="plan-price">CHF 8.90</div>
+                    <div class="plan-period" data-i18n="planAnnualPeriod">/anno</div>
+                    <div class="plan-desc" data-i18n="planAnnualDesc">Accesso per 12 mesi</div>
+                    <div class="plan-trial"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="trialInfo">7 giorni gratis</span></div>
+                </div>
+                <div class="plan-card popular" id="planPermanent" data-badge="Popolare" onclick="selectPlan('permanent')">
+                    <div class="plan-radio"></div>
+                    <div class="plan-name" data-i18n="planPermanent">Permanente</div>
+                    <div class="plan-price">CHF 25.90</div>
+                    <div class="plan-period" data-i18n="planPermanentPeriod">una tantum</div>
+                    <div class="plan-desc" data-i18n="planPermanentDesc">Licenza permanente</div>
+                </div>
+            </div>
+        </div>
+        <div class="features-list">
+            <div class="features-title" data-i18n="included">Incluso</div>
+            <div class="feature-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="feature1">5 dispositivi</span></div>
+            <div class="feature-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="feature2">Playlist illimitate</span></div>
+            <div class="feature-item"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="feature3">EPG e Catch-up TV</span></div>
+        </div>
+        <div class="error-message" id="errorMessage"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="errorText"></span></div>
+        <form id="registerForm" onsubmit="handleSubmit(event)">
+            <div class="form-group"><input type="email" id="email" class="form-input" placeholder=" " required autocomplete="email"><label for="email" class="form-label" data-i18n="email">Email</label></div>
+            <div class="form-group"><input type="password" id="password" class="form-input" placeholder=" " required autocomplete="new-password" minlength="8"><label for="password" class="form-label" data-i18n="password">Password</label><button type="button" class="password-toggle" onclick="togglePassword('password','eyeIcon1')"><svg id="eyeIcon1" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <div class="form-group"><input type="password" id="confirmPassword" class="form-input" placeholder=" " required autocomplete="new-password"><label for="confirmPassword" class="form-label" data-i18n="confirmPassword">Conferma Password</label><button type="button" class="password-toggle" onclick="togglePassword('confirmPassword','eyeIcon2')"><svg id="eyeIcon2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <div class="turnstile-wrapper"><div class="cf-turnstile" data-sitekey="YOUR_TURNSTILE_SITE_KEY" data-callback="onTurnstileSuccess" data-theme="dark"></div></div>
+            <button type="submit" class="btn-pay" id="payBtn"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span id="btnText" data-i18n="payBtn">Continua al pagamento</span></button>
+        </form>
+        <div class="secure-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="secure">Pagamento sicuro con Stripe</span></div>
+        <div class="login-link"><span data-i18n="hasAccount">Hai già un account?</span> <a href="login.html" data-i18n="loginLink">Accedi</a></div>
+        <div class="form-footer"><a href="legal/privacy.html" data-i18n="privacy">Privacy</a><span class="dot">•</span><a href="legal/terms.html" data-i18n="terms">Termini</a><span class="dot">•</span><a href="mailto:info@burgtv.com">info@burgtv.com</a></div>
+    </div>
+    <script>
+        const SUPABASE_URL='https://ugspmqfduabfmfsoxqoc.supabase.co';
+        const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
+        const translations={
+            it:{back:"Indietro",title:"Crea il tuo account",subtitle:"Sblocca tutte le funzionalità Premium",tvCodeLabel:"Dispositivo collegato",choosePlan:"Scegli il tuo piano",planAnnual:"Annuale",planAnnualPeriod:"/anno",planAnnualDesc:"Accesso per 12 mesi",trialInfo:"7 giorni gratis",planPermanent:"Permanente",planPermanentPeriod:"una tantum",planPermanentDesc:"Licenza permanente",included:"Incluso",feature1:"5 dispositivi",feature2:"Playlist illimitate",feature3:"EPG e Catch-up TV",email:"Email",password:"Password",confirmPassword:"Conferma Password",payBtn:"Continua al pagamento",secure:"Pagamento sicuro con Stripe",hasAccount:"Hai già un account?",loginLink:"Accedi",privacy:"Privacy",terms:"Termini",errors:{email:"Inserisci un'email valida",password:"La password deve avere almeno 8 caratteri",passwordMatch:"Le password non corrispondono",generic:"Si è verificato un errore. Riprova."}},
+            en:{back:"Back",title:"Create your account",subtitle:"Unlock all Premium features",tvCodeLabel:"Device connected",choosePlan:"Choose your plan",planAnnual:"Annual",planAnnualPeriod:"/year",planAnnualDesc:"Access for 12 months",trialInfo:"7 days free",planPermanent:"Permanent",planPermanentPeriod:"one-time",planPermanentDesc:"Permanent license",included:"Included",feature1:"5 devices",feature2:"Unlimited playlists",feature3:"EPG and Catch-up TV",email:"Email",password:"Password",confirmPassword:"Confirm Password",payBtn:"Continue to payment",secure:"Secure payment with Stripe",hasAccount:"Already have an account?",loginLink:"Sign in",privacy:"Privacy",terms:"Terms",errors:{email:"Enter a valid email",password:"Password must be at least 8 characters",passwordMatch:"Passwords do not match",generic:"An error occurred. Please try again."}},
+            de:{back:"Zurück",title:"Konto erstellen",subtitle:"Premium freischalten",tvCodeLabel:"Gerät verbunden",choosePlan:"Plan wählen",planAnnual:"Jährlich",planAnnualPeriod:"/Jahr",planAnnualDesc:"Zugang für 12 Monate",trialInfo:"7 Tage kostenlos",planPermanent:"Permanent",planPermanentPeriod:"einmalig",planPermanentDesc:"Permanente Lizenz",included:"Inklusive",feature1:"5 Geräte",feature2:"Unbegrenzte Playlists",feature3:"EPG und Catch-up TV",email:"E-Mail",password:"Passwort",confirmPassword:"Passwort bestätigen",payBtn:"Weiter zur Zahlung",secure:"Sichere Zahlung mit Stripe",hasAccount:"Bereits ein Konto?",loginLink:"Anmelden",privacy:"Datenschutz",terms:"AGB",errors:{email:"Gültige E-Mail eingeben",password:"Passwort mind. 8 Zeichen",passwordMatch:"Passwörter stimmen nicht",generic:"Ein Fehler ist aufgetreten."}},
+            es:{back:"Volver",title:"Crea tu cuenta",subtitle:"Desbloquea Premium",tvCodeLabel:"Dispositivo conectado",choosePlan:"Elige tu plan",planAnnual:"Anual",planAnnualPeriod:"/año",planAnnualDesc:"Acceso por 12 meses",trialInfo:"7 días gratis",planPermanent:"Permanente",planPermanentPeriod:"pago único",planPermanentDesc:"Licencia permanente",included:"Incluido",feature1:"5 dispositivos",feature2:"Listas ilimitadas",feature3:"EPG y Catch-up TV",email:"Correo",password:"Contraseña",confirmPassword:"Confirmar",payBtn:"Continuar al pago",secure:"Pago seguro con Stripe",hasAccount:"¿Ya tienes cuenta?",loginLink:"Inicia sesión",privacy:"Privacidad",terms:"Términos",errors:{email:"Ingresa un correo válido",password:"Contraseña mínimo 8 caracteres",passwordMatch:"Las contraseñas no coinciden",generic:"Ocurrió un error."}},
+            fr:{back:"Retour",title:"Créez votre compte",subtitle:"Débloquez Premium",tvCodeLabel:"Appareil connecté",choosePlan:"Choisissez votre plan",planAnnual:"Annuel",planAnnualPeriod:"/an",planAnnualDesc:"Accès pour 12 mois",trialInfo:"7 jours gratuits",planPermanent:"Permanent",planPermanentPeriod:"paiement unique",planPermanentDesc:"Licence permanente",included:"Inclus",feature1:"5 appareils",feature2:"Playlists illimitées",feature3:"EPG et Catch-up TV",email:"Email",password:"Mot de passe",confirmPassword:"Confirmer",payBtn:"Continuer vers le paiement",secure:"Paiement sécurisé avec Stripe",hasAccount:"Déjà un compte?",loginLink:"Connexion",privacy:"Confidentialité",terms:"Conditions",errors:{email:"Entrez un email valide",password:"Mot de passe min 8 caractères",passwordMatch:"Les mots de passe ne correspondent pas",generic:"Une erreur s'est produite."}}
+        };
+        let currentLang='it',selectedPlan='annual',turnstileToken=null;
+        const urlParams=new URLSearchParams(window.location.search),tvCode=urlParams.get('code'),planParam=urlParams.get('plan');
+        function changeLanguage(l){currentLang=l;localStorage.setItem('preferredLanguage',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+l).classList.add('active');updateTexts()}
+        function updateTexts(){const t=translations[currentLang];document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]})}
+        function selectPlan(p){selectedPlan=p;document.getElementById('planAnnual').classList.toggle('selected',p==='annual');document.getElementById('planPermanent').classList.toggle('selected',p==='permanent')}
+        function togglePassword(i,ic){const inp=document.getElementById(i),icon=document.getElementById(ic);if(inp.type==='password'){inp.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'}else{inp.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'}}
+        function onTurnstileSuccess(t){turnstileToken=t}
+        function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorMessage').classList.add('show')}
+        function hideError(){document.getElementById('errorMessage').classList.remove('show')}
+        function setLoading(l){const b=document.getElementById('payBtn'),t=document.getElementById('btnText');b.disabled=l;t.innerHTML=l?'<span class="spinner"></span>':translations[currentLang].payBtn}
+        async function handleSubmit(e){e.preventDefault();hideError();const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,confirmPassword=document.getElementById('confirmPassword').value,t=translations[currentLang];if(!email||!email.includes('@')){showError(t.errors.email);return}if(password.length<8){showError(t.errors.password);return}if(password!==confirmPassword){showError(t.errors.passwordMatch);return}setLoading(true);try{const r=await fetch(`${SUPABASE_URL}/functions/v1/create-checkout-session`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify({email,password,plan:selectedPlan,code:tvCode,turnstile_token:turnstileToken})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error');if(d.checkout_url)window.location.href=d.checkout_url;else throw new Error('No checkout URL')}catch(err){console.error('Error:',err);showError(translations[currentLang].errors.generic);setLoading(false)}}
+        document.addEventListener('DOMContentLoaded',function(){const sl=localStorage.getItem('preferredLanguage')||'it';changeLanguage(sl);if(tvCode){document.getElementById('tvCode').textContent=tvCode;document.getElementById('tvCodeBox').style.display='flex'}if(planParam==='permanent')selectPlan('permanent');else if(planParam==='annual')selectPlan('annual')});
+    </script>
+</body>
+</html>

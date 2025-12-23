@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BurgTV – Termini di Servizio</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .nav-left{display:flex;align-items:center;gap:16px}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
+    .brand img{height:48px;width:auto}
+    .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px;transition:all 0.3s ease}
+    .menu-toggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
+    .menu-toggle.active span:nth-child(2){opacity:0}
+    .menu-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-8px)}
+    .sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,0.98);backdrop-filter:blur(20px);border-right:1px solid var(--border);transition:left 0.3s ease;z-index:99;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+    .sidebar-logo{height:40px;width:auto}
+    .sidebar-nav{padding:20px 0}
+    .sidebar-nav a{display:flex;align-items:center;padding:16px 24px;color:var(--text);text-decoration:none;font-size:16px;transition:all 0.3s ease;border-left:3px solid transparent}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+    .sidebar-nav a.active{background:rgba(185,74,142,.1);border-left-color:var(--accent);color:#fff}
+    .sidebar-nav a span{margin-right:12px;font-size:20px}
+    .sidebar-divider{height:1px;background:var(--border);margin:10px 20px}
+    .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:98}
+    .sidebar-overlay.active{display:block}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.3s ease}
+    .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
+    .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
+    h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
+    p,li{color:var(--muted)}
+    ul{margin:0 0 18px 22px}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+    a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+    a.link:hover{color:#fff;border-bottom-color:#fff}
+    .update-date{margin:8px 0 18px;color:var(--muted);font-size:0.95rem}
+    .highlight-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:20px;margin:16px 0}
+    .highlight-box p{margin:8px 0}
+    .highlight-box strong{color:var(--accent)}
+    .important-clause{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);border-radius:10px;padding:20px;margin:16px 0}
+    .important-clause p{color:#ffd54f}
+    @media(max-width:768px){.lang-switch button{padding:4px 8px;font-size:12px}h1{font-size:1.8rem}}
+  </style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><img src="/assets/branding/logo.svg" class="sidebar-logo" alt="BurgTV"/></div>
+  <nav class="sidebar-nav">
+    <a href="/"><span>🏠</span><span data-i18n="menu.home">Home</span></a>
+    <a href="https://app.burgtv.com/login.html"><span>🔐</span><span data-i18n="menu.login">Accedi</span></a>
+    <div class="sidebar-divider"></div>
+    <a href="/legal/terms.html" class="active"><span>📄</span><span data-i18n="menu.terms">Termini di Servizio</span></a>
+    <a href="/legal/privacy.html"><span>🔒</span><span data-i18n="menu.privacy">Privacy Policy</span></a>
+    <a href="mailto:info@burgtv.com"><span>📧</span><span data-i18n="menu.contact">Contatti</span></a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      <a class="brand" href="/"><img src="/assets/branding/logo.svg" alt="BurgTV"/></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+      <button id="btn-de">DE</button>
+      <button id="btn-es">ES</button>
+      <button id="btn-fr">FR</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <!-- ITALIANO -->
+  <div id="content-it" class="card">
+    <h1>Termini e Condizioni</h1>
+    <p class="update-date">Ultimo aggiornamento: 23 Dicembre 2025</p>
+    
+    <h2>1. Natura del Servizio</h2>
+    <p>BurgTV è un'<strong>applicazione software</strong> che funziona come <strong>media player</strong> per la riproduzione di contenuti multimediali.</p>
+    <ul>
+      <li>BurgTV <strong>NON fornisce, ospita né distribuisce</strong> alcun contenuto audiovisivo.</li>
+      <li>L'utente utilizza esclusivamente contenuti propri o di terze parti di cui possiede i diritti.</li>
+      <li>BurgTV non è responsabile per i contenuti riprodotti dall'utente tramite l'applicazione.</li>
+    </ul>
+
+    <h2>2. Piani e Licenze</h2>
+    <p>BurgTV offre due tipologie di accesso alle funzionalità dell'applicazione:</p>
+    
+    <div class="highlight-box">
+      <h3>Abbonamento Annuale</h3>
+      <p>Accesso completo alle funzionalità dell'app BurgTV per <strong>12 mesi</strong>.</p>
+      <p><strong>Prezzo: CHF 8.90/anno</strong></p>
+      <p>Include 7 giorni di prova gratuita. Al termine della prova, l'abbonamento si attiva automaticamente se non cancellato.</p>
+    </div>
+    
+    <div class="highlight-box">
+      <h3>Licenza Permanente (pagamento una tantum)</h3>
+      <p>Pagamento unico per l'accesso alle funzionalità dell'app BurgTV.</p>
+      <p><strong>Prezzo: CHF 25.90 (una tantum)</strong></p>
+    </div>
+
+    <div class="important-clause">
+      <p><strong>⚠️ Clausola importante sulla Licenza Permanente:</strong></p>
+      <p>La licenza permanente è una licenza d'uso non esclusiva dell'app BurgTV, valida per la durata di disponibilità commerciale del servizio. Il pagamento una tantum si riferisce esclusivamente alla modalità di pagamento e non costituisce un diritto di accesso perpetuo indipendente dall'esistenza del servizio.</p>
+    </div>
+
+    <h2>3. Account e Dispositivi</h2>
+    <ul>
+      <li>Ogni licenza (annuale o permanente) può essere utilizzata su un massimo di <strong>5 dispositivi</strong>.</li>
+      <li>L'utente può gestire i propri dispositivi dalla dashboard su app.burgtv.com.</li>
+      <li>La condivisione delle credenziali di accesso con terzi non è consentita.</li>
+      <li>Un solo account per persona fisica o giuridica.</li>
+    </ul>
+
+    <h2>4. Pagamenti e Rimborsi</h2>
+    <ul>
+      <li>I pagamenti sono elaborati in modo sicuro tramite <strong>Stripe</strong>.</li>
+      <li>BurgTV non memorizza i dati delle carte di credito sui propri server.</li>
+      <li><strong>Nessun rimborso</strong> è previsto dopo l'attivazione dell'abbonamento annuale o l'acquisto della licenza permanente.</li>
+      <li>L'abbonamento annuale si rinnova automaticamente alla scadenza, salvo disdetta.</li>
+    </ul>
+
+    <h2>5. Uso Consentito</h2>
+    <ul>
+      <li>L'utente deve avere i <strong>diritti legali</strong> per visualizzare i contenuti riprodotti tramite l'app.</li>
+      <li>È vietato utilizzare il servizio per attività illegali o per violare diritti d'autore di terzi.</li>
+      <li>L'utente è l'unico responsabile per i contenuti che visualizza tramite l'applicazione.</li>
+    </ul>
+
+    <h2>6. Sospensione e Revoca</h2>
+    <p>BurgTV si riserva il diritto di sospendere o revocare l'accesso all'account in caso di:</p>
+    <ul>
+      <li>Violazione dei presenti Termini e Condizioni</li>
+      <li>Utilizzo abusivo o fraudolento del servizio</li>
+      <li>Condivisione non autorizzata delle credenziali</li>
+      <li>Attività illegali o dannose</li>
+    </ul>
+    <p>La sospensione o revoca può avvenire senza preavviso e senza diritto a rimborso.</p>
+
+    <h2>7. Limitazioni di Responsabilità</h2>
+    <ul>
+      <li>Il servizio è fornito "così com'è" senza garanzie di disponibilità continua o ininterrotta.</li>
+      <li>BurgTV non è responsabile per contenuti di terze parti visualizzati tramite l'app.</li>
+      <li>BurgTV non è responsabile per perdita di dati, playlist o impostazioni dell'utente.</li>
+      <li>BurgTV si riserva il diritto di modificare, sospendere o interrompere il servizio in qualsiasi momento.</li>
+    </ul>
+
+    <h2>8. Modifiche ai Termini</h2>
+    <p>BurgTV può aggiornare questi Termini e Condizioni in qualsiasi momento. Le modifiche significative saranno comunicate tramite email o nell'applicazione. L'uso continuato del servizio dopo le modifiche costituisce accettazione dei nuovi termini.</p>
+
+    <h2>9. Legge Applicabile e Foro Competente</h2>
+    <p>I presenti Termini e Condizioni sono regolati dal <strong>diritto svizzero</strong>.</p>
+    <p>Per qualsiasi controversia derivante dall'uso del servizio, il <strong>foro competente esclusivo</strong> è quello di Lugano, Svizzera.</p>
+
+    <h2>10. Contatti</h2>
+    <p>Per domande, assistenza o segnalazioni: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- ENGLISH -->
+  <div id="content-en" class="card" style="display:none">
+    <h1>Terms and Conditions</h1>
+    <p class="update-date">Last updated: December 23, 2025</p>
+    
+    <h2>1. Nature of the Service</h2>
+    <p>BurgTV is a <strong>software application</strong> that functions as a <strong>media player</strong> for multimedia content playback.</p>
+    <ul>
+      <li>BurgTV <strong>does NOT provide, host, or distribute</strong> any audiovisual content.</li>
+      <li>Users exclusively use their own content or third-party content for which they hold the rights.</li>
+      <li>BurgTV is not responsible for content played by users through the application.</li>
+    </ul>
+
+    <h2>2. Plans and Licenses</h2>
+    <p>BurgTV offers two types of access to the application's features:</p>
+    
+    <div class="highlight-box">
+      <h3>Annual Subscription</h3>
+      <p>Full access to BurgTV app features for <strong>12 months</strong>.</p>
+      <p><strong>Price: CHF 8.90/year</strong></p>
+      <p>Includes 7-day free trial. After the trial, the subscription automatically activates if not cancelled.</p>
+    </div>
+    
+    <div class="highlight-box">
+      <h3>Permanent License (one-time payment)</h3>
+      <p>One-time payment for access to BurgTV app features.</p>
+      <p><strong>Price: CHF 25.90 (one-time)</strong></p>
+    </div>
+
+    <div class="important-clause">
+      <p><strong>⚠️ Important clause regarding Permanent License:</strong></p>
+      <p>The permanent license is a non-exclusive license to use the BurgTV app, valid for the duration of commercial availability of the service. The one-time payment refers exclusively to the payment method and does not constitute a right of perpetual access independent of the service's existence.</p>
+    </div>
+
+    <h2>3. Account and Devices</h2>
+    <ul>
+      <li>Each license (annual or permanent) can be used on a maximum of <strong>5 devices</strong>.</li>
+      <li>Users can manage their devices from the dashboard at app.burgtv.com.</li>
+      <li>Sharing login credentials with third parties is not permitted.</li>
+      <li>One account per natural or legal person.</li>
+    </ul>
+
+    <h2>4. Payments and Refunds</h2>
+    <ul>
+      <li>Payments are processed securely via <strong>Stripe</strong>.</li>
+      <li>BurgTV does not store credit card data on its servers.</li>
+      <li><strong>No refunds</strong> are provided after activation of annual subscription or purchase of permanent license.</li>
+      <li>Annual subscription automatically renews at expiration unless cancelled.</li>
+    </ul>
+
+    <h2>5. Permitted Use</h2>
+    <ul>
+      <li>Users must have <strong>legal rights</strong> to view content played through the app.</li>
+      <li>Using the service for illegal activities or to infringe third-party copyrights is prohibited.</li>
+      <li>Users are solely responsible for content they view through the application.</li>
+    </ul>
+
+    <h2>6. Suspension and Revocation</h2>
+    <p>BurgTV reserves the right to suspend or revoke account access in case of:</p>
+    <ul>
+      <li>Violation of these Terms and Conditions</li>
+      <li>Abusive or fraudulent use of the service</li>
+      <li>Unauthorized sharing of credentials</li>
+      <li>Illegal or harmful activities</li>
+    </ul>
+    <p>Suspension or revocation may occur without notice and without right to refund.</p>
+
+    <h2>7. Limitations of Liability</h2>
+    <ul>
+      <li>The service is provided "as is" without guarantees of continuous or uninterrupted availability.</li>
+      <li>BurgTV is not responsible for third-party content viewed through the app.</li>
+      <li>BurgTV is not responsible for loss of user data, playlists, or settings.</li>
+      <li>BurgTV reserves the right to modify, suspend, or discontinue the service at any time.</li>
+    </ul>
+
+    <h2>8. Changes to Terms</h2>
+    <p>BurgTV may update these Terms and Conditions at any time. Significant changes will be communicated via email or in the application. Continued use of the service after changes constitutes acceptance of the new terms.</p>
+
+    <h2>9. Governing Law and Jurisdiction</h2>
+    <p>These Terms and Conditions are governed by <strong>Swiss law</strong>.</p>
+    <p>For any dispute arising from the use of the service, the <strong>exclusive jurisdiction</strong> is Lugano, Switzerland.</p>
+
+    <h2>10. Contact</h2>
+    <p>For questions, support, or reports: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- GERMAN -->
+  <div id="content-de" class="card" style="display:none">
+    <h1>Allgemeine Geschäftsbedingungen</h1>
+    <p class="update-date">Letzte Aktualisierung: 23. Dezember 2025</p>
+    
+    <h2>1. Art des Dienstes</h2>
+    <p>BurgTV ist eine <strong>Softwareanwendung</strong>, die als <strong>Media Player</strong> für die Wiedergabe von Multimedia-Inhalten dient.</p>
+    <ul>
+      <li>BurgTV <strong>stellt KEINE Inhalte bereit, hostet oder verbreitet</strong> keine audiovisuellen Inhalte.</li>
+      <li>Nutzer verwenden ausschließlich eigene Inhalte oder Inhalte Dritter, für die sie die Rechte besitzen.</li>
+    </ul>
+
+    <h2>2. Pläne und Lizenzen</h2>
+    <div class="highlight-box">
+      <h3>Jahresabonnement</h3>
+      <p>Voller Zugang zu den BurgTV-App-Funktionen für <strong>12 Monate</strong>.</p>
+      <p><strong>Preis: CHF 8.90/Jahr</strong></p>
+      <p>Beinhaltet 7-tägige kostenlose Testversion.</p>
+    </div>
+    
+    <div class="highlight-box">
+      <h3>Permanente Lizenz (Einmalzahlung)</h3>
+      <p>Einmalige Zahlung für den Zugang zu den BurgTV-App-Funktionen.</p>
+      <p><strong>Preis: CHF 25.90 (einmalig)</strong></p>
+    </div>
+
+    <div class="important-clause">
+      <p><strong>⚠️ Wichtige Klausel zur Permanenten Lizenz:</strong></p>
+      <p>Die permanente Lizenz ist eine nicht-exklusive Nutzungslizenz für die BurgTV-App, gültig für die Dauer der kommerziellen Verfügbarkeit des Dienstes. Die Einmalzahlung bezieht sich ausschließlich auf die Zahlungsmethode und stellt kein Recht auf dauerhaften Zugang unabhängig von der Existenz des Dienstes dar.</p>
+    </div>
+
+    <h2>3. Konto und Geräte</h2>
+    <ul>
+      <li>Jede Lizenz kann auf maximal <strong>5 Geräten</strong> verwendet werden.</li>
+      <li>Nutzer können ihre Geräte im Dashboard unter app.burgtv.com verwalten.</li>
+    </ul>
+
+    <h2>4. Zahlungen und Rückerstattungen</h2>
+    <ul>
+      <li>Zahlungen werden sicher über <strong>Stripe</strong> abgewickelt.</li>
+      <li><strong>Keine Rückerstattungen</strong> nach Aktivierung.</li>
+    </ul>
+
+    <h2>5. Sperrung und Widerruf</h2>
+    <p>BurgTV behält sich das Recht vor, den Kontozugang bei Verstößen zu sperren oder zu widerrufen.</p>
+
+    <h2>6. Anwendbares Recht</h2>
+    <p>Diese AGB unterliegen dem <strong>Schweizer Recht</strong>. Gerichtsstand: Lugano, Schweiz.</p>
+
+    <h2>7. Kontakt</h2>
+    <p>Support: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- SPANISH -->
+  <div id="content-es" class="card" style="display:none">
+    <h1>Términos y Condiciones</h1>
+    <p class="update-date">Última actualización: 23 de diciembre de 2025</p>
+    
+    <h2>1. Naturaleza del Servicio</h2>
+    <p>BurgTV es una <strong>aplicación de software</strong> que funciona como <strong>reproductor multimedia</strong>.</p>
+    <ul>
+      <li>BurgTV <strong>NO proporciona, aloja ni distribuye</strong> ningún contenido audiovisual.</li>
+      <li>Los usuarios utilizan exclusivamente contenido propio o de terceros sobre el cual tienen derechos.</li>
+    </ul>
+
+    <h2>2. Planes y Licencias</h2>
+    <div class="highlight-box">
+      <h3>Suscripción Anual</h3>
+      <p>Acceso completo a las funciones de BurgTV durante <strong>12 meses</strong>.</p>
+      <p><strong>Precio: CHF 8.90/año</strong></p>
+      <p>Incluye 7 días de prueba gratuita.</p>
+    </div>
+    
+    <div class="highlight-box">
+      <h3>Licencia Permanente (pago único)</h3>
+      <p>Pago único para acceder a las funciones de la app BurgTV.</p>
+      <p><strong>Precio: CHF 25.90 (único)</strong></p>
+    </div>
+
+    <div class="important-clause">
+      <p><strong>⚠️ Cláusula importante sobre la Licencia Permanente:</strong></p>
+      <p>La licencia permanente es una licencia de uso no exclusiva de la app BurgTV, válida durante la disponibilidad comercial del servicio. El pago único se refiere exclusivamente al método de pago y no constituye un derecho de acceso perpetuo independiente de la existencia del servicio.</p>
+    </div>
+
+    <h2>3. Cuenta y Dispositivos</h2>
+    <ul>
+      <li>Cada licencia puede usarse en un máximo de <strong>5 dispositivos</strong>.</li>
+    </ul>
+
+    <h2>4. Pagos y Reembolsos</h2>
+    <ul>
+      <li>Pagos procesados de forma segura mediante <strong>Stripe</strong>.</li>
+      <li><strong>Sin reembolsos</strong> después de la activación.</li>
+    </ul>
+
+    <h2>5. Suspensión y Revocación</h2>
+    <p>BurgTV se reserva el derecho de suspender o revocar el acceso en caso de violaciones.</p>
+
+    <h2>6. Ley Aplicable</h2>
+    <p>Estos términos se rigen por el <strong>derecho suizo</strong>. Jurisdicción: Lugano, Suiza.</p>
+
+    <h2>7. Contacto</h2>
+    <p>Soporte: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- FRENCH -->
+  <div id="content-fr" class="card" style="display:none">
+    <h1>Conditions Générales</h1>
+    <p class="update-date">Dernière mise à jour: 23 décembre 2025</p>
+    
+    <h2>1. Nature du Service</h2>
+    <p>BurgTV est une <strong>application logicielle</strong> fonctionnant comme <strong>lecteur multimédia</strong>.</p>
+    <ul>
+      <li>BurgTV <strong>NE fournit, n'héberge ni ne distribue</strong> aucun contenu audiovisuel.</li>
+      <li>Les utilisateurs utilisent exclusivement leur propre contenu ou celui de tiers dont ils détiennent les droits.</li>
+    </ul>
+
+    <h2>2. Plans et Licences</h2>
+    <div class="highlight-box">
+      <h3>Abonnement Annuel</h3>
+      <p>Accès complet aux fonctionnalités de BurgTV pendant <strong>12 mois</strong>.</p>
+      <p><strong>Prix: CHF 8.90/an</strong></p>
+      <p>Inclut 7 jours d'essai gratuit.</p>
+    </div>
+    
+    <div class="highlight-box">
+      <h3>Licence Permanente (paiement unique)</h3>
+      <p>Paiement unique pour l'accès aux fonctionnalités de l'app BurgTV.</p>
+      <p><strong>Prix: CHF 25.90 (unique)</strong></p>
+    </div>
+
+    <div class="important-clause">
+      <p><strong>⚠️ Clause importante concernant la Licence Permanente:</strong></p>
+      <p>La licence permanente est une licence d'utilisation non exclusive de l'app BurgTV, valable pour la durée de disponibilité commerciale du service. Le paiement unique se réfère exclusivement au mode de paiement et ne constitue pas un droit d'accès perpétuel indépendant de l'existence du service.</p>
+    </div>
+
+    <h2>3. Compte et Appareils</h2>
+    <ul>
+      <li>Chaque licence peut être utilisée sur un maximum de <strong>5 appareils</strong>.</li>
+    </ul>
+
+    <h2>4. Paiements et Remboursements</h2>
+    <ul>
+      <li>Paiements traités de manière sécurisée via <strong>Stripe</strong>.</li>
+      <li><strong>Aucun remboursement</strong> après activation.</li>
+    </ul>
+
+    <h2>5. Suspension et Révocation</h2>
+    <p>BurgTV se réserve le droit de suspendre ou révoquer l'accès en cas de violations.</p>
+
+    <h2>6. Droit Applicable</h2>
+    <p>Ces conditions sont régies par le <strong>droit suisse</strong>. Juridiction: Lugano, Suisse.</p>
+
+    <h2>7. Contact</h2>
+    <p>Support: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+</div>
+<script>
+  const menuToggle=document.getElementById('menuToggle'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
+  function toggleMenu(){menuToggle.classList.toggle('active');sidebar.classList.toggle('active');overlay.classList.toggle('active')}
+  menuToggle.addEventListener('click',toggleMenu);overlay.addEventListener('click',toggleMenu);
+  const contents={it:document.getElementById('content-it'),en:document.getElementById('content-en'),de:document.getElementById('content-de'),es:document.getElementById('content-es'),fr:document.getElementById('content-fr')};
+  const menuTr={it:{"menu.home":"Home","menu.login":"Accedi","menu.terms":"Termini di Servizio","menu.privacy":"Privacy Policy","menu.contact":"Contatti"},en:{"menu.home":"Home","menu.login":"Sign In","menu.terms":"Terms of Service","menu.privacy":"Privacy Policy","menu.contact":"Contact"},de:{"menu.home":"Startseite","menu.login":"Anmelden","menu.terms":"AGB","menu.privacy":"Datenschutz","menu.contact":"Kontakt"},es:{"menu.home":"Inicio","menu.login":"Acceder","menu.terms":"Términos","menu.privacy":"Privacidad","menu.contact":"Contacto"},fr:{"menu.home":"Accueil","menu.login":"Connexion","menu.terms":"Conditions","menu.privacy":"Confidentialité","menu.contact":"Contact"}};
+  function setLanguage(l){Object.values(contents).forEach(c=>{if(c)c.style.display='none'});if(contents[l])contents[l].style.display='block';document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+l).classList.add('active');if(menuTr[l])document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');if(menuTr[l][k])e.textContent=menuTr[l][k]});document.documentElement.lang=l;localStorage.setItem('preferredLang',l)}
+  document.getElementById('btn-it').onclick=()=>setLanguage('it');document.getElementById('btn-en').onclick=()=>setLanguage('en');document.getElementById('btn-de').onclick=()=>setLanguage('de');document.getElementById('btn-es').onclick=()=>setLanguage('es');document.getElementById('btn-fr').onclick=()=>setLanguage('fr');
+  setLanguage(localStorage.getItem('preferredLang')||'it');
+</script>
+</body>
+</html>

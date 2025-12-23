@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BurgTV – Privacy Policy</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .nav-left{display:flex;align-items:center;gap:16px}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
+    .brand img{height:48px;width:auto}
+    .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px;transition:all 0.3s ease}
+    .menu-toggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
+    .menu-toggle.active span:nth-child(2){opacity:0}
+    .menu-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-8px)}
+    .sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,0.98);backdrop-filter:blur(20px);border-right:1px solid var(--border);transition:left 0.3s ease;z-index:99;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+    .sidebar-logo{height:40px;width:auto}
+    .sidebar-nav{padding:20px 0}
+    .sidebar-nav a{display:flex;align-items:center;padding:16px 24px;color:var(--text);text-decoration:none;font-size:16px;transition:all 0.3s ease;border-left:3px solid transparent}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+    .sidebar-nav a.active{background:rgba(185,74,142,.1);border-left-color:var(--accent);color:#fff}
+    .sidebar-nav a span{margin-right:12px;font-size:20px}
+    .sidebar-divider{height:1px;background:var(--border);margin:10px 20px}
+    .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:98}
+    .sidebar-overlay.active{display:block}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.3s ease}
+    .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
+    .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
+    h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
+    p,li{color:var(--muted)}
+    ul{margin:0 0 18px 22px}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+    a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+    a.link:hover{color:#fff;border-bottom-color:#fff}
+    .update-date{margin:8px 0 18px;color:var(--muted);font-size:0.95rem}
+    .data-table{width:100%;border-collapse:collapse;margin:16px 0}
+    .data-table th,.data-table td{text-align:left;padding:12px;border-bottom:1px solid var(--border)}
+    .data-table th{color:var(--accent);font-weight:600;font-size:0.9rem}
+    .data-table td{color:var(--muted)}
+    .provider-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:16px;margin:12px 0}
+    .provider-box h4{color:var(--accent);margin-bottom:8px}
+    @media(max-width:768px){.lang-switch button{padding:4px 8px;font-size:12px}h1{font-size:1.8rem}.data-table{font-size:0.9rem}}
+  </style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><img src="/assets/branding/logo.svg" class="sidebar-logo" alt="BurgTV"/></div>
+  <nav class="sidebar-nav">
+    <a href="/"><span>🏠</span><span data-i18n="menu.home">Home</span></a>
+    <a href="https://app.burgtv.com/login.html"><span>🔐</span><span data-i18n="menu.login">Accedi</span></a>
+    <div class="sidebar-divider"></div>
+    <a href="/legal/terms.html"><span>📄</span><span data-i18n="menu.terms">Termini di Servizio</span></a>
+    <a href="/legal/privacy.html" class="active"><span>🔒</span><span data-i18n="menu.privacy">Privacy Policy</span></a>
+    <a href="mailto:info@burgtv.com"><span>📧</span><span data-i18n="menu.contact">Contatti</span></a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      <a class="brand" href="/"><img src="/assets/branding/logo.svg" alt="BurgTV"/></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+      <button id="btn-de">DE</button>
+      <button id="btn-es">ES</button>
+      <button id="btn-fr">FR</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <!-- ITALIANO -->
+  <div id="content-it" class="card">
+    <h1>Privacy Policy</h1>
+    <p class="update-date">Ultimo aggiornamento: 23 Dicembre 2025</p>
+    
+    <p>BurgTV ("noi", "nostro", "l'App") si impegna a proteggere la privacy degli utenti. Questa Privacy Policy descrive quali dati raccogliamo, come li utilizziamo e come li proteggiamo.</p>
+
+    <h2>1. Dati Raccolti</h2>
+    <p>BurgTV raccoglie esclusivamente i dati necessari per il funzionamento del servizio:</p>
+    
+    <table class="data-table">
+      <tr><th>Tipo di dato</th><th>Descrizione</th></tr>
+      <tr><td><strong>Email</strong></td><td>Indirizzo email fornito al momento della registrazione dell'account</td></tr>
+      <tr><td><strong>Password</strong></td><td>Password criptata con algoritmi sicuri (non leggibile)</td></tr>
+      <tr><td><strong>Device ID</strong></td><td>Identificativo univoco generato dall'app per ogni dispositivo (hash anonimo, non MAC address)</td></tr>
+      <tr><td><strong>Dati tecnici</strong></td><td>Tipo di dispositivo, versione dell'app, sistema operativo (per supporto tecnico)</td></tr>
+      <tr><td><strong>Dati di pagamento</strong></td><td>Gestiti interamente da Stripe - NON memorizziamo dati delle carte</td></tr>
+    </table>
+
+    <h2>2. Dati che NON Raccogliamo</h2>
+    <ul>
+      <li>MAC address del dispositivo</li>
+      <li>Contenuti visualizzati tramite l'app</li>
+      <li>Dati di geolocalizzazione</li>
+      <li>Contatti, foto o altri dati personali dal dispositivo</li>
+      <li>Cronologia di navigazione</li>
+    </ul>
+
+    <h2>3. Finalità del Trattamento</h2>
+    <p>Utilizziamo i dati raccolti esclusivamente per:</p>
+    <ul>
+      <li><strong>Creazione e gestione account:</strong> registrazione, autenticazione e accesso al servizio</li>
+      <li><strong>Gestione abbonamenti:</strong> attivazione licenze, rinnovi, verifica stato abbonamento</li>
+      <li><strong>Sicurezza e prevenzione abusi:</strong> protezione da accessi non autorizzati e utilizzo fraudolento</li>
+      <li><strong>Funzionamento del servizio:</strong> sincronizzazione dispositivi, supporto tecnico</li>
+    </ul>
+
+    <h2>4. Fornitori Terzi</h2>
+    <p>Per fornire il servizio, ci avvaliamo dei seguenti fornitori:</p>
+    
+    <div class="provider-box">
+      <h4>Supabase</h4>
+      <p>Servizio di autenticazione e database. I dati sono conservati in server UE.</p>
+      <p><a href="https://supabase.com/privacy" class="link" target="_blank">Privacy Policy Supabase</a></p>
+    </div>
+    
+    <div class="provider-box">
+      <h4>Stripe</h4>
+      <p>Processore di pagamenti. Gestisce in modo sicuro tutti i dati delle transazioni e delle carte di credito. BurgTV non ha mai accesso ai dati completi delle carte.</p>
+      <p><a href="https://stripe.com/privacy" class="link" target="_blank">Privacy Policy Stripe</a></p>
+    </div>
+
+    <h2>5. Conservazione dei Dati</h2>
+    <ul>
+      <li>I dati dell'account sono conservati per tutta la durata dell'account attivo.</li>
+      <li>In caso di eliminazione dell'account, i dati vengono rimossi entro 30 giorni.</li>
+      <li>I log tecnici sono conservati per un massimo di 90 giorni.</li>
+    </ul>
+
+    <h2>6. Diritti dell'Utente (GDPR)</h2>
+    <p>In conformità al Regolamento Generale sulla Protezione dei Dati (GDPR), l'utente ha diritto a:</p>
+    <ul>
+      <li><strong>Accesso:</strong> ottenere informazioni sui dati personali trattati</li>
+      <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti</li>
+      <li><strong>Cancellazione:</strong> richiedere l'eliminazione dei propri dati</li>
+      <li><strong>Portabilità:</strong> ricevere i propri dati in formato strutturato</li>
+      <li><strong>Opposizione:</strong> opporsi al trattamento in determinate circostanze</li>
+    </ul>
+    <p>Per esercitare questi diritti, contattare: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <h2>7. Sicurezza</h2>
+    <ul>
+      <li>Tutte le comunicazioni sono protette da crittografia HTTPS/TLS</li>
+      <li>Le password sono criptate con algoritmi sicuri (bcrypt)</li>
+      <li>L'accesso ai dati è limitato e monitorato</li>
+      <li>Utilizziamo autenticazione a più fattori per l'accesso ai sistemi</li>
+    </ul>
+
+    <h2>8. Modifiche alla Privacy Policy</h2>
+    <p>Possiamo aggiornare questa Privacy Policy periodicamente. Le modifiche significative saranno comunicate tramite email o nell'applicazione.</p>
+
+    <h2>9. Contatti</h2>
+    <p>Per domande sulla privacy o per esercitare i propri diritti:<br>
+    <strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- ENGLISH -->
+  <div id="content-en" class="card" style="display:none">
+    <h1>Privacy Policy</h1>
+    <p class="update-date">Last updated: December 23, 2025</p>
+    
+    <p>BurgTV ("we", "our", "the App") is committed to protecting user privacy. This Privacy Policy describes what data we collect, how we use it, and how we protect it.</p>
+
+    <h2>1. Data Collected</h2>
+    <p>BurgTV collects only data necessary for the service to function:</p>
+    
+    <table class="data-table">
+      <tr><th>Data Type</th><th>Description</th></tr>
+      <tr><td><strong>Email</strong></td><td>Email address provided during account registration</td></tr>
+      <tr><td><strong>Password</strong></td><td>Encrypted password using secure algorithms (not readable)</td></tr>
+      <tr><td><strong>Device ID</strong></td><td>Unique identifier generated by the app for each device (anonymous hash, not MAC address)</td></tr>
+      <tr><td><strong>Technical data</strong></td><td>Device type, app version, operating system (for technical support)</td></tr>
+      <tr><td><strong>Payment data</strong></td><td>Managed entirely by Stripe - We do NOT store card data</td></tr>
+    </table>
+
+    <h2>2. Data We Do NOT Collect</h2>
+    <ul>
+      <li>Device MAC address</li>
+      <li>Content viewed through the app</li>
+      <li>Geolocation data</li>
+      <li>Contacts, photos, or other personal data from the device</li>
+      <li>Browsing history</li>
+    </ul>
+
+    <h2>3. Purpose of Processing</h2>
+    <p>We use collected data exclusively for:</p>
+    <ul>
+      <li><strong>Account creation and management:</strong> registration, authentication, and service access</li>
+      <li><strong>Subscription management:</strong> license activation, renewals, subscription status verification</li>
+      <li><strong>Security and abuse prevention:</strong> protection from unauthorized access and fraudulent use</li>
+      <li><strong>Service operation:</strong> device synchronization, technical support</li>
+    </ul>
+
+    <h2>4. Third-Party Providers</h2>
+    <p>To provide the service, we use the following providers:</p>
+    
+    <div class="provider-box">
+      <h4>Supabase</h4>
+      <p>Authentication and database service. Data is stored in EU servers.</p>
+      <p><a href="https://supabase.com/privacy" class="link" target="_blank">Supabase Privacy Policy</a></p>
+    </div>
+    
+    <div class="provider-box">
+      <h4>Stripe</h4>
+      <p>Payment processor. Securely manages all transaction and credit card data. BurgTV never has access to complete card data.</p>
+      <p><a href="https://stripe.com/privacy" class="link" target="_blank">Stripe Privacy Policy</a></p>
+    </div>
+
+    <h2>5. Data Retention</h2>
+    <ul>
+      <li>Account data is retained for the duration of the active account.</li>
+      <li>Upon account deletion, data is removed within 30 days.</li>
+      <li>Technical logs are retained for a maximum of 90 days.</li>
+    </ul>
+
+    <h2>6. User Rights (GDPR)</h2>
+    <p>In accordance with the General Data Protection Regulation (GDPR), users have the right to:</p>
+    <ul>
+      <li><strong>Access:</strong> obtain information about processed personal data</li>
+      <li><strong>Rectification:</strong> correct inaccurate or incomplete data</li>
+      <li><strong>Erasure:</strong> request deletion of personal data</li>
+      <li><strong>Portability:</strong> receive personal data in a structured format</li>
+      <li><strong>Objection:</strong> object to processing in certain circumstances</li>
+    </ul>
+    <p>To exercise these rights, contact: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <h2>7. Security</h2>
+    <ul>
+      <li>All communications are protected by HTTPS/TLS encryption</li>
+      <li>Passwords are encrypted with secure algorithms (bcrypt)</li>
+      <li>Data access is limited and monitored</li>
+      <li>We use multi-factor authentication for system access</li>
+    </ul>
+
+    <h2>8. Changes to Privacy Policy</h2>
+    <p>We may update this Privacy Policy periodically. Significant changes will be communicated via email or in the application.</p>
+
+    <h2>9. Contact</h2>
+    <p>For privacy questions or to exercise your rights:<br>
+    <strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- GERMAN -->
+  <div id="content-de" class="card" style="display:none">
+    <h1>Datenschutzerklärung</h1>
+    <p class="update-date">Letzte Aktualisierung: 23. Dezember 2025</p>
+    
+    <p>BurgTV verpflichtet sich zum Schutz der Privatsphäre der Nutzer.</p>
+
+    <h2>1. Erhobene Daten</h2>
+    <table class="data-table">
+      <tr><th>Datentyp</th><th>Beschreibung</th></tr>
+      <tr><td><strong>E-Mail</strong></td><td>Bei der Registrierung angegebene E-Mail-Adresse</td></tr>
+      <tr><td><strong>Passwort</strong></td><td>Verschlüsseltes Passwort (nicht lesbar)</td></tr>
+      <tr><td><strong>Geräte-ID</strong></td><td>Von der App generierte eindeutige Kennung (anonymer Hash)</td></tr>
+      <tr><td><strong>Zahlungsdaten</strong></td><td>Vollständig von Stripe verwaltet</td></tr>
+    </table>
+
+    <h2>2. Daten, die wir NICHT erheben</h2>
+    <ul>
+      <li>MAC-Adresse des Geräts</li>
+      <li>Angesehene Inhalte</li>
+      <li>Standortdaten</li>
+    </ul>
+
+    <h2>3. Drittanbieter</h2>
+    <div class="provider-box">
+      <h4>Supabase</h4>
+      <p>Authentifizierung und Datenbank (EU-Server)</p>
+    </div>
+    <div class="provider-box">
+      <h4>Stripe</h4>
+      <p>Zahlungsabwicklung</p>
+    </div>
+
+    <h2>4. Ihre Rechte (DSGVO)</h2>
+    <ul>
+      <li>Auskunft, Berichtigung, Löschung, Datenübertragbarkeit, Widerspruch</li>
+    </ul>
+    <p>Kontakt: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- SPANISH -->
+  <div id="content-es" class="card" style="display:none">
+    <h1>Política de Privacidad</h1>
+    <p class="update-date">Última actualización: 23 de diciembre de 2025</p>
+    
+    <p>BurgTV se compromete a proteger la privacidad de los usuarios.</p>
+
+    <h2>1. Datos Recopilados</h2>
+    <table class="data-table">
+      <tr><th>Tipo de dato</th><th>Descripción</th></tr>
+      <tr><td><strong>Email</strong></td><td>Dirección proporcionada durante el registro</td></tr>
+      <tr><td><strong>Contraseña</strong></td><td>Encriptada con algoritmos seguros</td></tr>
+      <tr><td><strong>ID de dispositivo</strong></td><td>Identificador único generado por la app (hash anónimo)</td></tr>
+      <tr><td><strong>Datos de pago</strong></td><td>Gestionados por Stripe</td></tr>
+    </table>
+
+    <h2>2. Datos que NO Recopilamos</h2>
+    <ul>
+      <li>Dirección MAC</li>
+      <li>Contenido visualizado</li>
+      <li>Datos de ubicación</li>
+    </ul>
+
+    <h2>3. Proveedores Terceros</h2>
+    <div class="provider-box">
+      <h4>Supabase</h4>
+      <p>Autenticación y base de datos (servidores UE)</p>
+    </div>
+    <div class="provider-box">
+      <h4>Stripe</h4>
+      <p>Procesador de pagos</p>
+    </div>
+
+    <h2>4. Sus Derechos (GDPR)</h2>
+    <ul>
+      <li>Acceso, rectificación, eliminación, portabilidad, oposición</li>
+    </ul>
+    <p>Contacto: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+
+  <!-- FRENCH -->
+  <div id="content-fr" class="card" style="display:none">
+    <h1>Politique de Confidentialité</h1>
+    <p class="update-date">Dernière mise à jour: 23 décembre 2025</p>
+    
+    <p>BurgTV s'engage à protéger la vie privée des utilisateurs.</p>
+
+    <h2>1. Données Collectées</h2>
+    <table class="data-table">
+      <tr><th>Type de donnée</th><th>Description</th></tr>
+      <tr><td><strong>Email</strong></td><td>Adresse fournie lors de l'inscription</td></tr>
+      <tr><td><strong>Mot de passe</strong></td><td>Chiffré avec des algorithmes sécurisés</td></tr>
+      <tr><td><strong>ID appareil</strong></td><td>Identifiant unique généré par l'app (hash anonyme)</td></tr>
+      <tr><td><strong>Données de paiement</strong></td><td>Gérées par Stripe</td></tr>
+    </table>
+
+    <h2>2. Données NON Collectées</h2>
+    <ul>
+      <li>Adresse MAC</li>
+      <li>Contenu visualisé</li>
+      <li>Données de localisation</li>
+    </ul>
+
+    <h2>3. Fournisseurs Tiers</h2>
+    <div class="provider-box">
+      <h4>Supabase</h4>
+      <p>Authentification et base de données (serveurs UE)</p>
+    </div>
+    <div class="provider-box">
+      <h4>Stripe</h4>
+      <p>Processeur de paiements</p>
+    </div>
+
+    <h2>4. Vos Droits (RGPD)</h2>
+    <ul>
+      <li>Accès, rectification, suppression, portabilité, opposition</li>
+    </ul>
+    <p>Contact: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+</div>
+<script>
+  const menuToggle=document.getElementById('menuToggle'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
+  function toggleMenu(){menuToggle.classList.toggle('active');sidebar.classList.toggle('active');overlay.classList.toggle('active')}
+  menuToggle.addEventListener('click',toggleMenu);overlay.addEventListener('click',toggleMenu);
+  const contents={it:document.getElementById('content-it'),en:document.getElementById('content-en'),de:document.getElementById('content-de'),es:document.getElementById('content-es'),fr:document.getElementById('content-fr')};
+  const menuTr={it:{"menu.home":"Home","menu.login":"Accedi","menu.terms":"Termini di Servizio","menu.privacy":"Privacy Policy","menu.contact":"Contatti"},en:{"menu.home":"Home","menu.login":"Sign In","menu.terms":"Terms of Service","menu.privacy":"Privacy Policy","menu.contact":"Contact"},de:{"menu.home":"Startseite","menu.login":"Anmelden","menu.terms":"AGB","menu.privacy":"Datenschutz","menu.contact":"Kontakt"},es:{"menu.home":"Inicio","menu.login":"Acceder","menu.terms":"Términos","menu.privacy":"Privacidad","menu.contact":"Contacto"},fr:{"menu.home":"Accueil","menu.login":"Connexion","menu.terms":"Conditions","menu.privacy":"Confidentialité","menu.contact":"Contact"}};
+  function setLanguage(l){Object.values(contents).forEach(c=>{if(c)c.style.display='none'});if(contents[l])contents[l].style.display='block';document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+l).classList.add('active');if(menuTr[l])document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');if(menuTr[l][k])e.textContent=menuTr[l][k]});document.documentElement.lang=l;localStorage.setItem('preferredLang',l)}
+  document.getElementById('btn-it').onclick=()=>setLanguage('it');document.getElementById('btn-en').onclick=()=>setLanguage('en');document.getElementById('btn-de').onclick=()=>setLanguage('de');document.getElementById('btn-es').onclick=()=>setLanguage('es');document.getElementById('btn-fr').onclick=()=>setLanguage('fr');
+  setLanguage(localStorage.getItem('preferredLang')||'it');
+</script>
+</body>
+</html>
