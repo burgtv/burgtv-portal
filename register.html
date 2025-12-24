@@ -150,7 +150,7 @@
         const SUPABASE_URL='https://ugspmqfduabfmfsoxqoc.supabase.co';
         const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
         const translations={
-            it:{back:"Indietro",title:"Crea il tuo account",subtitle:"Sblocca tutte le funzionalità Premium",tvCodeLabel:"Dispositivo collegato",choosePlan:"Scegli il tuo piano",planAnnual:"Annuale",planAnnualPeriod:"/anno",planAnnualDesc:"Accesso per 12 mesi",trialInfo:"7 giorni gratis",planPermanent:"Permanente",planPermanentPeriod:"una tantum",planPermanentDesc:"Licenza permanente",included:"Incluso",feature1:"5 dispositivi",feature2:"Playlist illimitate",feature3:"EPG e Catch-up TV",email:"Email",password:"Password",confirmPassword:"Conferma Password",payBtn:"Continua al pagamento",secure:"Pagamento sicuro con Stripe",hasAccount:"Hai già un account?",loginLink:"Accedi",privacy:"Privacy",terms:"Termini",errors:{email:"Inserisci un'email valida",password:"La password deve avere almeno 8 caratteri",passwordMatch:"Le password non corrispondono",generic:"Si è verificato un errore. Riprova."}},
+            it:{back:"Indietro",title:"Crea il tuo account",subtitle:"Sblocca tutte le funzionalità Premium",tvCodeLabel:"Dispositivo collegato",choosePlan:"Scegli il tuo piano",planAnnual:"Annuale",planAnnualPeriod:"/anno",planAnnualDesc:"Accesso per 12 mesi",trialInfo:"7 giorni gratis",planPermanent:"Permanente",planPermanentPeriod:"una tantum",planPermanentDesc:"Licenza permanente",included:"Incluso",feature1:"5 dispositivi",feature2:"Playlist illimitate",feature3:"EPG e Catch-up TV",email:"Email",password:"Password",confirmPassword:"Conferma Password",payBtn:"Continua al pagamento",secure:"Pagamento sicuro con Stripe",hasAccount:"Hai già un account?",loginLink:"Accedi",privacy:"Privacy",terms:"Termini",errors:{email:"Inserisci un'email valida",password:"La password deve avere almeno 8 caratteri",passwordMatch:"Le password non corrispondono",emailExists:"Un account con questa email esiste già",generic:"Si è verificato un errore. Riprova."}},
             en:{back:"Back",title:"Create your account",subtitle:"Unlock all Premium features",tvCodeLabel:"Device connected",choosePlan:"Choose your plan",planAnnual:"Annual",planAnnualPeriod:"/year",planAnnualDesc:"Access for 12 months",trialInfo:"7 days free",planPermanent:"Permanent",planPermanentPeriod:"one-time",planPermanentDesc:"Permanent license",included:"Included",feature1:"5 devices",feature2:"Unlimited playlists",feature3:"EPG and Catch-up TV",email:"Email",password:"Password",confirmPassword:"Confirm Password",payBtn:"Continue to payment",secure:"Secure payment with Stripe",hasAccount:"Already have an account?",loginLink:"Sign in",privacy:"Privacy",terms:"Terms",errors:{email:"Enter a valid email",password:"Password must be at least 8 characters",passwordMatch:"Passwords do not match",generic:"An error occurred. Please try again."}},
             de:{back:"Zurück",title:"Konto erstellen",subtitle:"Premium freischalten",tvCodeLabel:"Gerät verbunden",choosePlan:"Plan wählen",planAnnual:"Jährlich",planAnnualPeriod:"/Jahr",planAnnualDesc:"Zugang für 12 Monate",trialInfo:"7 Tage kostenlos",planPermanent:"Permanent",planPermanentPeriod:"einmalig",planPermanentDesc:"Permanente Lizenz",included:"Inklusive",feature1:"5 Geräte",feature2:"Unbegrenzte Playlists",feature3:"EPG und Catch-up TV",email:"E-Mail",password:"Passwort",confirmPassword:"Passwort bestätigen",payBtn:"Weiter zur Zahlung",secure:"Sichere Zahlung mit Stripe",hasAccount:"Bereits ein Konto?",loginLink:"Anmelden",privacy:"Datenschutz",terms:"AGB",errors:{email:"Gültige E-Mail eingeben",password:"Passwort mind. 8 Zeichen",passwordMatch:"Passwörter stimmen nicht",generic:"Ein Fehler ist aufgetreten."}},
             es:{back:"Volver",title:"Crea tu cuenta",subtitle:"Desbloquea Premium",tvCodeLabel:"Dispositivo conectado",choosePlan:"Elige tu plan",planAnnual:"Anual",planAnnualPeriod:"/año",planAnnualDesc:"Acceso por 12 meses",trialInfo:"7 días gratis",planPermanent:"Permanente",planPermanentPeriod:"pago único",planPermanentDesc:"Licencia permanente",included:"Incluido",feature1:"5 dispositivos",feature2:"Listas ilimitadas",feature3:"EPG y Catch-up TV",email:"Correo",password:"Contraseña",confirmPassword:"Confirmar",payBtn:"Continuar al pago",secure:"Pago seguro con Stripe",hasAccount:"¿Ya tienes cuenta?",loginLink:"Inicia sesión",privacy:"Privacidad",terms:"Términos",errors:{email:"Ingresa un correo válido",password:"Contraseña mínimo 8 caracteres",passwordMatch:"Las contraseñas no coinciden",generic:"Ocurrió un error."}},
@@ -166,7 +166,61 @@
         function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorMessage').classList.add('show')}
         function hideError(){document.getElementById('errorMessage').classList.remove('show')}
         function setLoading(l){const b=document.getElementById('payBtn'),t=document.getElementById('btnText');b.disabled=l;t.innerHTML=l?'<span class="spinner"></span>':translations[currentLang].payBtn}
-        async function handleSubmit(e){e.preventDefault();hideError();const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value,confirmPassword=document.getElementById('confirmPassword').value,t=translations[currentLang];if(!email||!email.includes('@')){showError(t.errors.email);return}if(password.length<8){showError(t.errors.password);return}if(password!==confirmPassword){showError(t.errors.passwordMatch);return}setLoading(true);try{const r=await fetch(`${SUPABASE_URL}/functions/v1/create-checkout-session`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},body:JSON.stringify({email,password,plan:selectedPlan,code:tvCode,turnstile_token:turnstileToken})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Error');if(d.checkout_url)window.location.href=d.checkout_url;else throw new Error('No checkout URL')}catch(err){console.error('Error:',err);showError(translations[currentLang].errors.generic);setLoading(false)}}
+        async function handleSubmit(e){
+            e.preventDefault();
+            hideError();
+            const email=document.getElementById('email').value.trim();
+            const password=document.getElementById('password').value;
+            const confirmPassword=document.getElementById('confirmPassword').value;
+            const t=translations[currentLang];
+
+            if(!email||!email.includes('@')){showError(t.errors.email);return}
+            if(password.length<8){showError(t.errors.password);return}
+            if(password!==confirmPassword){showError(t.errors.passwordMatch);return}
+
+            setLoading(true);
+
+            try{
+                // 1. Prima crea l'account
+                const regRes = await fetch(`${SUPABASE_URL}/functions/v1/register`,{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},
+                    body:JSON.stringify({email, password, activation_code: tvCode})
+                });
+                const regData = await regRes.json();
+
+                if(!regRes.ok){
+                    if(regData.error && regData.error.includes('esiste già')){
+                        showError(t.errors.emailExists || 'Un account con questa email esiste già');
+                    } else {
+                        throw new Error(regData.error || 'Registration failed');
+                    }
+                    setLoading(false);
+                    return;
+                }
+
+                // Salva sessione
+                localStorage.setItem('session_token', regData.session_token);
+                localStorage.setItem('user_email', email);
+                localStorage.setItem('user_id', regData.user.id);
+
+                // 2. Vai al checkout Stripe
+                const r=await fetch(`${SUPABASE_URL}/functions/v1/create-checkout-session`,{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':`Bearer ${SUPABASE_ANON_KEY}`},
+                    body:JSON.stringify({email, plan:selectedPlan, code:tvCode})
+                });
+                const d=await r.json();
+
+                if(!r.ok)throw new Error(d.error||'Error');
+                if(d.checkout_url)window.location.href=d.checkout_url;
+                else throw new Error('No checkout URL');
+            }catch(err){
+                console.error('Error:',err);
+                showError(translations[currentLang].errors.generic);
+                setLoading(false);
+            }
+        }
         document.addEventListener('DOMContentLoaded',function(){const sl=localStorage.getItem('preferredLanguage')||'it';changeLanguage(sl);if(tvCode){document.getElementById('tvCode').textContent=tvCode;document.getElementById('tvCodeBox').style.display='flex'}if(planParam==='permanent')selectPlan('permanent');else if(planParam==='annual')selectPlan('annual')});
     </script>
 </body>

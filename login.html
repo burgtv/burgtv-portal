@@ -250,28 +250,19 @@
                 const data = await response.json();
                 
                 if (!response.ok) throw new Error(data.error || 'Login failed');
-                
-                localStorage.setItem('access_token', data.access_token);
+
+                // Salva sessione
+                localStorage.setItem('session_token', data.session_token);
                 localStorage.setItem('user_email', email);
-                
-                // Check for device_id in URL (QR code login)
-                const params = new URLSearchParams(window.location.search);
-                const deviceId = params.get('device_id');
-                const deviceName = params.get('device_name');
-                
-                if (deviceId) {
-                    // Activate device automatically
-                    await fetch(`${SUPABASE_URL}/functions/v1/activate-device`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${data.access_token}`
-                        },
-                        body: JSON.stringify({ device_id: deviceId, device_name: deviceName || 'Fire TV' })
-                    });
+                localStorage.setItem('user_id', data.user.id);
+
+                // Salva info licenza se presente
+                if (data.license) {
+                    localStorage.setItem('license_type', data.license.type);
+                    localStorage.setItem('license_status', data.license.status);
                 }
-                
-                window.location.href = 'index.html';
+
+                window.location.href = 'account.html';
             } catch (error) {
                 console.error('Login error:', error);
                 showError(T[lang].errInvalid);

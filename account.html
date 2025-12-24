@@ -37,6 +37,18 @@
         .footer{text-align:center;padding:32px 20px;color:var(--text-secondary);font-size:13px}
         .footer a{color:var(--text-secondary);text-decoration:none;margin:0 10px}
         .footer a:hover{color:var(--accent)}
+        .device-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+        .device-info{display:flex;align-items:center;gap:12px}
+        .device-icon{width:40px;height:40px;background:var(--card-hover);border-radius:10px;display:flex;align-items:center;justify-content:center}
+        .device-icon svg{width:20px;height:20px;stroke:var(--accent);stroke-width:2;fill:none}
+        .device-name{font-weight:600;font-size:15px;margin-bottom:2px}
+        .device-code{font-size:12px;color:var(--text-secondary);font-family:monospace}
+        .device-remove{background:transparent;border:1px solid rgba(239,68,68,0.3);color:var(--error);padding:8px 12px;border-radius:8px;font-size:13px;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;gap:6px}
+        .device-remove:hover{background:rgba(239,68,68,0.1);border-color:var(--error)}
+        .device-remove svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+        .no-devices{text-align:center;padding:24px;color:var(--text-secondary);font-size:14px}
+        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
         .lang-switch{position:fixed;top:1rem;right:1rem;display:flex;gap:0.4rem;z-index:1000;background:var(--card-bg);backdrop-filter:blur(10px);padding:0.4rem;border-radius:10px;border:1px solid var(--border)}
         .lang-btn{padding:0.4rem 0.8rem;background:transparent;color:var(--text-secondary);border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:500;transition:all 0.3s}
         .lang-btn:hover{background:var(--card-hover);color:var(--text)}
@@ -74,6 +86,11 @@
                 <span>Gestisci abbonamento</span>
             </button>
             <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;text-align:center;">Modifica metodo di pagamento o annulla</p>
+        </div>
+        <div class="section" id="devicesSection">
+            <div class="section-title">I tuoi dispositivi (<span id="deviceCount">0/5</span>)</div>
+            <div id="devicesList"></div>
+            <p style="font-size:13px;color:var(--text-secondary);margin-top:12px;text-align:center;" id="devicesHint">Puoi usare fino a 5 dispositivi</p>
         </div>
         <div class="section">
             <div class="section-title">Sicurezza</div>
@@ -114,9 +131,68 @@
             document.getElementById('userEmail').textContent=email;
             setLang(lang);
             checkSubscription();
+            loadDevices();
         });
         function resetPassword(){window.location.href='forgot-password.html'}
-        function logout(){localStorage.removeItem('access_token');localStorage.removeItem('user_email');window.location.href='login.html'}
+        function logout(){localStorage.removeItem('session_token');localStorage.removeItem('user_email');localStorage.removeItem('user_id');localStorage.removeItem('license_type');localStorage.removeItem('license_status');window.location.href='login.html'}
+
+        async function loadDevices(){
+            const email=localStorage.getItem('user_email');
+            if(!email)return;
+            const list=document.getElementById('devicesList');
+            list.innerHTML='<div style="text-align:center;padding:20px;"><span class="spinner"></span></div>';
+            try{
+                const res=await fetch(`${SUPABASE_URL}/functions/v1/get-devices`,{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I'},
+                    body:JSON.stringify({email})
+                });
+                const data=await res.json();
+                document.getElementById('deviceCount').textContent=data.slot||'0/5';
+                if(data.devices && data.devices.length>0){
+                    list.innerHTML=data.devices.map(d=>`
+                        <div class="device-card">
+                            <div class="device-info">
+                                <div class="device-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg></div>
+                                <div>
+                                    <div class="device-name">${d.device_name||'Dispositivo'}</div>
+                                    <div class="device-code">${d.device_code||''}</div>
+                                </div>
+                            </div>
+                            <button class="device-remove" onclick="removeDevice('${d.device_id}','${d.device_name||'Dispositivo'}')">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                Rimuovi
+                            </button>
+                        </div>
+                    `).join('');
+                }else{
+                    list.innerHTML='<div class="no-devices">Nessun dispositivo registrato</div>';
+                }
+            }catch(e){
+                console.error(e);
+                list.innerHTML='<div class="no-devices">Errore nel caricamento</div>';
+            }
+        }
+
+        async function removeDevice(deviceId,deviceName){
+            if(!confirm(`Vuoi rimuovere "${deviceName}"?`))return;
+            const email=localStorage.getItem('user_email');
+            try{
+                const res=await fetch(`${SUPABASE_URL}/functions/v1/remove-device`,{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I'},
+                    body:JSON.stringify({email, device_id:deviceId})
+                });
+                const data=await res.json();
+                if(data.success){
+                    loadDevices();
+                }else{
+                    alert(data.error||'Errore nella rimozione');
+                }
+            }catch(e){
+                alert('Errore di connessione');
+            }
+        }
         async function manageSubscription(){
             const email=localStorage.getItem('user_email');
             if(!email){alert('Email non trovata');return;}
