@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attivazione completata - BurgTV</title>
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0b;--bg-secondary:#111113;--text:#fff;--text-secondary:#a0a0a8;--accent:#B94A8E;--accent-light:#d85aa3;--success:#10b981;--border:rgba(255,255,255,0.12);--card-bg:rgba(255,255,255,0.03)}
+        body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg) 0%,var(--bg-secondary) 100%);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 50%,rgba(16,185,129,0.15) 0%,transparent 50%);pointer-events:none;z-index:0}
+        .container{width:100%;max-width:500px;background:var(--card-bg);border:1px solid var(--border);border-radius:24px;padding:48px 32px;backdrop-filter:blur(20px);position:relative;z-index:1;text-align:center}
+        @media(min-width:769px){.container{max-width:580px;padding:64px 48px}}
+        .success-icon{width:100px;height:100px;background:rgba(16,185,129,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        .success-icon svg{width:50px;height:50px;stroke:var(--success);stroke-width:2;fill:none}
+        .logo-img{height:50px;width:auto;margin-bottom:24px}
+        h1{font-size:28px;font-weight:700;margin-bottom:12px;color:var(--success)}
+        .subtitle{font-size:16px;color:var(--text-secondary);margin-bottom:32px;line-height:1.6}
+        .info-card{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-radius:16px;padding:24px;margin-bottom:32px;text-align:left}
+        .info-title{font-size:14px;color:var(--success);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+        .info-title svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
+        .info-list{list-style:none}
+        .info-list li{font-size:14px;color:var(--text-secondary);padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;gap:10px}
+        .info-list li:last-child{border-bottom:none}
+        .info-list li svg{width:16px;height:16px;stroke:var(--success);stroke-width:2;fill:none;flex-shrink:0}
+        .tv-instruction{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px}
+        .tv-instruction h3{font-size:16px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:10px}
+        .tv-instruction h3 svg{width:24px;height:24px;stroke:var(--accent-light);stroke-width:2;fill:none}
+        .tv-instruction p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+        .btn-home{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--accent);color:white;border-radius:12px;text-decoration:none;font-weight:600;transition:all 0.3s ease}
+        .btn-home:hover{background:var(--accent-light);transform:translateY(-2px)}
+        .btn-home svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
+        .confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000;overflow:hidden}
+        .confetti-piece{position:absolute;width:10px;height:10px;background:var(--success);animation:confetti-fall 3s ease-out forwards}
+        @keyframes confetti-fall{0%{transform:translateY(-100px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+    </style>
+</head>
+<body>
+    <div class="confetti" id="confetti"></div>
+
+    <div class="container">
+        <img src="../logo.png" alt="BurgTV" class="logo-img">
+
+        <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+
+        <h1 id="title">Attivazione completata!</h1>
+        <p class="subtitle" id="subtitle">Il tuo dispositivo BurgTV Premium è stato attivato con successo.</p>
+
+        <div class="info-card">
+            <div class="info-title">
+                <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Cosa include il tuo piano
+            </div>
+            <ul class="info-list">
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Playlist illimitate</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Film e Serie TV on demand</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>EPG esteso (14 giorni)</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Multi-view e PiP</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Profili multipli</li>
+                <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Sincronizzazione cloud</li>
+            </ul>
+        </div>
+
+        <div class="tv-instruction">
+            <h3>
+                <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+                Torna alla tua TV
+            </h3>
+            <p>L'app BurgTV sul tuo dispositivo si attiverà automaticamente entro pochi secondi. Non devi fare nient'altro!</p>
+        </div>
+
+        <a href="https://burgtv.com" class="btn-home">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            Vai al sito BurgTV
+        </a>
+    </div>
+
+    <script>
+        // Check if already licensed
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('already') === 'true') {
+            document.getElementById('title').textContent = 'Dispositivo attivato!';
+            document.getElementById('subtitle').textContent = 'Hai già una licenza attiva. Il tuo dispositivo è stato collegato al tuo account.';
+        }
+
+        // Confetti effect
+        function createConfetti() {
+            const container = document.getElementById('confetti');
+            const colors = ['#10b981', '#B94A8E', '#7B4397', '#fbbf24', '#3b82f6'];
+
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(piece);
+            }
+
+            // Remove confetti after animation
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        createConfetti();
+    </script>
+</body>
+</html>
