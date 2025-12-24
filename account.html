@@ -37,12 +37,25 @@
         .footer{text-align:center;padding:32px 20px;color:var(--text-secondary);font-size:13px}
         .footer a{color:var(--text-secondary);text-decoration:none;margin:0 10px}
         .footer a:hover{color:var(--accent)}
+        .lang-switch{position:fixed;top:1rem;right:1rem;display:flex;gap:0.4rem;z-index:1000;background:var(--card-bg);backdrop-filter:blur(10px);padding:0.4rem;border-radius:10px;border:1px solid var(--border)}
+        .lang-btn{padding:0.4rem 0.8rem;background:transparent;color:var(--text-secondary);border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:500;transition:all 0.3s}
+        .lang-btn:hover{background:var(--card-hover);color:var(--text)}
+        .lang-btn.active{background:var(--accent);color:#fff}
+        @media(min-width:769px){.main{max-width:700px;padding:60px 40px}.page-title{font-size:36px}.page-subtitle{font-size:17px}.section-title{font-size:14px}.info-card{padding:24px}.info-label{font-size:14px}.info-value{font-size:18px}.btn{padding:18px 24px;font-size:17px;border-radius:14px}.header-inner{max-width:700px;height:72px}.logo{height:48px}}
+        @media(min-width:1200px){.main{max-width:800px;padding:72px 48px}.page-title{font-size:40px}.btn{padding:20px 28px;font-size:18px}}
     </style>
 </head>
 <body>
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="it">IT</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="de">DE</button>
+        <button class="lang-btn" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="fr">FR</button>
+    </div>
     <header class="header">
         <div class="header-inner">
-            <a href="https://burgtv.com"><img src="logo.svg" alt="BurgTV" class="logo"></a>
+            <a href="https://burgtv.com"><img src="logo.png" alt="BurgTV" class="logo"></a>
             <a href="index.html" class="back-link"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span>Dashboard</span></a>
         </div>
     </header>
@@ -83,18 +96,23 @@
     </footer>
     <script>
         const SUPABASE_URL='https://ugspmqfduabfmfsoxqoc.supabase.co';
+        const T={it:{title:'Account',dashboard:'Dashboard',info:'Informazioni account',email:'Email',plan:'Piano',security:'Sicurezza',resetPwd:'Reimposta password',session:'Sessione',logout:'Esci',danger:'Zona pericolosa',deleteAcc:'Elimina account',confirm1:'Sei sicuro di voler eliminare il tuo account?',confirm2:'Conferma finale: tutti i dati verranno eliminati.',deleted:'Account eliminato.',error:'Errore. Contatta info@burgtv.com'},en:{title:'Account',dashboard:'Dashboard',info:'Account info',email:'Email',plan:'Plan',security:'Security',resetPwd:'Reset password',session:'Session',logout:'Log out',danger:'Danger zone',deleteAcc:'Delete account',confirm1:'Are you sure you want to delete your account?',confirm2:'Final confirmation: all data will be deleted.',deleted:'Account deleted.',error:'Error. Contact info@burgtv.com'},de:{title:'Konto',dashboard:'Dashboard',info:'Kontoinformationen',email:'E-Mail',plan:'Plan',security:'Sicherheit',resetPwd:'Passwort zurücksetzen',session:'Sitzung',logout:'Abmelden',danger:'Gefahrenzone',deleteAcc:'Konto löschen',confirm1:'Möchten Sie Ihr Konto wirklich löschen?',confirm2:'Endgültige Bestätigung: Alle Daten werden gelöscht.',deleted:'Konto gelöscht.',error:'Fehler. Kontaktieren Sie info@burgtv.com'},es:{title:'Cuenta',dashboard:'Panel',info:'Información de cuenta',email:'Correo',plan:'Plan',security:'Seguridad',resetPwd:'Restablecer contraseña',session:'Sesión',logout:'Cerrar sesión',danger:'Zona peligrosa',deleteAcc:'Eliminar cuenta',confirm1:'¿Estás seguro de que deseas eliminar tu cuenta?',confirm2:'Confirmación final: todos los datos serán eliminados.',deleted:'Cuenta eliminada.',error:'Error. Contacta info@burgtv.com'},fr:{title:'Compte',dashboard:'Tableau de bord',info:'Informations du compte',email:'Email',plan:'Plan',security:'Sécurité',resetPwd:'Réinitialiser le mot de passe',session:'Session',logout:'Déconnexion',danger:'Zone dangereuse',deleteAcc:'Supprimer le compte',confirm1:'Êtes-vous sûr de vouloir supprimer votre compte?',confirm2:'Confirmation finale: toutes les données seront supprimées.',deleted:'Compte supprimé.',error:'Erreur. Contactez info@burgtv.com'}};
+        let lang=localStorage.getItem('lang')||'it';
+        function setLang(l){lang=l;localStorage.setItem('lang',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===l));document.querySelector('.page-title').textContent=T[l].title;document.querySelector('.back-link span').textContent=T[l].dashboard}
+        document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
         document.addEventListener('DOMContentLoaded',function(){
             const email=localStorage.getItem('user_email')||'-';
             document.getElementById('emailDisplay').textContent=email;
             document.getElementById('userEmail').textContent=email;
+            setLang(lang);
         });
         function resetPassword(){window.location.href='forgot-password.html'}
         function logout(){localStorage.removeItem('access_token');localStorage.removeItem('user_email');window.location.href='login.html'}
         async function deleteAccount(){
-            if(!confirm('Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.'))return;
-            if(!confirm('Conferma finale: tutti i dati verranno eliminati permanentemente.'))return;
+            if(!confirm(T[lang].confirm1))return;
+            if(!confirm(T[lang].confirm2))return;
             const token=localStorage.getItem('access_token');
-            try{await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}});localStorage.clear();alert('Account eliminato.');window.location.href='https://burgtv.com'}catch(e){alert('Errore. Contatta info@burgtv.com')}
+            try{await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}});localStorage.clear();alert(T[lang].deleted);window.location.href='https://burgtv.com'}catch(e){alert(T[lang].error)}
         }
     </script>
 </body>

@@ -72,13 +72,26 @@
         .btn-login{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--accent);color:white;border-radius:12px;text-decoration:none;font-weight:600;transition:all 0.3s ease}
         .btn-login:hover{background:var(--accent-light);transform:translateY(-2px)}
         .btn-login svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none}
+        .lang-switch{position:fixed;top:1rem;right:1rem;display:flex;gap:0.4rem;z-index:1000;background:var(--card-bg);backdrop-filter:blur(10px);padding:0.4rem;border-radius:10px;border:1px solid var(--border)}
+        .lang-btn{padding:0.4rem 0.8rem;background:transparent;color:var(--text-secondary);border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:500;transition:all 0.3s}
+        .lang-btn:hover{background:var(--card-hover);color:var(--text)}
+        .lang-btn.active{background:var(--accent);color:#fff}
         @media(max-width:600px){.sub-card{flex-direction:column;text-align:center}.sub-info{flex-direction:column}.device-card{flex-direction:column;text-align:center}.device-info{flex-direction:column}.user-email{display:none}}
+        @media(min-width:769px){.main{max-width:1000px;padding:48px 40px}.header-inner{max-width:1000px;height:72px}.logo{height:48px}.sub-card{padding:32px;border-radius:24px}.sub-title{font-size:24px}.sub-icon{width:64px;height:64px}.sub-icon svg{width:32px;height:32px}.section-title{font-size:20px}.device-card{padding:24px}.device-name{font-size:18px}.device-icon{width:56px;height:56px}.device-icon svg{width:28px;height:28px}.help-section{padding:32px}}
+        @media(min-width:1200px){.main{max-width:1100px;padding:56px 48px}.sub-card{padding:40px}.sub-title{font-size:28px}}
     </style>
 </head>
 <body>
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="it">IT</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="de">DE</button>
+        <button class="lang-btn" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="fr">FR</button>
+    </div>
     <header class="header">
         <div class="header-inner">
-            <a href="https://burgtv.com"><img src="logo.svg" alt="BurgTV" class="logo"></a>
+            <a href="https://burgtv.com"><img src="logo.png" alt="BurgTV" class="logo"></a>
             <div class="user-menu">
                 <span class="user-email" id="userEmail"></span>
                 <a href="account.html" class="btn-account"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Account</span></a>
@@ -88,7 +101,7 @@
     <main class="main">
         <div class="loading" id="loadingState"><div class="spinner"></div></div>
         <div class="login-required" id="loginRequired" style="display:none;">
-            <img src="logo.svg" alt="BurgTV" style="height:60px;margin-bottom:24px;">
+            <img src="logo.png" alt="BurgTV" style="height:60px;margin-bottom:24px;">
             <h2>Accedi al tuo account</h2>
             <p>Per visualizzare i tuoi dispositivi, effettua l'accesso.</p>
             <a href="login.html" class="btn-login"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span>Accedi</span></a>
