@@ -51,6 +51,9 @@
     .data-table td{color:var(--muted)}
     .provider-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:16px;margin:12px 0}
     .provider-box h4{color:var(--accent);margin-bottom:8px}
+    .highlight-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:20px;margin:16px 0}
+    .highlight-box p{margin:8px 0}
+    .highlight-box strong{color:var(--accent)}
     @media(max-width:768px){.lang-switch button{padding:4px 8px;font-size:12px}h1{font-size:1.8rem}.data-table{font-size:0.9rem}}
   </style>
 </head>
@@ -83,297 +86,857 @@
   </div>
 </header>
 <div class="wrap">
-  <!-- ITALIANO -->
+
+  <!-- ==================== ITALIANO ==================== -->
   <div id="content-it" class="card">
     <h1>Privacy Policy</h1>
-    <p class="update-date">Ultimo aggiornamento: 23 Dicembre 2025</p>
-    
-    <p>BurgTV ("noi", "nostro", "l'App") si impegna a proteggere la privacy degli utenti. Questa Privacy Policy descrive quali dati raccogliamo, come li utilizziamo e come li proteggiamo.</p>
+    <p class="update-date">Ultimo aggiornamento: 13 aprile 2026</p>
 
-    <h2>1. Dati Raccolti</h2>
+    <p>BurgTV ("noi", "nostro", "l'App"), con sede a Lugano, Svizzera, si impegna a proteggere la privacy degli utenti. La presente Privacy Policy descrive quali dati raccogliamo, come li utilizziamo, con chi li condividiamo e come li proteggiamo, in conformita' al Regolamento Generale sulla Protezione dei Dati (GDPR - UE 2016/679) e alla Legge federale svizzera sulla protezione dei dati (nLPD/nDSG).</p>
+
+    <h2>1. Titolare del Trattamento</h2>
+    <p>Il titolare del trattamento dei dati personali e':</p>
+    <p><strong>BurgTV</strong><br>Lugano, Svizzera<br><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Sito web:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
+
+    <h2>2. Dati Raccolti</h2>
     <p>BurgTV raccoglie esclusivamente i dati necessari per il funzionamento del servizio:</p>
-    
+
     <table class="data-table">
       <tr><th>Tipo di dato</th><th>Descrizione</th></tr>
       <tr><td><strong>Email</strong></td><td>Indirizzo email fornito al momento della registrazione dell'account</td></tr>
-      <tr><td><strong>Password</strong></td><td>Password criptata con algoritmi sicuri (non leggibile)</td></tr>
+      <tr><td><strong>Password</strong></td><td>Hash crittografico della password (bcrypt) - il testo in chiaro non viene mai memorizzato</td></tr>
       <tr><td><strong>Device ID</strong></td><td>Identificativo univoco generato dall'app per ogni dispositivo (hash anonimo, non MAC address)</td></tr>
-      <tr><td><strong>Dati tecnici</strong></td><td>Tipo di dispositivo, versione dell'app, sistema operativo (per supporto tecnico)</td></tr>
-      <tr><td><strong>Dati di pagamento</strong></td><td>Gestiti interamente da Stripe - NON memorizziamo dati delle carte</td></tr>
+      <tr><td><strong>Dati tecnici</strong></td><td>Tipo di dispositivo, versione dell'app, sistema operativo, modello del dispositivo (per supporto tecnico e compatibilita')</td></tr>
+      <tr><td><strong>Dati di acquisto</strong></td><td>Tipo di piano, data di acquisto, stato dell'abbonamento (i dati di pagamento completi sono gestiti esclusivamente dai processori di pagamento)</td></tr>
     </table>
 
-    <h2>2. Dati che NON Raccogliamo</h2>
+    <h2>3. Dati che NON Raccogliamo</h2>
+    <p>BurgTV non raccoglie e non ha accesso ai seguenti dati:</p>
     <ul>
-      <li>MAC address del dispositivo</li>
-      <li>Contenuti visualizzati tramite l'app</li>
-      <li>Dati di geolocalizzazione</li>
-      <li>Contatti, foto o altri dati personali dal dispositivo</li>
-      <li>Cronologia di navigazione</li>
+      <li><strong>MAC address</strong> del dispositivo</li>
+      <li><strong>Contenuti visualizzati</strong> tramite l'app (playlist, canali, film, serie)</li>
+      <li><strong>Dati di geolocalizzazione</strong> (GPS, posizione)</li>
+      <li><strong>Contatti, foto, file</strong> o altri dati personali dal dispositivo</li>
+      <li><strong>Cronologia di navigazione</strong></li>
+      <li><strong>Dati biometrici</strong></li>
     </ul>
 
-    <h2>3. Finalità del Trattamento</h2>
-    <p>Utilizziamo i dati raccolti esclusivamente per:</p>
+    <h2>4. Finalita' del Trattamento</h2>
+    <p>Utilizziamo i dati raccolti esclusivamente per le seguenti finalita':</p>
     <ul>
-      <li><strong>Creazione e gestione account:</strong> registrazione, autenticazione e accesso al servizio</li>
-      <li><strong>Gestione abbonamenti:</strong> attivazione licenze, rinnovi, verifica stato abbonamento</li>
-      <li><strong>Sicurezza e prevenzione abusi:</strong> protezione da accessi non autorizzati e utilizzo fraudolento</li>
-      <li><strong>Funzionamento del servizio:</strong> sincronizzazione dispositivi, supporto tecnico</li>
+      <li><strong>Creazione e gestione dell'account:</strong> registrazione, autenticazione e accesso al servizio</li>
+      <li><strong>Gestione degli abbonamenti:</strong> attivazione licenze, rinnovi, verifica dello stato dell'abbonamento</li>
+      <li><strong>Sicurezza e prevenzione degli abusi:</strong> protezione da accessi non autorizzati, utilizzo fraudolento e violazione dei termini di servizio</li>
+      <li><strong>Funzionamento del servizio:</strong> sincronizzazione dei dispositivi, supporto tecnico, risoluzione di problemi</li>
+      <li><strong>Comunicazioni di servizio:</strong> notifiche relative all'account, aggiornamenti sui termini o sulla privacy policy, comunicazioni tecniche essenziali</li>
+    </ul>
+    <p>Non utilizziamo i dati per finalita' di marketing, profilazione o pubblicita' mirata.</p>
+
+    <h2>5. Base Giuridica del Trattamento (GDPR Art. 6)</h2>
+    <p>Il trattamento dei dati personali si fonda sulle seguenti basi giuridiche:</p>
+    <ul>
+      <li><strong>Esecuzione del contratto (Art. 6(1)(b)):</strong> trattamento necessario per fornire il servizio richiesto dall'utente (registrazione, gestione account, abbonamenti)</li>
+      <li><strong>Interesse legittimo (Art. 6(1)(f)):</strong> sicurezza del servizio, prevenzione degli abusi, miglioramento tecnico</li>
+      <li><strong>Obbligo legale (Art. 6(1)(c)):</strong> conservazione dei dati richiesta dalla legge (ad es. obblighi fiscali relativi alle transazioni)</li>
+      <li><strong>Consenso (Art. 6(1)(a)):</strong> ove applicabile, per comunicazioni non essenziali (l'utente puo' revocare il consenso in qualsiasi momento)</li>
     </ul>
 
-    <h2>4. Fornitori Terzi</h2>
-    <p>Per fornire il servizio, ci avvaliamo dei seguenti fornitori:</p>
-    
+    <h2>6. Fornitori Terzi</h2>
+    <p>Per fornire il servizio, ci avvaliamo dei seguenti fornitori terzi, selezionati per la loro conformita' agli standard di protezione dei dati:</p>
+
     <div class="provider-box">
-      <h4>Supabase</h4>
-      <p>Servizio di autenticazione e database. I dati sono conservati in server UE.</p>
-      <p><a href="https://supabase.com/privacy" class="link" target="_blank">Privacy Policy Supabase</a></p>
-    </div>
-    
-    <div class="provider-box">
-      <h4>Stripe</h4>
-      <p>Processore di pagamenti. Gestisce in modo sicuro tutti i dati delle transazioni e delle carte di credito. BurgTV non ha mai accesso ai dati completi delle carte.</p>
-      <p><a href="https://stripe.com/privacy" class="link" target="_blank">Privacy Policy Stripe</a></p>
+      <h4>Stripe (pagamenti BurgTV TV)</h4>
+      <p>Processore di pagamenti per la versione TV. Gestisce in modo sicuro tutti i dati delle transazioni e delle carte di credito. BurgTV non ha mai accesso ai dati completi delle carte. Stripe e' certificato PCI DSS Livello 1.</p>
+      <p>Sede: Stati Uniti (con elaborazione dati UE)<br><a href="https://stripe.com/privacy" class="link" target="_blank">Privacy Policy Stripe</a></p>
     </div>
 
-    <h2>5. Conservazione dei Dati</h2>
+    <div class="provider-box">
+      <h4>Google Play (pagamenti BurgTV Mobile Android)</h4>
+      <p>Sistema di pagamento integrato per gli acquisti in-app su dispositivi Android. I dati di pagamento sono gestiti interamente da Google.</p>
+      <p>Sede: Stati Uniti (con elaborazione dati UE)<br><a href="https://policies.google.com/privacy" class="link" target="_blank">Privacy Policy Google</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Apple (pagamenti BurgTV Mobile iOS)</h4>
+      <p>Sistema di acquisto in-app per dispositivi iOS. I dati di pagamento sono gestiti interamente da Apple.</p>
+      <p>Sede: Stati Uniti (con elaborazione dati UE)<br><a href="https://www.apple.com/legal/privacy/" class="link" target="_blank">Privacy Policy Apple</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>TMDB (The Movie Database)</h4>
+      <p>Servizio di metadati per film e serie TV (locandine, descrizioni, informazioni sul cast). Nessun dato dell'utente viene condiviso con TMDB; vengono effettuate solo richieste di metadati.</p>
+      <p>Sede: Stati Uniti<br><a href="https://www.themoviedb.org/privacy-policy" class="link" target="_blank">Privacy Policy TMDB</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Resend (email transazionali)</h4>
+      <p>Servizio per l'invio di email transazionali (conferma registrazione, reset password, notifiche account). Solo l'indirizzo email dell'utente viene condiviso per l'invio.</p>
+      <p>Sede: Stati Uniti<br><a href="https://resend.com/legal/privacy-policy" class="link" target="_blank">Privacy Policy Resend</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Netcup GmbH (hosting)</h4>
+      <p>Hosting dell'infrastruttura server. I dati sono conservati in data center situati a Norimberga, Germania (UE).</p>
+      <p>Sede: Germania<br><a href="https://www.netcup.de/kontakt/datenschutzerklaerung.php" class="link" target="_blank">Privacy Policy Netcup</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Cloudflare (CDN e sicurezza)</h4>
+      <p>Rete di distribuzione dei contenuti (CDN) e protezione contro attacchi DDoS. Cloudflare puo' trattare indirizzi IP e dati tecnici delle richieste per garantire la sicurezza e le prestazioni del servizio.</p>
+      <p>Sede: Stati Uniti (con rete globale)<br><a href="https://www.cloudflare.com/privacypolicy/" class="link" target="_blank">Privacy Policy Cloudflare</a></p>
+    </div>
+
+    <h2>7. Conservazione dei Dati</h2>
     <ul>
       <li>I dati dell'account sono conservati per tutta la durata dell'account attivo.</li>
-      <li>In caso di eliminazione dell'account, i dati vengono rimossi entro 30 giorni.</li>
-      <li>I log tecnici sono conservati per un massimo di 90 giorni.</li>
+      <li>In caso di eliminazione dell'account, tutti i dati personali vengono rimossi entro <strong>30 giorni</strong>.</li>
+      <li>I log tecnici sono conservati per un massimo di <strong>90 giorni</strong>, poi eliminati automaticamente.</li>
+      <li>I dati relativi alle transazioni possono essere conservati piu' a lungo in conformita' agli obblighi legali e fiscali applicabili (fino a 10 anni secondo la legislazione svizzera).</li>
     </ul>
 
-    <h2>6. Diritti dell'Utente (GDPR)</h2>
-    <p>In conformità al Regolamento Generale sulla Protezione dei Dati (GDPR), l'utente ha diritto a:</p>
+    <h2>8. Trasferimenti di Dati</h2>
+    <p>I dati principali sono conservati su server situati nell'Unione Europea (Germania). Alcuni dei nostri fornitori di servizi hanno sede negli Stati Uniti. In tali casi, i trasferimenti sono protetti da:</p>
     <ul>
-      <li><strong>Accesso:</strong> ottenere informazioni sui dati personali trattati</li>
-      <li><strong>Rettifica:</strong> correggere dati inesatti o incompleti</li>
-      <li><strong>Cancellazione:</strong> richiedere l'eliminazione dei propri dati</li>
-      <li><strong>Portabilità:</strong> ricevere i propri dati in formato strutturato</li>
-      <li><strong>Opposizione:</strong> opporsi al trattamento in determinate circostanze</li>
+      <li>Decisioni di adeguatezza della Commissione Europea (ove applicabile)</li>
+      <li>Clausole contrattuali standard (SCC) approvate dalla Commissione Europea</li>
+      <li>Misure supplementari di protezione dei dati</li>
     </ul>
-    <p>Per esercitare questi diritti, contattare: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p>La Svizzera e' riconosciuta dall'UE come paese con un livello adeguato di protezione dei dati. I trasferimenti tra la Svizzera e lo Spazio Economico Europeo non richiedono garanzie aggiuntive.</p>
 
-    <h2>7. Sicurezza</h2>
+    <h2>9. Privacy dei Minori</h2>
+    <p>BurgTV non e' destinato a bambini di eta' inferiore ai <strong>13 anni</strong>. Non raccogliamo consapevolmente dati personali di minori di 13 anni. Se un genitore o tutore ritiene che il proprio figlio ci abbia fornito dati personali, e' pregato di contattarci a <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> e provvederemo a eliminarli tempestivamente.</p>
+
+    <h2>10. Diritti dell'Utente (GDPR)</h2>
+    <p>In conformita' al Regolamento Generale sulla Protezione dei Dati (GDPR), l'utente ha diritto a:</p>
     <ul>
-      <li>Tutte le comunicazioni sono protette da crittografia HTTPS/TLS</li>
-      <li>Le password sono criptate con algoritmi sicuri (bcrypt)</li>
-      <li>L'accesso ai dati è limitato e monitorato</li>
-      <li>Utilizziamo autenticazione a più fattori per l'accesso ai sistemi</li>
+      <li><strong>Accesso (Art. 15):</strong> ottenere conferma del trattamento e una copia dei propri dati personali</li>
+      <li><strong>Rettifica (Art. 16):</strong> correggere dati inesatti o incompleti</li>
+      <li><strong>Cancellazione (Art. 17):</strong> richiedere l'eliminazione dei propri dati personali ("diritto all'oblio")</li>
+      <li><strong>Limitazione del trattamento (Art. 18):</strong> richiedere la limitazione del trattamento in determinate circostanze</li>
+      <li><strong>Portabilita' (Art. 20):</strong> ricevere i propri dati in un formato strutturato, di uso comune e leggibile da dispositivo automatico</li>
+      <li><strong>Opposizione (Art. 21):</strong> opporsi al trattamento basato sull'interesse legittimo</li>
+      <li><strong>Revoca del consenso:</strong> revocare il consenso al trattamento in qualsiasi momento, senza pregiudicare la liceita' del trattamento precedente</li>
+      <li><strong>Reclamo (Art. 77):</strong> presentare reclamo a un'autorita' di controllo (ad es. l'Incaricato federale della protezione dei dati e della trasparenza - IFPDT, in Svizzera; o l'autorita' competente nel proprio paese)</li>
+    </ul>
+    <p>Per esercitare questi diritti, contattare: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Risponderemo entro 30 giorni dalla ricezione della richiesta.</p>
+
+    <h2>11. Protezione dei Dati Svizzera (nLPD/nDSG)</h2>
+    <p>Oltre alla conformita' al GDPR, BurgTV rispetta la nuova Legge federale svizzera sulla protezione dei dati (nLPD), entrata in vigore il 1 settembre 2023. In particolare:</p>
+    <ul>
+      <li>Informiamo gli utenti in modo trasparente su qualsiasi trattamento dei loro dati personali.</li>
+      <li>Trattiamo i dati personali solo in conformita' ai principi di proporzionalita' e buona fede.</li>
+      <li>Adottiamo misure tecniche e organizzative adeguate per proteggere i dati personali.</li>
+      <li>Garantiamo i diritti degli interessati previsti dalla nLPD, incluso il diritto di informazione, rettifica e cancellazione.</li>
     </ul>
 
-    <h2>8. Modifiche alla Privacy Policy</h2>
-    <p>Possiamo aggiornare questa Privacy Policy periodicamente. Le modifiche significative saranno comunicate tramite email o nell'applicazione.</p>
+    <h2>12. Cookie e Archiviazione Locale</h2>
+    <p>L'applicazione BurgTV utilizza l'archiviazione locale del dispositivo (localStorage / SharedPreferences) esclusivamente per:</p>
+    <ul>
+      <li>Memorizzare il token di autenticazione della sessione</li>
+      <li>Salvare le preferenze dell'utente (lingua, impostazioni dell'app)</li>
+      <li>Memorizzare nella cache dati tecnici per migliorare le prestazioni</li>
+    </ul>
+    <p>Il sito web burgtv.com puo' utilizzare cookie tecnici essenziali per il funzionamento del sito. Non utilizziamo cookie di profilazione, tracciamento o pubblicitari.</p>
 
-    <h2>9. Contatti</h2>
-    <p>Per domande sulla privacy o per esercitare i propri diritti:<br>
-    <strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <h2>13. Misure di Sicurezza</h2>
+    <p>Adottiamo misure tecniche e organizzative appropriate per proteggere i dati personali:</p>
+    <ul>
+      <li>Tutte le comunicazioni sono protette da crittografia <strong>HTTPS/TLS</strong></li>
+      <li>Le password sono sottoposte a hash con algoritmi sicuri (<strong>bcrypt</strong>)</li>
+      <li>L'accesso ai dati e' limitato al personale autorizzato e monitorato</li>
+      <li>I server sono protetti da firewall e sistemi di rilevamento delle intrusioni</li>
+      <li>Vengono effettuati backup regolari con crittografia</li>
+      <li>Le API sono protette da autenticazione e limitazione delle richieste</li>
+    </ul>
+
+    <h2>14. Modifiche alla Privacy Policy</h2>
+    <p>Possiamo aggiornare la presente Privacy Policy periodicamente per riflettere cambiamenti nelle nostre pratiche o per ragioni legali. Le modifiche significative saranno comunicate tramite email o tramite un avviso nell'applicazione con almeno 30 giorni di preavviso. La data dell'ultimo aggiornamento e' sempre indicata all'inizio del documento.</p>
+
+    <h2>15. Contatti e Responsabile della Protezione dei Dati</h2>
+    <p>Per domande sulla privacy, per esercitare i propri diritti o per segnalazioni:</p>
+    <p><strong>BurgTV - Protezione dei Dati</strong><br>Lugano, Svizzera<br><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Sito web:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
   </div>
 
-  <!-- ENGLISH -->
+  <!-- ==================== ENGLISH ==================== -->
   <div id="content-en" class="card" style="display:none">
     <h1>Privacy Policy</h1>
-    <p class="update-date">Last updated: December 23, 2025</p>
-    
-    <p>BurgTV ("we", "our", "the App") is committed to protecting user privacy. This Privacy Policy describes what data we collect, how we use it, and how we protect it.</p>
+    <p class="update-date">Last updated: April 13, 2026</p>
 
-    <h2>1. Data Collected</h2>
+    <p>BurgTV ("we", "our", "the App"), based in Lugano, Switzerland, is committed to protecting user privacy. This Privacy Policy describes what data we collect, how we use it, with whom we share it, and how we protect it, in compliance with the General Data Protection Regulation (GDPR - EU 2016/679) and the Swiss Federal Act on Data Protection (nFADP/nDSG).</p>
+
+    <h2>1. Data Controller</h2>
+    <p>The data controller for personal data is:</p>
+    <p><strong>BurgTV</strong><br>Lugano, Switzerland<br><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Website:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
+
+    <h2>2. Data Collected</h2>
     <p>BurgTV collects only data necessary for the service to function:</p>
-    
+
     <table class="data-table">
       <tr><th>Data Type</th><th>Description</th></tr>
       <tr><td><strong>Email</strong></td><td>Email address provided during account registration</td></tr>
-      <tr><td><strong>Password</strong></td><td>Encrypted password using secure algorithms (not readable)</td></tr>
+      <tr><td><strong>Password</strong></td><td>Cryptographic hash of the password (bcrypt) - plaintext is never stored</td></tr>
       <tr><td><strong>Device ID</strong></td><td>Unique identifier generated by the app for each device (anonymous hash, not MAC address)</td></tr>
-      <tr><td><strong>Technical data</strong></td><td>Device type, app version, operating system (for technical support)</td></tr>
-      <tr><td><strong>Payment data</strong></td><td>Managed entirely by Stripe - We do NOT store card data</td></tr>
+      <tr><td><strong>Technical data</strong></td><td>Device type, app version, operating system, device model (for technical support and compatibility)</td></tr>
+      <tr><td><strong>Purchase data</strong></td><td>Plan type, purchase date, subscription status (complete payment data is managed exclusively by payment processors)</td></tr>
     </table>
 
-    <h2>2. Data We Do NOT Collect</h2>
+    <h2>3. Data We Do NOT Collect</h2>
+    <p>BurgTV does not collect and does not have access to the following data:</p>
     <ul>
-      <li>Device MAC address</li>
-      <li>Content viewed through the app</li>
-      <li>Geolocation data</li>
-      <li>Contacts, photos, or other personal data from the device</li>
-      <li>Browsing history</li>
+      <li><strong>MAC address</strong> of the device</li>
+      <li><strong>Content viewed</strong> through the app (playlists, channels, movies, series)</li>
+      <li><strong>Geolocation data</strong> (GPS, location)</li>
+      <li><strong>Contacts, photos, files</strong> or other personal data from the device</li>
+      <li><strong>Browsing history</strong></li>
+      <li><strong>Biometric data</strong></li>
     </ul>
 
-    <h2>3. Purpose of Processing</h2>
-    <p>We use collected data exclusively for:</p>
+    <h2>4. Purpose of Processing</h2>
+    <p>We use collected data exclusively for the following purposes:</p>
     <ul>
       <li><strong>Account creation and management:</strong> registration, authentication, and service access</li>
       <li><strong>Subscription management:</strong> license activation, renewals, subscription status verification</li>
-      <li><strong>Security and abuse prevention:</strong> protection from unauthorized access and fraudulent use</li>
-      <li><strong>Service operation:</strong> device synchronization, technical support</li>
+      <li><strong>Security and abuse prevention:</strong> protection from unauthorized access, fraudulent use, and terms of service violations</li>
+      <li><strong>Service operation:</strong> device synchronization, technical support, troubleshooting</li>
+      <li><strong>Service communications:</strong> account-related notifications, updates to terms or privacy policy, essential technical communications</li>
+    </ul>
+    <p>We do not use data for marketing, profiling, or targeted advertising purposes.</p>
+
+    <h2>5. Legal Basis for Processing (GDPR Art. 6)</h2>
+    <p>The processing of personal data is based on the following legal grounds:</p>
+    <ul>
+      <li><strong>Performance of a contract (Art. 6(1)(b)):</strong> processing necessary to provide the service requested by the user (registration, account management, subscriptions)</li>
+      <li><strong>Legitimate interest (Art. 6(1)(f)):</strong> service security, abuse prevention, technical improvement</li>
+      <li><strong>Legal obligation (Art. 6(1)(c)):</strong> data retention required by law (e.g., tax obligations related to transactions)</li>
+      <li><strong>Consent (Art. 6(1)(a)):</strong> where applicable, for non-essential communications (the user may revoke consent at any time)</li>
     </ul>
 
-    <h2>4. Third-Party Providers</h2>
-    <p>To provide the service, we use the following providers:</p>
-    
+    <h2>6. Third-Party Providers</h2>
+    <p>To provide the service, we use the following third-party providers, selected for their compliance with data protection standards:</p>
+
     <div class="provider-box">
-      <h4>Supabase</h4>
-      <p>Authentication and database service. Data is stored in EU servers.</p>
-      <p><a href="https://supabase.com/privacy" class="link" target="_blank">Supabase Privacy Policy</a></p>
-    </div>
-    
-    <div class="provider-box">
-      <h4>Stripe</h4>
-      <p>Payment processor. Securely manages all transaction and credit card data. BurgTV never has access to complete card data.</p>
-      <p><a href="https://stripe.com/privacy" class="link" target="_blank">Stripe Privacy Policy</a></p>
+      <h4>Stripe (BurgTV TV payments)</h4>
+      <p>Payment processor for the TV version. Securely manages all transaction and credit card data. BurgTV never has access to complete card data. Stripe is PCI DSS Level 1 certified.</p>
+      <p>Headquarters: United States (with EU data processing)<br><a href="https://stripe.com/privacy" class="link" target="_blank">Stripe Privacy Policy</a></p>
     </div>
 
-    <h2>5. Data Retention</h2>
+    <div class="provider-box">
+      <h4>Google Play (BurgTV Mobile Android payments)</h4>
+      <p>Integrated payment system for in-app purchases on Android devices. Payment data is managed entirely by Google.</p>
+      <p>Headquarters: United States (with EU data processing)<br><a href="https://policies.google.com/privacy" class="link" target="_blank">Google Privacy Policy</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Apple (BurgTV Mobile iOS payments)</h4>
+      <p>In-app purchase system for iOS devices. Payment data is managed entirely by Apple.</p>
+      <p>Headquarters: United States (with EU data processing)<br><a href="https://www.apple.com/legal/privacy/" class="link" target="_blank">Apple Privacy Policy</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>TMDB (The Movie Database)</h4>
+      <p>Metadata service for movies and TV shows (posters, descriptions, cast information). No user data is shared with TMDB; only metadata requests are made.</p>
+      <p>Headquarters: United States<br><a href="https://www.themoviedb.org/privacy-policy" class="link" target="_blank">TMDB Privacy Policy</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Resend (transactional emails)</h4>
+      <p>Service for sending transactional emails (registration confirmation, password reset, account notifications). Only the user's email address is shared for sending purposes.</p>
+      <p>Headquarters: United States<br><a href="https://resend.com/legal/privacy-policy" class="link" target="_blank">Resend Privacy Policy</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Netcup GmbH (hosting)</h4>
+      <p>Server infrastructure hosting. Data is stored in data centers located in Nuremberg, Germany (EU).</p>
+      <p>Headquarters: Germany<br><a href="https://www.netcup.de/kontakt/datenschutzerklaerung.php" class="link" target="_blank">Netcup Privacy Policy</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Cloudflare (CDN and security)</h4>
+      <p>Content delivery network (CDN) and DDoS attack protection. Cloudflare may process IP addresses and technical request data to ensure service security and performance.</p>
+      <p>Headquarters: United States (with global network)<br><a href="https://www.cloudflare.com/privacypolicy/" class="link" target="_blank">Cloudflare Privacy Policy</a></p>
+    </div>
+
+    <h2>7. Data Retention</h2>
     <ul>
       <li>Account data is retained for the duration of the active account.</li>
-      <li>Upon account deletion, data is removed within 30 days.</li>
-      <li>Technical logs are retained for a maximum of 90 days.</li>
+      <li>Upon account deletion, all personal data is removed within <strong>30 days</strong>.</li>
+      <li>Technical logs are retained for a maximum of <strong>90 days</strong>, then automatically deleted.</li>
+      <li>Transaction-related data may be retained longer in compliance with applicable legal and tax obligations (up to 10 years under Swiss law).</li>
     </ul>
 
-    <h2>6. User Rights (GDPR)</h2>
+    <h2>8. Data Transfers</h2>
+    <p>Core data is stored on servers located in the European Union (Germany). Some of our service providers are based in the United States. In such cases, transfers are protected by:</p>
+    <ul>
+      <li>European Commission adequacy decisions (where applicable)</li>
+      <li>Standard Contractual Clauses (SCCs) approved by the European Commission</li>
+      <li>Supplementary data protection measures</li>
+    </ul>
+    <p>Switzerland is recognized by the EU as a country with an adequate level of data protection. Transfers between Switzerland and the European Economic Area do not require additional safeguards.</p>
+
+    <h2>9. Children's Privacy</h2>
+    <p>BurgTV is not directed at children under the age of <strong>13</strong>. We do not knowingly collect personal data from children under 13. If a parent or guardian believes their child has provided us with personal data, please contact us at <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> and we will promptly delete it.</p>
+
+    <h2>10. User Rights (GDPR)</h2>
     <p>In accordance with the General Data Protection Regulation (GDPR), users have the right to:</p>
     <ul>
-      <li><strong>Access:</strong> obtain information about processed personal data</li>
-      <li><strong>Rectification:</strong> correct inaccurate or incomplete data</li>
-      <li><strong>Erasure:</strong> request deletion of personal data</li>
-      <li><strong>Portability:</strong> receive personal data in a structured format</li>
-      <li><strong>Objection:</strong> object to processing in certain circumstances</li>
+      <li><strong>Access (Art. 15):</strong> obtain confirmation of processing and a copy of their personal data</li>
+      <li><strong>Rectification (Art. 16):</strong> correct inaccurate or incomplete data</li>
+      <li><strong>Erasure (Art. 17):</strong> request deletion of personal data ("right to be forgotten")</li>
+      <li><strong>Restriction of processing (Art. 18):</strong> request restriction of processing in certain circumstances</li>
+      <li><strong>Portability (Art. 20):</strong> receive personal data in a structured, commonly used, and machine-readable format</li>
+      <li><strong>Objection (Art. 21):</strong> object to processing based on legitimate interest</li>
+      <li><strong>Withdrawal of consent:</strong> withdraw consent to processing at any time, without affecting the lawfulness of prior processing</li>
+      <li><strong>Complaint (Art. 77):</strong> lodge a complaint with a supervisory authority (e.g., the Swiss Federal Data Protection and Information Commissioner - FDPIC; or the competent authority in your country)</li>
     </ul>
-    <p>To exercise these rights, contact: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p>To exercise these rights, contact: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. We will respond within 30 days of receiving your request.</p>
 
-    <h2>7. Security</h2>
+    <h2>11. Swiss Data Protection (nFADP/nDSG)</h2>
+    <p>In addition to GDPR compliance, BurgTV complies with the new Swiss Federal Act on Data Protection (nFADP), which entered into force on September 1, 2023. In particular:</p>
     <ul>
-      <li>All communications are protected by HTTPS/TLS encryption</li>
-      <li>Passwords are encrypted with secure algorithms (bcrypt)</li>
-      <li>Data access is limited and monitored</li>
-      <li>We use multi-factor authentication for system access</li>
+      <li>We transparently inform users about any processing of their personal data.</li>
+      <li>We process personal data only in accordance with the principles of proportionality and good faith.</li>
+      <li>We implement appropriate technical and organizational measures to protect personal data.</li>
+      <li>We guarantee the rights of data subjects provided for by the nFADP, including the right to information, rectification, and deletion.</li>
     </ul>
 
-    <h2>8. Changes to Privacy Policy</h2>
-    <p>We may update this Privacy Policy periodically. Significant changes will be communicated via email or in the application.</p>
+    <h2>12. Cookies and Local Storage</h2>
+    <p>The BurgTV application uses device local storage (localStorage / SharedPreferences) exclusively for:</p>
+    <ul>
+      <li>Storing the session authentication token</li>
+      <li>Saving user preferences (language, app settings)</li>
+      <li>Caching technical data to improve performance</li>
+    </ul>
+    <p>The website burgtv.com may use essential technical cookies for the functioning of the site. We do not use profiling, tracking, or advertising cookies.</p>
 
-    <h2>9. Contact</h2>
-    <p>For privacy questions or to exercise your rights:<br>
-    <strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <h2>13. Security Measures</h2>
+    <p>We implement appropriate technical and organizational measures to protect personal data:</p>
+    <ul>
+      <li>All communications are protected by <strong>HTTPS/TLS</strong> encryption</li>
+      <li>Passwords are hashed with secure algorithms (<strong>bcrypt</strong>)</li>
+      <li>Data access is restricted to authorized personnel and monitored</li>
+      <li>Servers are protected by firewalls and intrusion detection systems</li>
+      <li>Regular encrypted backups are performed</li>
+      <li>APIs are protected by authentication and rate limiting</li>
+    </ul>
+
+    <h2>14. Changes to Privacy Policy</h2>
+    <p>We may update this Privacy Policy periodically to reflect changes in our practices or for legal reasons. Significant changes will be communicated via email or through a notice in the application with at least 30 days' advance notice. The date of the last update is always indicated at the beginning of the document.</p>
+
+    <h2>15. Contact and Data Protection Officer</h2>
+    <p>For privacy questions, to exercise your rights, or for reports:</p>
+    <p><strong>BurgTV - Data Protection</strong><br>Lugano, Switzerland<br><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Website:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
   </div>
 
-  <!-- GERMAN -->
+  <!-- ==================== DEUTSCH ==================== -->
   <div id="content-de" class="card" style="display:none">
-    <h1>Datenschutzerklärung</h1>
-    <p class="update-date">Letzte Aktualisierung: 23. Dezember 2025</p>
-    
-    <p>BurgTV verpflichtet sich zum Schutz der Privatsphäre der Nutzer.</p>
+    <h1>Datenschutzerklaerung</h1>
+    <p class="update-date">Letzte Aktualisierung: 13. April 2026</p>
 
-    <h2>1. Erhobene Daten</h2>
+    <p>BurgTV ("wir", "unser", "die App") mit Sitz in Lugano, Schweiz, verpflichtet sich zum Schutz der Privatsphaere der Nutzer. Die vorliegende Datenschutzerklaerung beschreibt, welche Daten wir erheben, wie wir sie verwenden, mit wem wir sie teilen und wie wir sie schuetzen, in Uebereinstimmung mit der Datenschutz-Grundverordnung (DSGVO - EU 2016/679) und dem Schweizer Bundesgesetz ueber den Datenschutz (nDSG).</p>
+
+    <h2>1. Verantwortlicher fuer die Datenverarbeitung</h2>
+    <p>Verantwortlicher fuer die Verarbeitung personenbezogener Daten ist:</p>
+    <p><strong>BurgTV</strong><br>Lugano, Schweiz<br><strong>E-Mail:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Webseite:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
+
+    <h2>2. Erhobene Daten</h2>
+    <p>BurgTV erhebt ausschliesslich Daten, die fuer den Betrieb des Dienstes erforderlich sind:</p>
+
     <table class="data-table">
       <tr><th>Datentyp</th><th>Beschreibung</th></tr>
-      <tr><td><strong>E-Mail</strong></td><td>Bei der Registrierung angegebene E-Mail-Adresse</td></tr>
-      <tr><td><strong>Passwort</strong></td><td>Verschlüsseltes Passwort (nicht lesbar)</td></tr>
-      <tr><td><strong>Geräte-ID</strong></td><td>Von der App generierte eindeutige Kennung (anonymer Hash)</td></tr>
-      <tr><td><strong>Zahlungsdaten</strong></td><td>Vollständig von Stripe verwaltet</td></tr>
+      <tr><td><strong>E-Mail</strong></td><td>Bei der Kontoregistrierung angegebene E-Mail-Adresse</td></tr>
+      <tr><td><strong>Passwort</strong></td><td>Kryptographischer Hash des Passworts (bcrypt) - der Klartext wird niemals gespeichert</td></tr>
+      <tr><td><strong>Geraete-ID</strong></td><td>Von der App fuer jedes Geraet generierte eindeutige Kennung (anonymer Hash, keine MAC-Adresse)</td></tr>
+      <tr><td><strong>Technische Daten</strong></td><td>Geraetetyp, App-Version, Betriebssystem, Geraetemodell (fuer technischen Support und Kompatibilitaet)</td></tr>
+      <tr><td><strong>Kaufdaten</strong></td><td>Plantyp, Kaufdatum, Abonnementstatus (vollstaendige Zahlungsdaten werden ausschliesslich von Zahlungsdienstleistern verwaltet)</td></tr>
     </table>
 
-    <h2>2. Daten, die wir NICHT erheben</h2>
+    <h2>3. Daten, die wir NICHT erheben</h2>
+    <p>BurgTV erhebt nicht und hat keinen Zugang zu folgenden Daten:</p>
     <ul>
-      <li>MAC-Adresse des Geräts</li>
-      <li>Angesehene Inhalte</li>
-      <li>Standortdaten</li>
+      <li><strong>MAC-Adresse</strong> des Geraets</li>
+      <li><strong>Angesehene Inhalte</strong> ueber die App (Wiedergabelisten, Kanaele, Filme, Serien)</li>
+      <li><strong>Standortdaten</strong> (GPS, Position)</li>
+      <li><strong>Kontakte, Fotos, Dateien</strong> oder andere persoenliche Daten vom Geraet</li>
+      <li><strong>Browserverlauf</strong></li>
+      <li><strong>Biometrische Daten</strong></li>
     </ul>
 
-    <h2>3. Drittanbieter</h2>
+    <h2>4. Zweck der Verarbeitung</h2>
+    <p>Wir verwenden die erhobenen Daten ausschliesslich fuer folgende Zwecke:</p>
+    <ul>
+      <li><strong>Kontoerstellung und -verwaltung:</strong> Registrierung, Authentifizierung und Dienstzugang</li>
+      <li><strong>Abonnementverwaltung:</strong> Lizenzaktivierung, Verlaengerungen, Ueberpruefung des Abonnementstatus</li>
+      <li><strong>Sicherheit und Missbrauchspraevention:</strong> Schutz vor unbefugtem Zugriff, betruegerischer Nutzung und Verstossen gegen die Nutzungsbedingungen</li>
+      <li><strong>Dienstbetrieb:</strong> Geraetesynchronisierung, technischer Support, Fehlerbehebung</li>
+      <li><strong>Dienstkommunikation:</strong> kontobezogene Benachrichtigungen, Aktualisierungen der Nutzungsbedingungen oder der Datenschutzerklaerung, wesentliche technische Mitteilungen</li>
+    </ul>
+    <p>Wir verwenden Daten nicht fuer Marketing-, Profiling- oder gezielte Werbezwecke.</p>
+
+    <h2>5. Rechtsgrundlage der Verarbeitung (DSGVO Art. 6)</h2>
+    <p>Die Verarbeitung personenbezogener Daten stuetzt sich auf folgende Rechtsgrundlagen:</p>
+    <ul>
+      <li><strong>Vertragsdurchfuehrung (Art. 6(1)(b)):</strong> Verarbeitung, die zur Erbringung des vom Nutzer angeforderten Dienstes erforderlich ist (Registrierung, Kontoverwaltung, Abonnements)</li>
+      <li><strong>Berechtigtes Interesse (Art. 6(1)(f)):</strong> Dienstsicherheit, Missbrauchspraevention, technische Verbesserung</li>
+      <li><strong>Gesetzliche Verpflichtung (Art. 6(1)(c)):</strong> gesetzlich vorgeschriebene Datenspeicherung (z. B. steuerliche Pflichten im Zusammenhang mit Transaktionen)</li>
+      <li><strong>Einwilligung (Art. 6(1)(a)):</strong> soweit anwendbar, fuer nicht wesentliche Mitteilungen (der Nutzer kann die Einwilligung jederzeit widerrufen)</li>
+    </ul>
+
+    <h2>6. Drittanbieter</h2>
+    <p>Zur Erbringung des Dienstes setzen wir folgende Drittanbieter ein, die aufgrund ihrer Einhaltung von Datenschutzstandards ausgewaehlt wurden:</p>
+
     <div class="provider-box">
-      <h4>Supabase</h4>
-      <p>Authentifizierung und Datenbank (EU-Server)</p>
-    </div>
-    <div class="provider-box">
-      <h4>Stripe</h4>
-      <p>Zahlungsabwicklung</p>
+      <h4>Stripe (Zahlungen BurgTV TV)</h4>
+      <p>Zahlungsdienstleister fuer die TV-Version. Verwaltet alle Transaktions- und Kreditkartendaten sicher. BurgTV hat niemals Zugang zu vollstaendigen Kartendaten. Stripe ist PCI DSS Level 1 zertifiziert.</p>
+      <p>Sitz: Vereinigte Staaten (mit EU-Datenverarbeitung)<br><a href="https://stripe.com/privacy" class="link" target="_blank">Datenschutzerklaerung Stripe</a></p>
     </div>
 
-    <h2>4. Ihre Rechte (DSGVO)</h2>
+    <div class="provider-box">
+      <h4>Google Play (Zahlungen BurgTV Mobile Android)</h4>
+      <p>Integriertes Zahlungssystem fuer In-App-Kaeufe auf Android-Geraeten. Zahlungsdaten werden vollstaendig von Google verwaltet.</p>
+      <p>Sitz: Vereinigte Staaten (mit EU-Datenverarbeitung)<br><a href="https://policies.google.com/privacy" class="link" target="_blank">Datenschutzerklaerung Google</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Apple (Zahlungen BurgTV Mobile iOS)</h4>
+      <p>In-App-Kaufsystem fuer iOS-Geraete. Zahlungsdaten werden vollstaendig von Apple verwaltet.</p>
+      <p>Sitz: Vereinigte Staaten (mit EU-Datenverarbeitung)<br><a href="https://www.apple.com/legal/privacy/" class="link" target="_blank">Datenschutzerklaerung Apple</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>TMDB (The Movie Database)</h4>
+      <p>Metadatendienst fuer Filme und Fernsehsendungen (Poster, Beschreibungen, Besetzungsinformationen). Es werden keine Nutzerdaten an TMDB weitergegeben; es werden ausschliesslich Metadatenanfragen gestellt.</p>
+      <p>Sitz: Vereinigte Staaten<br><a href="https://www.themoviedb.org/privacy-policy" class="link" target="_blank">Datenschutzerklaerung TMDB</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Resend (Transaktions-E-Mails)</h4>
+      <p>Dienst fuer den Versand von Transaktions-E-Mails (Registrierungsbestaetigung, Passwortzuruecksetzung, Kontobenachrichtigungen). Nur die E-Mail-Adresse des Nutzers wird zum Versandzweck weitergegeben.</p>
+      <p>Sitz: Vereinigte Staaten<br><a href="https://resend.com/legal/privacy-policy" class="link" target="_blank">Datenschutzerklaerung Resend</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Netcup GmbH (Hosting)</h4>
+      <p>Hosting der Serverinfrastruktur. Daten werden in Rechenzentren in Nuernberg, Deutschland (EU) gespeichert.</p>
+      <p>Sitz: Deutschland<br><a href="https://www.netcup.de/kontakt/datenschutzerklaerung.php" class="link" target="_blank">Datenschutzerklaerung Netcup</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Cloudflare (CDN und Sicherheit)</h4>
+      <p>Content-Delivery-Netzwerk (CDN) und DDoS-Angriffsschutz. Cloudflare kann IP-Adressen und technische Anfragedaten verarbeiten, um die Sicherheit und Leistung des Dienstes zu gewaehrleisten.</p>
+      <p>Sitz: Vereinigte Staaten (mit globalem Netzwerk)<br><a href="https://www.cloudflare.com/privacypolicy/" class="link" target="_blank">Datenschutzerklaerung Cloudflare</a></p>
+    </div>
+
+    <h2>7. Datenspeicherung</h2>
     <ul>
-      <li>Auskunft, Berichtigung, Löschung, Datenübertragbarkeit, Widerspruch</li>
+      <li>Kontodaten werden fuer die Dauer des aktiven Kontos gespeichert.</li>
+      <li>Bei Kontoloeschung werden alle personenbezogenen Daten innerhalb von <strong>30 Tagen</strong> entfernt.</li>
+      <li>Technische Protokolle werden maximal <strong>90 Tage</strong> gespeichert und dann automatisch geloescht.</li>
+      <li>Transaktionsbezogene Daten koennen gemaess geltenden gesetzlichen und steuerlichen Pflichten laenger aufbewahrt werden (bis zu 10 Jahre nach Schweizer Recht).</li>
     </ul>
-    <p>Kontakt: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <h2>8. Datenuebermittlungen</h2>
+    <p>Die Kerndaten werden auf Servern in der Europaeischen Union (Deutschland) gespeichert. Einige unserer Dienstleister haben ihren Sitz in den Vereinigten Staaten. In solchen Faellen werden Uebermittlungen geschuetzt durch:</p>
+    <ul>
+      <li>Angemessenheitsbeschluesse der Europaeischen Kommission (soweit anwendbar)</li>
+      <li>Von der Europaeischen Kommission genehmigte Standardvertragsklauseln (SCCs)</li>
+      <li>Ergaenzende Datenschutzmassnahmen</li>
+    </ul>
+    <p>Die Schweiz wird von der EU als Land mit angemessenem Datenschutzniveau anerkannt. Uebermittlungen zwischen der Schweiz und dem Europaeischen Wirtschaftsraum erfordern keine zusaetzlichen Garantien.</p>
+
+    <h2>9. Datenschutz fuer Kinder</h2>
+    <p>BurgTV richtet sich nicht an Kinder unter <strong>13 Jahren</strong>. Wir erheben wissentlich keine personenbezogenen Daten von Kindern unter 13 Jahren. Wenn ein Elternteil oder Erziehungsberechtigter der Ansicht ist, dass sein Kind uns personenbezogene Daten mitgeteilt hat, wenden Sie sich bitte an <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>, und wir werden diese umgehend loeschen.</p>
+
+    <h2>10. Rechte der Nutzer (DSGVO)</h2>
+    <p>Gemaess der Datenschutz-Grundverordnung (DSGVO) haben Nutzer das Recht auf:</p>
+    <ul>
+      <li><strong>Auskunft (Art. 15):</strong> Bestaetigung der Verarbeitung und eine Kopie der eigenen personenbezogenen Daten zu erhalten</li>
+      <li><strong>Berichtigung (Art. 16):</strong> unrichtige oder unvollstaendige Daten zu korrigieren</li>
+      <li><strong>Loeschung (Art. 17):</strong> die Loeschung personenbezogener Daten zu verlangen ("Recht auf Vergessenwerden")</li>
+      <li><strong>Einschraenkung der Verarbeitung (Art. 18):</strong> die Einschraenkung der Verarbeitung unter bestimmten Umstaenden zu verlangen</li>
+      <li><strong>Datenportabilitaet (Art. 20):</strong> personenbezogene Daten in einem strukturierten, gaengigen und maschinenlesbaren Format zu erhalten</li>
+      <li><strong>Widerspruch (Art. 21):</strong> der auf berechtigtem Interesse beruhenden Verarbeitung zu widersprechen</li>
+      <li><strong>Widerruf der Einwilligung:</strong> die Einwilligung zur Verarbeitung jederzeit zu widerrufen, ohne die Rechtmaessigkeit der vorherigen Verarbeitung zu beruehren</li>
+      <li><strong>Beschwerde (Art. 77):</strong> Beschwerde bei einer Aufsichtsbehoerde einzureichen (z. B. beim Eidgenoessischen Datenschutz- und Oeffentlichkeitsbeauftragten - EDOEB, in der Schweiz; oder der zustaendigen Behoerde in Ihrem Land)</li>
+    </ul>
+    <p>Um diese Rechte auszuueben, kontaktieren Sie: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Wir antworten innerhalb von 30 Tagen nach Eingang Ihrer Anfrage.</p>
+
+    <h2>11. Schweizer Datenschutz (nDSG)</h2>
+    <p>Neben der Einhaltung der DSGVO entspricht BurgTV dem neuen Schweizer Bundesgesetz ueber den Datenschutz (nDSG), das am 1. September 2023 in Kraft getreten ist. Insbesondere:</p>
+    <ul>
+      <li>Wir informieren Nutzer transparent ueber jede Verarbeitung ihrer personenbezogenen Daten.</li>
+      <li>Wir verarbeiten personenbezogene Daten nur in Uebereinstimmung mit den Grundsaetzen der Verhaeltnismaessigkeit und von Treu und Glauben.</li>
+      <li>Wir ergreifen angemessene technische und organisatorische Massnahmen zum Schutz personenbezogener Daten.</li>
+      <li>Wir gewaehrleisten die im nDSG vorgesehenen Rechte der Betroffenen, einschliesslich des Rechts auf Auskunft, Berichtigung und Loeschung.</li>
+    </ul>
+
+    <h2>12. Cookies und lokale Speicherung</h2>
+    <p>Die BurgTV-Anwendung verwendet die lokale Speicherung des Geraets (localStorage / SharedPreferences) ausschliesslich fuer:</p>
+    <ul>
+      <li>Speicherung des Sitzungsauthentifizierungstokens</li>
+      <li>Speicherung der Nutzereinstellungen (Sprache, App-Einstellungen)</li>
+      <li>Zwischenspeicherung technischer Daten zur Leistungsverbesserung</li>
+    </ul>
+    <p>Die Webseite burgtv.com kann technisch notwendige Cookies fuer den Betrieb der Seite verwenden. Wir verwenden keine Profiling-, Tracking- oder Werbe-Cookies.</p>
+
+    <h2>13. Sicherheitsmassnahmen</h2>
+    <p>Wir ergreifen angemessene technische und organisatorische Massnahmen zum Schutz personenbezogener Daten:</p>
+    <ul>
+      <li>Alle Kommunikationen sind durch <strong>HTTPS/TLS</strong>-Verschluesselung geschuetzt</li>
+      <li>Passwoerter werden mit sicheren Algorithmen gehasht (<strong>bcrypt</strong>)</li>
+      <li>Der Datenzugriff ist auf autorisiertes Personal beschraenkt und wird ueberwacht</li>
+      <li>Server sind durch Firewalls und Intrusion-Detection-Systeme geschuetzt</li>
+      <li>Regelmaessige verschluesselte Backups werden durchgefuehrt</li>
+      <li>APIs sind durch Authentifizierung und Zugriffsbegrenzung geschuetzt</li>
+    </ul>
+
+    <h2>14. Aenderungen der Datenschutzerklaerung</h2>
+    <p>Wir koennen diese Datenschutzerklaerung regelmaessig aktualisieren, um Aenderungen unserer Praktiken oder gesetzliche Anforderungen zu beruecksichtigen. Wesentliche Aenderungen werden per E-Mail oder durch einen Hinweis in der Anwendung mit einer Frist von mindestens 30 Tagen mitgeteilt. Das Datum der letzten Aktualisierung ist stets am Anfang des Dokuments angegeben.</p>
+
+    <h2>15. Kontakt und Datenschutzbeauftragter</h2>
+    <p>Fuer Fragen zum Datenschutz, zur Ausuebung Ihrer Rechte oder fuer Meldungen:</p>
+    <p><strong>BurgTV - Datenschutz</strong><br>Lugano, Schweiz<br><strong>E-Mail:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Webseite:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
   </div>
 
-  <!-- SPANISH -->
+  <!-- ==================== ESPANOL ==================== -->
   <div id="content-es" class="card" style="display:none">
-    <h1>Política de Privacidad</h1>
-    <p class="update-date">Última actualización: 23 de diciembre de 2025</p>
-    
-    <p>BurgTV se compromete a proteger la privacidad de los usuarios.</p>
+    <h1>Politica de Privacidad</h1>
+    <p class="update-date">Ultima actualizacion: 13 de abril de 2026</p>
 
-    <h2>1. Datos Recopilados</h2>
+    <p>BurgTV ("nosotros", "nuestro", "la App"), con sede en Lugano, Suiza, se compromete a proteger la privacidad de los usuarios. La presente Politica de Privacidad describe que datos recopilamos, como los utilizamos, con quien los compartimos y como los protegemos, de conformidad con el Reglamento General de Proteccion de Datos (RGPD - UE 2016/679) y la Ley Federal Suiza de Proteccion de Datos (nLPD/nDSG).</p>
+
+    <h2>1. Responsable del Tratamiento</h2>
+    <p>El responsable del tratamiento de los datos personales es:</p>
+    <p><strong>BurgTV</strong><br>Lugano, Suiza<br><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Sitio web:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
+
+    <h2>2. Datos Recopilados</h2>
+    <p>BurgTV recopila exclusivamente los datos necesarios para el funcionamiento del servicio:</p>
+
     <table class="data-table">
-      <tr><th>Tipo de dato</th><th>Descripción</th></tr>
-      <tr><td><strong>Email</strong></td><td>Dirección proporcionada durante el registro</td></tr>
-      <tr><td><strong>Contraseña</strong></td><td>Encriptada con algoritmos seguros</td></tr>
-      <tr><td><strong>ID de dispositivo</strong></td><td>Identificador único generado por la app (hash anónimo)</td></tr>
-      <tr><td><strong>Datos de pago</strong></td><td>Gestionados por Stripe</td></tr>
+      <tr><th>Tipo de dato</th><th>Descripcion</th></tr>
+      <tr><td><strong>Email</strong></td><td>Direccion de correo electronico proporcionada durante el registro de la cuenta</td></tr>
+      <tr><td><strong>Contrasena</strong></td><td>Hash criptografico de la contrasena (bcrypt) - el texto sin cifrar nunca se almacena</td></tr>
+      <tr><td><strong>ID de dispositivo</strong></td><td>Identificador unico generado por la app para cada dispositivo (hash anonimo, no direccion MAC)</td></tr>
+      <tr><td><strong>Datos tecnicos</strong></td><td>Tipo de dispositivo, version de la app, sistema operativo, modelo del dispositivo (para soporte tecnico y compatibilidad)</td></tr>
+      <tr><td><strong>Datos de compra</strong></td><td>Tipo de plan, fecha de compra, estado de la suscripcion (los datos de pago completos son gestionados exclusivamente por los procesadores de pago)</td></tr>
     </table>
 
-    <h2>2. Datos que NO Recopilamos</h2>
+    <h2>3. Datos que NO Recopilamos</h2>
+    <p>BurgTV no recopila ni tiene acceso a los siguientes datos:</p>
     <ul>
-      <li>Dirección MAC</li>
-      <li>Contenido visualizado</li>
-      <li>Datos de ubicación</li>
+      <li><strong>Direccion MAC</strong> del dispositivo</li>
+      <li><strong>Contenido visualizado</strong> a traves de la app (listas de reproduccion, canales, peliculas, series)</li>
+      <li><strong>Datos de geolocalizacion</strong> (GPS, ubicacion)</li>
+      <li><strong>Contactos, fotos, archivos</strong> u otros datos personales del dispositivo</li>
+      <li><strong>Historial de navegacion</strong></li>
+      <li><strong>Datos biometricos</strong></li>
     </ul>
 
-    <h2>3. Proveedores Terceros</h2>
+    <h2>4. Finalidad del Tratamiento</h2>
+    <p>Utilizamos los datos recopilados exclusivamente para los siguientes fines:</p>
+    <ul>
+      <li><strong>Creacion y gestion de la cuenta:</strong> registro, autenticacion y acceso al servicio</li>
+      <li><strong>Gestion de suscripciones:</strong> activacion de licencias, renovaciones, verificacion del estado de la suscripcion</li>
+      <li><strong>Seguridad y prevencion de abusos:</strong> proteccion contra accesos no autorizados, uso fraudulento y violaciones de los terminos de servicio</li>
+      <li><strong>Funcionamiento del servicio:</strong> sincronizacion de dispositivos, soporte tecnico, resolucion de problemas</li>
+      <li><strong>Comunicaciones de servicio:</strong> notificaciones relativas a la cuenta, actualizaciones de los terminos o la politica de privacidad, comunicaciones tecnicas esenciales</li>
+    </ul>
+    <p>No utilizamos los datos con fines de marketing, elaboracion de perfiles o publicidad dirigida.</p>
+
+    <h2>5. Base Juridica del Tratamiento (RGPD Art. 6)</h2>
+    <p>El tratamiento de datos personales se fundamenta en las siguientes bases juridicas:</p>
+    <ul>
+      <li><strong>Ejecucion de un contrato (Art. 6(1)(b)):</strong> tratamiento necesario para prestar el servicio solicitado por el usuario (registro, gestion de cuenta, suscripciones)</li>
+      <li><strong>Interes legitimo (Art. 6(1)(f)):</strong> seguridad del servicio, prevencion de abusos, mejora tecnica</li>
+      <li><strong>Obligacion legal (Art. 6(1)(c)):</strong> conservacion de datos exigida por la ley (p. ej., obligaciones fiscales relativas a las transacciones)</li>
+      <li><strong>Consentimiento (Art. 6(1)(a)):</strong> cuando proceda, para comunicaciones no esenciales (el usuario puede revocar el consentimiento en cualquier momento)</li>
+    </ul>
+
+    <h2>6. Proveedores Terceros</h2>
+    <p>Para prestar el servicio, utilizamos los siguientes proveedores terceros, seleccionados por su cumplimiento de los estandares de proteccion de datos:</p>
+
     <div class="provider-box">
-      <h4>Supabase</h4>
-      <p>Autenticación y base de datos (servidores UE)</p>
-    </div>
-    <div class="provider-box">
-      <h4>Stripe</h4>
-      <p>Procesador de pagos</p>
+      <h4>Stripe (pagos BurgTV TV)</h4>
+      <p>Procesador de pagos para la version TV. Gestiona de forma segura todos los datos de transacciones y tarjetas de credito. BurgTV nunca tiene acceso a los datos completos de las tarjetas. Stripe esta certificado PCI DSS Nivel 1.</p>
+      <p>Sede: Estados Unidos (con procesamiento de datos en la UE)<br><a href="https://stripe.com/privacy" class="link" target="_blank">Politica de Privacidad de Stripe</a></p>
     </div>
 
-    <h2>4. Sus Derechos (GDPR)</h2>
+    <div class="provider-box">
+      <h4>Google Play (pagos BurgTV Mobile Android)</h4>
+      <p>Sistema de pago integrado para compras dentro de la app en dispositivos Android. Los datos de pago son gestionados integramente por Google.</p>
+      <p>Sede: Estados Unidos (con procesamiento de datos en la UE)<br><a href="https://policies.google.com/privacy" class="link" target="_blank">Politica de Privacidad de Google</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Apple (pagos BurgTV Mobile iOS)</h4>
+      <p>Sistema de compras dentro de la app para dispositivos iOS. Los datos de pago son gestionados integramente por Apple.</p>
+      <p>Sede: Estados Unidos (con procesamiento de datos en la UE)<br><a href="https://www.apple.com/legal/privacy/" class="link" target="_blank">Politica de Privacidad de Apple</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>TMDB (The Movie Database)</h4>
+      <p>Servicio de metadatos para peliculas y series de television (carteles, descripciones, informacion del reparto). No se comparten datos del usuario con TMDB; solo se realizan solicitudes de metadatos.</p>
+      <p>Sede: Estados Unidos<br><a href="https://www.themoviedb.org/privacy-policy" class="link" target="_blank">Politica de Privacidad de TMDB</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Resend (correos transaccionales)</h4>
+      <p>Servicio para el envio de correos electronicos transaccionales (confirmacion de registro, restablecimiento de contrasena, notificaciones de cuenta). Solo se comparte la direccion de correo electronico del usuario para el envio.</p>
+      <p>Sede: Estados Unidos<br><a href="https://resend.com/legal/privacy-policy" class="link" target="_blank">Politica de Privacidad de Resend</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Netcup GmbH (alojamiento)</h4>
+      <p>Alojamiento de la infraestructura del servidor. Los datos se almacenan en centros de datos ubicados en Nuremberg, Alemania (UE).</p>
+      <p>Sede: Alemania<br><a href="https://www.netcup.de/kontakt/datenschutzerklaerung.php" class="link" target="_blank">Politica de Privacidad de Netcup</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Cloudflare (CDN y seguridad)</h4>
+      <p>Red de distribucion de contenido (CDN) y proteccion contra ataques DDoS. Cloudflare puede procesar direcciones IP y datos tecnicos de las solicitudes para garantizar la seguridad y el rendimiento del servicio.</p>
+      <p>Sede: Estados Unidos (con red global)<br><a href="https://www.cloudflare.com/privacypolicy/" class="link" target="_blank">Politica de Privacidad de Cloudflare</a></p>
+    </div>
+
+    <h2>7. Conservacion de Datos</h2>
     <ul>
-      <li>Acceso, rectificación, eliminación, portabilidad, oposición</li>
+      <li>Los datos de la cuenta se conservan durante toda la vigencia de la cuenta activa.</li>
+      <li>En caso de eliminacion de la cuenta, todos los datos personales se eliminan en un plazo de <strong>30 dias</strong>.</li>
+      <li>Los registros tecnicos se conservan un maximo de <strong>90 dias</strong> y luego se eliminan automaticamente.</li>
+      <li>Los datos relativos a las transacciones pueden conservarse durante mas tiempo en cumplimiento de las obligaciones legales y fiscales aplicables (hasta 10 anos segun la legislacion suiza).</li>
     </ul>
-    <p>Contacto: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <h2>8. Transferencias de Datos</h2>
+    <p>Los datos principales se almacenan en servidores ubicados en la Union Europea (Alemania). Algunos de nuestros proveedores de servicios tienen su sede en Estados Unidos. En tales casos, las transferencias estan protegidas por:</p>
+    <ul>
+      <li>Decisiones de adecuacion de la Comision Europea (cuando proceda)</li>
+      <li>Clausulas contractuales tipo (CCT) aprobadas por la Comision Europea</li>
+      <li>Medidas suplementarias de proteccion de datos</li>
+    </ul>
+    <p>Suiza esta reconocida por la UE como un pais con un nivel adecuado de proteccion de datos. Las transferencias entre Suiza y el Espacio Economico Europeo no requieren garantias adicionales.</p>
+
+    <h2>9. Privacidad de los Menores</h2>
+    <p>BurgTV no esta dirigido a ninos menores de <strong>13 anos</strong>. No recopilamos conscientemente datos personales de menores de 13 anos. Si un padre o tutor cree que su hijo nos ha proporcionado datos personales, le rogamos que se ponga en contacto con nosotros en <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> y procederemos a eliminarlos de inmediato.</p>
+
+    <h2>10. Derechos del Usuario (RGPD)</h2>
+    <p>De conformidad con el Reglamento General de Proteccion de Datos (RGPD), los usuarios tienen derecho a:</p>
+    <ul>
+      <li><strong>Acceso (Art. 15):</strong> obtener confirmacion del tratamiento y una copia de sus datos personales</li>
+      <li><strong>Rectificacion (Art. 16):</strong> corregir datos inexactos o incompletos</li>
+      <li><strong>Supresion (Art. 17):</strong> solicitar la eliminacion de sus datos personales ("derecho al olvido")</li>
+      <li><strong>Limitacion del tratamiento (Art. 18):</strong> solicitar la limitacion del tratamiento en determinadas circunstancias</li>
+      <li><strong>Portabilidad (Art. 20):</strong> recibir sus datos personales en un formato estructurado, de uso comun y lectura mecanica</li>
+      <li><strong>Oposicion (Art. 21):</strong> oponerse al tratamiento basado en el interes legitimo</li>
+      <li><strong>Revocacion del consentimiento:</strong> revocar el consentimiento al tratamiento en cualquier momento, sin afectar la licitud del tratamiento anterior</li>
+      <li><strong>Reclamacion (Art. 77):</strong> presentar una reclamacion ante una autoridad de control (p. ej., el Comisionado Federal Suizo de Proteccion de Datos e Informacion - PFPDT; o la autoridad competente de su pais)</li>
+    </ul>
+    <p>Para ejercer estos derechos, contacte con: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Responderemos en un plazo de 30 dias desde la recepcion de su solicitud.</p>
+
+    <h2>11. Proteccion de Datos Suiza (nLPD/nDSG)</h2>
+    <p>Ademas del cumplimiento del RGPD, BurgTV cumple con la nueva Ley Federal Suiza de Proteccion de Datos (nLPD), que entro en vigor el 1 de septiembre de 2023. En particular:</p>
+    <ul>
+      <li>Informamos a los usuarios de forma transparente sobre cualquier tratamiento de sus datos personales.</li>
+      <li>Tratamos los datos personales unicamente de acuerdo con los principios de proporcionalidad y buena fe.</li>
+      <li>Adoptamos medidas tecnicas y organizativas adecuadas para proteger los datos personales.</li>
+      <li>Garantizamos los derechos de los interesados previstos en la nLPD, incluido el derecho de informacion, rectificacion y supresion.</li>
+    </ul>
+
+    <h2>12. Cookies y Almacenamiento Local</h2>
+    <p>La aplicacion BurgTV utiliza el almacenamiento local del dispositivo (localStorage / SharedPreferences) exclusivamente para:</p>
+    <ul>
+      <li>Almacenar el token de autenticacion de la sesion</li>
+      <li>Guardar las preferencias del usuario (idioma, configuracion de la app)</li>
+      <li>Almacenar en cache datos tecnicos para mejorar el rendimiento</li>
+    </ul>
+    <p>El sitio web burgtv.com puede utilizar cookies tecnicas esenciales para el funcionamiento del sitio. No utilizamos cookies de elaboracion de perfiles, seguimiento o publicidad.</p>
+
+    <h2>13. Medidas de Seguridad</h2>
+    <p>Adoptamos medidas tecnicas y organizativas adecuadas para proteger los datos personales:</p>
+    <ul>
+      <li>Todas las comunicaciones estan protegidas mediante cifrado <strong>HTTPS/TLS</strong></li>
+      <li>Las contrasenas se cifran con algoritmos seguros (<strong>bcrypt</strong>)</li>
+      <li>El acceso a los datos esta restringido al personal autorizado y es monitorizado</li>
+      <li>Los servidores estan protegidos por cortafuegos y sistemas de deteccion de intrusiones</li>
+      <li>Se realizan copias de seguridad periodicas cifradas</li>
+      <li>Las API estan protegidas mediante autenticacion y limitacion de solicitudes</li>
+    </ul>
+
+    <h2>14. Modificaciones de la Politica de Privacidad</h2>
+    <p>Podemos actualizar la presente Politica de Privacidad periodicamente para reflejar cambios en nuestras practicas o por razones legales. Las modificaciones significativas se comunicaran por correo electronico o mediante un aviso en la aplicacion con al menos 30 dias de antelacion. La fecha de la ultima actualizacion siempre se indica al principio del documento.</p>
+
+    <h2>15. Contacto y Delegado de Proteccion de Datos</h2>
+    <p>Para preguntas sobre privacidad, para ejercer sus derechos o para comunicaciones:</p>
+    <p><strong>BurgTV - Proteccion de Datos</strong><br>Lugano, Suiza<br><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Sitio web:</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
   </div>
 
-  <!-- FRENCH -->
+  <!-- ==================== FRANCAIS ==================== -->
   <div id="content-fr" class="card" style="display:none">
-    <h1>Politique de Confidentialité</h1>
-    <p class="update-date">Dernière mise à jour: 23 décembre 2025</p>
-    
-    <p>BurgTV s'engage à protéger la vie privée des utilisateurs.</p>
+    <h1>Politique de Confidentialite</h1>
+    <p class="update-date">Derniere mise a jour : 13 avril 2026</p>
 
-    <h2>1. Données Collectées</h2>
+    <p>BurgTV ("nous", "notre", "l'App"), dont le siege est a Lugano, Suisse, s'engage a proteger la vie privee des utilisateurs. La presente Politique de Confidentialite decrit les donnees que nous collectons, comment nous les utilisons, avec qui nous les partageons et comment nous les protegeons, conformement au Reglement General sur la Protection des Donnees (RGPD - UE 2016/679) et a la Loi federale suisse sur la protection des donnees (nLPD/nDSG).</p>
+
+    <h2>1. Responsable du Traitement</h2>
+    <p>Le responsable du traitement des donnees personnelles est :</p>
+    <p><strong>BurgTV</strong><br>Lugano, Suisse<br><strong>E-mail :</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Site web :</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
+
+    <h2>2. Donnees Collectees</h2>
+    <p>BurgTV collecte exclusivement les donnees necessaires au fonctionnement du service :</p>
+
     <table class="data-table">
-      <tr><th>Type de donnée</th><th>Description</th></tr>
-      <tr><td><strong>Email</strong></td><td>Adresse fournie lors de l'inscription</td></tr>
-      <tr><td><strong>Mot de passe</strong></td><td>Chiffré avec des algorithmes sécurisés</td></tr>
-      <tr><td><strong>ID appareil</strong></td><td>Identifiant unique généré par l'app (hash anonyme)</td></tr>
-      <tr><td><strong>Données de paiement</strong></td><td>Gérées par Stripe</td></tr>
+      <tr><th>Type de donnee</th><th>Description</th></tr>
+      <tr><td><strong>E-mail</strong></td><td>Adresse e-mail fournie lors de l'inscription du compte</td></tr>
+      <tr><td><strong>Mot de passe</strong></td><td>Hash cryptographique du mot de passe (bcrypt) - le texte en clair n'est jamais stocke</td></tr>
+      <tr><td><strong>ID appareil</strong></td><td>Identifiant unique genere par l'app pour chaque appareil (hash anonyme, pas d'adresse MAC)</td></tr>
+      <tr><td><strong>Donnees techniques</strong></td><td>Type d'appareil, version de l'app, systeme d'exploitation, modele de l'appareil (pour le support technique et la compatibilite)</td></tr>
+      <tr><td><strong>Donnees d'achat</strong></td><td>Type de forfait, date d'achat, statut de l'abonnement (les donnees de paiement completes sont gerees exclusivement par les prestataires de paiement)</td></tr>
     </table>
 
-    <h2>2. Données NON Collectées</h2>
+    <h2>3. Donnees que nous NE collectons PAS</h2>
+    <p>BurgTV ne collecte pas et n'a pas acces aux donnees suivantes :</p>
     <ul>
-      <li>Adresse MAC</li>
-      <li>Contenu visualisé</li>
-      <li>Données de localisation</li>
+      <li><strong>Adresse MAC</strong> de l'appareil</li>
+      <li><strong>Contenus visionnes</strong> via l'app (listes de lecture, chaines, films, series)</li>
+      <li><strong>Donnees de geolocalisation</strong> (GPS, position)</li>
+      <li><strong>Contacts, photos, fichiers</strong> ou autres donnees personnelles de l'appareil</li>
+      <li><strong>Historique de navigation</strong></li>
+      <li><strong>Donnees biometriques</strong></li>
     </ul>
 
-    <h2>3. Fournisseurs Tiers</h2>
+    <h2>4. Finalites du Traitement</h2>
+    <p>Nous utilisons les donnees collectees exclusivement aux fins suivantes :</p>
+    <ul>
+      <li><strong>Creation et gestion du compte :</strong> inscription, authentification et acces au service</li>
+      <li><strong>Gestion des abonnements :</strong> activation des licences, renouvellements, verification du statut de l'abonnement</li>
+      <li><strong>Securite et prevention des abus :</strong> protection contre les acces non autorises, l'utilisation frauduleuse et les violations des conditions d'utilisation</li>
+      <li><strong>Fonctionnement du service :</strong> synchronisation des appareils, support technique, resolution de problemes</li>
+      <li><strong>Communications de service :</strong> notifications relatives au compte, mises a jour des conditions ou de la politique de confidentialite, communications techniques essentielles</li>
+    </ul>
+    <p>Nous n'utilisons pas les donnees a des fins de marketing, de profilage ou de publicite ciblee.</p>
+
+    <h2>5. Base Juridique du Traitement (RGPD Art. 6)</h2>
+    <p>Le traitement des donnees personnelles repose sur les bases juridiques suivantes :</p>
+    <ul>
+      <li><strong>Execution d'un contrat (Art. 6(1)(b)) :</strong> traitement necessaire a la fourniture du service demande par l'utilisateur (inscription, gestion du compte, abonnements)</li>
+      <li><strong>Interet legitime (Art. 6(1)(f)) :</strong> securite du service, prevention des abus, amelioration technique</li>
+      <li><strong>Obligation legale (Art. 6(1)(c)) :</strong> conservation des donnees imposee par la loi (p. ex., obligations fiscales liees aux transactions)</li>
+      <li><strong>Consentement (Art. 6(1)(a)) :</strong> le cas echeant, pour les communications non essentielles (l'utilisateur peut revoquer son consentement a tout moment)</li>
+    </ul>
+
+    <h2>6. Fournisseurs Tiers</h2>
+    <p>Pour fournir le service, nous faisons appel aux fournisseurs tiers suivants, selectionnes pour leur conformite aux normes de protection des donnees :</p>
+
     <div class="provider-box">
-      <h4>Supabase</h4>
-      <p>Authentification et base de données (serveurs UE)</p>
-    </div>
-    <div class="provider-box">
-      <h4>Stripe</h4>
-      <p>Processeur de paiements</p>
+      <h4>Stripe (paiements BurgTV TV)</h4>
+      <p>Prestataire de paiement pour la version TV. Gere de maniere securisee toutes les donnees de transactions et de cartes de credit. BurgTV n'a jamais acces aux donnees completes des cartes. Stripe est certifie PCI DSS Niveau 1.</p>
+      <p>Siege : Etats-Unis (avec traitement des donnees dans l'UE)<br><a href="https://stripe.com/privacy" class="link" target="_blank">Politique de Confidentialite de Stripe</a></p>
     </div>
 
-    <h2>4. Vos Droits (RGPD)</h2>
+    <div class="provider-box">
+      <h4>Google Play (paiements BurgTV Mobile Android)</h4>
+      <p>Systeme de paiement integre pour les achats integres sur les appareils Android. Les donnees de paiement sont gerees integralement par Google.</p>
+      <p>Siege : Etats-Unis (avec traitement des donnees dans l'UE)<br><a href="https://policies.google.com/privacy" class="link" target="_blank">Politique de Confidentialite de Google</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Apple (paiements BurgTV Mobile iOS)</h4>
+      <p>Systeme d'achat integre pour les appareils iOS. Les donnees de paiement sont gerees integralement par Apple.</p>
+      <p>Siege : Etats-Unis (avec traitement des donnees dans l'UE)<br><a href="https://www.apple.com/legal/privacy/" class="link" target="_blank">Politique de Confidentialite d'Apple</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>TMDB (The Movie Database)</h4>
+      <p>Service de metadonnees pour les films et series televisees (affiches, descriptions, informations sur la distribution). Aucune donnee utilisateur n'est partagee avec TMDB ; seules des requetes de metadonnees sont effectuees.</p>
+      <p>Siege : Etats-Unis<br><a href="https://www.themoviedb.org/privacy-policy" class="link" target="_blank">Politique de Confidentialite de TMDB</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Resend (e-mails transactionnels)</h4>
+      <p>Service d'envoi d'e-mails transactionnels (confirmation d'inscription, reinitialisation du mot de passe, notifications de compte). Seule l'adresse e-mail de l'utilisateur est partagee aux fins d'envoi.</p>
+      <p>Siege : Etats-Unis<br><a href="https://resend.com/legal/privacy-policy" class="link" target="_blank">Politique de Confidentialite de Resend</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Netcup GmbH (hebergement)</h4>
+      <p>Hebergement de l'infrastructure serveur. Les donnees sont stockees dans des centres de donnees situes a Nuremberg, Allemagne (UE).</p>
+      <p>Siege : Allemagne<br><a href="https://www.netcup.de/kontakt/datenschutzerklaerung.php" class="link" target="_blank">Politique de Confidentialite de Netcup</a></p>
+    </div>
+
+    <div class="provider-box">
+      <h4>Cloudflare (CDN et securite)</h4>
+      <p>Reseau de distribution de contenu (CDN) et protection contre les attaques DDoS. Cloudflare peut traiter les adresses IP et les donnees techniques des requetes pour assurer la securite et les performances du service.</p>
+      <p>Siege : Etats-Unis (avec reseau mondial)<br><a href="https://www.cloudflare.com/privacypolicy/" class="link" target="_blank">Politique de Confidentialite de Cloudflare</a></p>
+    </div>
+
+    <h2>7. Conservation des Donnees</h2>
     <ul>
-      <li>Accès, rectification, suppression, portabilité, opposition</li>
+      <li>Les donnees du compte sont conservees pendant toute la duree du compte actif.</li>
+      <li>En cas de suppression du compte, toutes les donnees personnelles sont supprimees dans un delai de <strong>30 jours</strong>.</li>
+      <li>Les journaux techniques sont conserves pendant un maximum de <strong>90 jours</strong>, puis automatiquement supprimes.</li>
+      <li>Les donnees relatives aux transactions peuvent etre conservees plus longtemps conformement aux obligations legales et fiscales applicables (jusqu'a 10 ans selon la legislation suisse).</li>
     </ul>
-    <p>Contact: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <h2>8. Transferts de Donnees</h2>
+    <p>Les donnees principales sont stockees sur des serveurs situes dans l'Union europeenne (Allemagne). Certains de nos fournisseurs de services ont leur siege aux Etats-Unis. Dans ces cas, les transferts sont proteges par :</p>
+    <ul>
+      <li>Des decisions d'adequation de la Commission europeenne (le cas echeant)</li>
+      <li>Des clauses contractuelles types (CCT) approuvees par la Commission europeenne</li>
+      <li>Des mesures supplementaires de protection des donnees</li>
+    </ul>
+    <p>La Suisse est reconnue par l'UE comme un pays offrant un niveau adequat de protection des donnees. Les transferts entre la Suisse et l'Espace economique europeen ne necessitent pas de garanties supplementaires.</p>
+
+    <h2>9. Vie Privee des Enfants</h2>
+    <p>BurgTV ne s'adresse pas aux enfants de moins de <strong>13 ans</strong>. Nous ne collectons pas sciemment de donnees personnelles aupres d'enfants de moins de 13 ans. Si un parent ou tuteur estime que son enfant nous a fourni des donnees personnelles, il est prie de nous contacter a <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> et nous procederons a leur suppression dans les meilleurs delais.</p>
+
+    <h2>10. Droits de l'Utilisateur (RGPD)</h2>
+    <p>Conformement au Reglement General sur la Protection des Donnees (RGPD), les utilisateurs ont droit a :</p>
+    <ul>
+      <li><strong>Acces (Art. 15) :</strong> obtenir la confirmation du traitement et une copie de leurs donnees personnelles</li>
+      <li><strong>Rectification (Art. 16) :</strong> corriger des donnees inexactes ou incompletes</li>
+      <li><strong>Effacement (Art. 17) :</strong> demander la suppression de leurs donnees personnelles ("droit a l'oubli")</li>
+      <li><strong>Limitation du traitement (Art. 18) :</strong> demander la limitation du traitement dans certaines circonstances</li>
+      <li><strong>Portabilite (Art. 20) :</strong> recevoir leurs donnees personnelles dans un format structure, couramment utilise et lisible par machine</li>
+      <li><strong>Opposition (Art. 21) :</strong> s'opposer au traitement fonde sur l'interet legitime</li>
+      <li><strong>Retrait du consentement :</strong> retirer le consentement au traitement a tout moment, sans affecter la licite du traitement anterieur</li>
+      <li><strong>Reclamation (Art. 77) :</strong> deposer une reclamation aupres d'une autorite de controle (p. ex., le Prepose federal a la protection des donnees et a la transparence - PFPDT, en Suisse ; ou l'autorite competente dans votre pays)</li>
+    </ul>
+    <p>Pour exercer ces droits, contactez : <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Nous repondrons dans un delai de 30 jours a compter de la reception de votre demande.</p>
+
+    <h2>11. Protection des Donnees Suisse (nLPD/nDSG)</h2>
+    <p>Outre la conformite au RGPD, BurgTV respecte la nouvelle Loi federale suisse sur la protection des donnees (nLPD), entree en vigueur le 1er septembre 2023. En particulier :</p>
+    <ul>
+      <li>Nous informons les utilisateurs de maniere transparente sur tout traitement de leurs donnees personnelles.</li>
+      <li>Nous traitons les donnees personnelles uniquement conformement aux principes de proportionnalite et de bonne foi.</li>
+      <li>Nous mettons en oeuvre des mesures techniques et organisationnelles appropriees pour proteger les donnees personnelles.</li>
+      <li>Nous garantissons les droits des personnes concernees prevus par la nLPD, y compris le droit a l'information, a la rectification et a la suppression.</li>
+    </ul>
+
+    <h2>12. Cookies et Stockage Local</h2>
+    <p>L'application BurgTV utilise le stockage local de l'appareil (localStorage / SharedPreferences) exclusivement pour :</p>
+    <ul>
+      <li>Stocker le jeton d'authentification de la session</li>
+      <li>Enregistrer les preferences de l'utilisateur (langue, parametres de l'app)</li>
+      <li>Mettre en cache des donnees techniques pour ameliorer les performances</li>
+    </ul>
+    <p>Le site web burgtv.com peut utiliser des cookies techniques essentiels au fonctionnement du site. Nous n'utilisons pas de cookies de profilage, de suivi ou publicitaires.</p>
+
+    <h2>13. Mesures de Securite</h2>
+    <p>Nous mettons en oeuvre des mesures techniques et organisationnelles appropriees pour proteger les donnees personnelles :</p>
+    <ul>
+      <li>Toutes les communications sont protegees par le chiffrement <strong>HTTPS/TLS</strong></li>
+      <li>Les mots de passe sont haches avec des algorithmes securises (<strong>bcrypt</strong>)</li>
+      <li>L'acces aux donnees est restreint au personnel autorise et surveille</li>
+      <li>Les serveurs sont proteges par des pare-feu et des systemes de detection d'intrusion</li>
+      <li>Des sauvegardes regulieres chiffrees sont effectuees</li>
+      <li>Les API sont protegees par l'authentification et la limitation des requetes</li>
+    </ul>
+
+    <h2>14. Modifications de la Politique de Confidentialite</h2>
+    <p>Nous pouvons mettre a jour la presente Politique de Confidentialite periodiquement pour refleter des changements dans nos pratiques ou pour des raisons legales. Les modifications significatives seront communiquees par e-mail ou par un avis dans l'application avec un preavis d'au moins 30 jours. La date de la derniere mise a jour est toujours indiquee au debut du document.</p>
+
+    <h2>15. Contact et Delegue a la Protection des Donnees</h2>
+    <p>Pour toute question relative a la confidentialite, pour exercer vos droits ou pour tout signalement :</p>
+    <p><strong>BurgTV - Protection des Donnees</strong><br>Lugano, Suisse<br><strong>E-mail :</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a><br><strong>Site web :</strong> <a href="https://burgtv.com" class="link">burgtv.com</a></p>
   </div>
+
 </div>
 <script>
   const menuToggle=document.getElementById('menuToggle'),sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
