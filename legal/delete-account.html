@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BurgTV – Account & Data Deletion</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .nav-left{display:flex;align-items:center;gap:16px}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
+    .brand img{height:48px;width:auto}
+    .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px;transition:all 0.3s ease}
+    .menu-toggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
+    .menu-toggle.active span:nth-child(2){opacity:0}
+    .menu-toggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-8px)}
+    .sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,0.98);backdrop-filter:blur(20px);border-right:1px solid var(--border);transition:left 0.3s ease;z-index:99;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+    .sidebar-logo{height:40px;width:auto}
+    .sidebar-nav{padding:20px 0}
+    .sidebar-nav a{display:flex;align-items:center;padding:16px 24px;color:var(--text);text-decoration:none;font-size:16px;transition:all 0.3s ease;border-left:3px solid transparent}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+    .sidebar-nav a.active{background:rgba(185,74,142,.1);border-left-color:var(--accent);color:#fff}
+    .sidebar-nav a span{margin-right:12px;font-size:20px}
+    .sidebar-divider{height:1px;background:var(--border);margin:10px 20px}
+    .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:98}
+    .sidebar-overlay.active{display:block}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px;transition:all 0.3s ease}
+    .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
+    .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
+    h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
+    p,li{color:var(--muted)}
+    ul,ol{margin:0 0 18px 22px}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+    a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+    a.link:hover{color:#fff;border-bottom-color:#fff}
+    .update-date{margin:8px 0 18px;color:var(--muted);font-size:0.95rem}
+    .highlight-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:20px;margin:16px 0}
+    .highlight-box p{margin:8px 0}
+    .highlight-box strong{color:var(--accent)}
+    .action-btn{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;padding:14px 32px;border-radius:10px;font-weight:600;margin:10px 0;transition:transform 0.2s}
+    .action-btn:hover{transform:translateY(-2px)}
+    @media(max-width:768px){.lang-switch button{padding:4px 8px;font-size:12px}h1{font-size:1.8rem}}
+  </style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><img src="/assets/branding/logo.png" class="sidebar-logo" alt="BurgTV"/></div>
+  <nav class="sidebar-nav">
+    <a href="/"><span>🏠</span><span data-i18n="menu.home">Home</span></a>
+    <a href="https://app.burgtv.com/login.html"><span>🔐</span><span data-i18n="menu.login">Accedi</span></a>
+    <div class="sidebar-divider"></div>
+    <a href="/legal/terms.html"><span>📄</span><span data-i18n="menu.terms">Termini di Servizio</span></a>
+    <a href="/legal/privacy.html"><span>🔒</span><span data-i18n="menu.privacy">Privacy Policy</span></a>
+    <a href="/legal/delete-account.html" class="active"><span>🗑️</span><span data-i18n="menu.delete">Cancellazione Account</span></a>
+    <a href="mailto:info@burgtv.com"><span>📧</span><span data-i18n="menu.contact">Contatti</span></a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      <a class="brand" href="/"><img src="/assets/branding/logo.png" alt="BurgTV"/></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+      <button id="btn-de">DE</button>
+      <button id="btn-es">ES</button>
+      <button id="btn-fr">FR</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+
+  <!-- ITALIANO -->
+  <div id="content-it" class="card">
+    <h1>Cancellazione Account e Dati</h1>
+    <p class="update-date">Ultimo aggiornamento: 14 aprile 2026</p>
+
+    <p>In conformita' al Regolamento Generale sulla Protezione dei Dati (GDPR) e alla Legge federale svizzera sulla protezione dei dati (nLPD/nDSG), hai il diritto di richiedere la cancellazione del tuo account BurgTV e/o dei tuoi dati personali in qualsiasi momento.</p>
+
+    <h2>1. Cancellare l'intero account</h2>
+    <p>Per richiedere la cancellazione completa del tuo account e di tutti i dati associati, invia un'email a <a href="mailto:info@burgtv.com?subject=Richiesta%20cancellazione%20account" class="link">info@burgtv.com</a> con oggetto "Richiesta cancellazione account" includendo:</p>
+    <ul>
+      <li>L'indirizzo email associato al tuo account BurgTV</li>
+      <li>Conferma esplicita della richiesta di cancellazione</li>
+    </ul>
+
+    <div class="highlight-box">
+      <p><strong>Dati che verranno cancellati:</strong></p>
+      <ul>
+        <li>Account (email, password, ID dispositivo)</li>
+        <li>Licenze e abbonamenti attivi</li>
+        <li>Log tecnici associati</li>
+        <li>Dati di pagamento (Stripe non conserva dati carta lato BurgTV)</li>
+      </ul>
+      <p><strong>Tempo di elaborazione:</strong> la cancellazione avverra' entro 30 giorni dalla ricezione della richiesta.</p>
+    </div>
+
+    <h2>2. Cancellare solo alcuni dati (senza cancellare l'account)</h2>
+    <p>Se desideri cancellare solo parte dei tuoi dati mantenendo attivo l'account, puoi:</p>
+    <ul>
+      <li>Inviare un'email a <a href="mailto:info@burgtv.com?subject=Richiesta%20cancellazione%20dati%20parziale" class="link">info@burgtv.com</a> specificando quali dati desideri rimuovere</li>
+      <li>Accedere al portale <a href="https://app.burgtv.com" class="link">app.burgtv.com</a> e gestire le impostazioni del tuo account</li>
+    </ul>
+
+    <h2>3. Contatti</h2>
+    <p>Per qualsiasi domanda sulla cancellazione dei dati:</p>
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><a href="mailto:info@burgtv.com?subject=Richiesta%20cancellazione%20account" class="action-btn">Richiedi cancellazione via email</a></p>
+  </div>
+
+  <!-- ENGLISH -->
+  <div id="content-en" class="card" style="display:none">
+    <h1>Account & Data Deletion</h1>
+    <p class="update-date">Last updated: April 14, 2026</p>
+
+    <p>In accordance with the General Data Protection Regulation (GDPR) and the Swiss Federal Act on Data Protection (nFADP), you have the right to request deletion of your BurgTV account and/or your personal data at any time.</p>
+
+    <h2>1. Delete entire account</h2>
+    <p>To request full deletion of your account and all associated data, send an email to <a href="mailto:info@burgtv.com?subject=Account%20deletion%20request" class="link">info@burgtv.com</a> with subject "Account deletion request" including:</p>
+    <ul>
+      <li>The email address associated with your BurgTV account</li>
+      <li>Explicit confirmation of the deletion request</li>
+    </ul>
+
+    <div class="highlight-box">
+      <p><strong>Data that will be deleted:</strong></p>
+      <ul>
+        <li>Account (email, password, device ID)</li>
+        <li>Active licenses and subscriptions</li>
+        <li>Technical logs associated</li>
+        <li>Payment data (Stripe does not retain card data on BurgTV side)</li>
+      </ul>
+      <p><strong>Processing time:</strong> deletion will be completed within 30 days of receiving the request.</p>
+    </div>
+
+    <h2>2. Delete only some data (without deleting the account)</h2>
+    <p>If you wish to delete only part of your data while keeping your account active, you can:</p>
+    <ul>
+      <li>Send an email to <a href="mailto:info@burgtv.com?subject=Partial%20data%20deletion%20request" class="link">info@burgtv.com</a> specifying which data you want removed</li>
+      <li>Access the portal <a href="https://app.burgtv.com" class="link">app.burgtv.com</a> and manage your account settings</li>
+    </ul>
+
+    <h2>3. Contact</h2>
+    <p>For any questions about data deletion:</p>
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><a href="mailto:info@burgtv.com?subject=Account%20deletion%20request" class="action-btn">Request deletion via email</a></p>
+  </div>
+
+  <!-- DEUTSCH -->
+  <div id="content-de" class="card" style="display:none">
+    <h1>Konto- und Datenloeschung</h1>
+    <p class="update-date">Letzte Aktualisierung: 14. April 2026</p>
+
+    <p>Gemaess der Datenschutz-Grundverordnung (DSGVO) und dem Schweizer Bundesgesetz ueber den Datenschutz (revDSG) haben Sie das Recht, die Loeschung Ihres BurgTV-Kontos und/oder Ihrer personenbezogenen Daten jederzeit zu verlangen.</p>
+
+    <h2>1. Gesamtes Konto loeschen</h2>
+    <p>Um die vollstaendige Loeschung Ihres Kontos und aller zugehoerigen Daten zu beantragen, senden Sie eine E-Mail an <a href="mailto:info@burgtv.com?subject=Antrag%20auf%20Kontoloeschung" class="link">info@burgtv.com</a>.</p>
+
+    <h2>2. Nur bestimmte Daten loeschen</h2>
+    <p>Wenn Sie nur einen Teil Ihrer Daten loeschen moechten, senden Sie eine E-Mail an <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> und geben Sie an, welche Daten entfernt werden sollen.</p>
+
+    <h2>3. Kontakt</h2>
+    <p><strong>E-Mail:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><a href="mailto:info@burgtv.com?subject=Antrag%20auf%20Kontoloeschung" class="action-btn">Loeschung per E-Mail beantragen</a></p>
+  </div>
+
+  <!-- ESPANOL -->
+  <div id="content-es" class="card" style="display:none">
+    <h1>Eliminacion de Cuenta y Datos</h1>
+    <p class="update-date">Ultima actualizacion: 14 de abril de 2026</p>
+
+    <p>De conformidad con el Reglamento General de Proteccion de Datos (RGPD) y la Ley Federal Suiza de Proteccion de Datos (nLPD), tiene derecho a solicitar la eliminacion de su cuenta BurgTV y/o sus datos personales en cualquier momento.</p>
+
+    <h2>1. Eliminar toda la cuenta</h2>
+    <p>Para solicitar la eliminacion completa de su cuenta, envie un correo a <a href="mailto:info@burgtv.com?subject=Solicitud%20de%20eliminacion%20de%20cuenta" class="link">info@burgtv.com</a>.</p>
+
+    <h2>2. Eliminar solo algunos datos</h2>
+    <p>Si desea eliminar solo parte de sus datos, envie un correo a <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> especificando que datos desea eliminar.</p>
+
+    <h2>3. Contacto</h2>
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><a href="mailto:info@burgtv.com?subject=Solicitud%20de%20eliminacion%20de%20cuenta" class="action-btn">Solicitar eliminacion por email</a></p>
+  </div>
+
+  <!-- FRANCAIS -->
+  <div id="content-fr" class="card" style="display:none">
+    <h1>Suppression du Compte et des Donnees</h1>
+    <p class="update-date">Derniere mise a jour: 14 avril 2026</p>
+
+    <p>Conformement au Reglement General sur la Protection des Donnees (RGPD) et a la Loi federale suisse sur la protection des donnees (nLPD), vous avez le droit de demander la suppression de votre compte BurgTV et/ou de vos donnees personnelles a tout moment.</p>
+
+    <h2>1. Supprimer le compte entier</h2>
+    <p>Pour demander la suppression complete de votre compte, envoyez un email a <a href="mailto:info@burgtv.com?subject=Demande%20de%20suppression%20de%20compte" class="link">info@burgtv.com</a>.</p>
+
+    <h2>2. Supprimer uniquement certaines donnees</h2>
+    <p>Si vous souhaitez supprimer uniquement une partie de vos donnees, envoyez un email a <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> en precisant quelles donnees vous souhaitez supprimer.</p>
+
+    <h2>3. Contact</h2>
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><a href="mailto:info@burgtv.com?subject=Demande%20de%20suppression%20de%20compte" class="action-btn">Demander la suppression par email</a></p>
+  </div>
+
+</div>
+
+<script>
+  // Language switcher
+  const langs=['it','en','de','es','fr'];
+  langs.forEach(l=>{
+    document.getElementById('btn-'+l).addEventListener('click',()=>{
+      langs.forEach(x=>{
+        document.getElementById('content-'+x).style.display=(x===l?'block':'none');
+        document.getElementById('btn-'+x).classList.toggle('active',x===l);
+      });
+    });
+  });
+  // Sidebar toggle
+  const toggle=document.getElementById('menuToggle');
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('overlay');
+  toggle.addEventListener('click',()=>{
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    toggle.classList.toggle('active');
+  });
+  overlay.addEventListener('click',()=>{
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    toggle.classList.remove('active');
+  });
+</script>
+</body>
+</html>
