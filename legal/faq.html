@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,15 +7,19 @@
   <meta name="description" content="Legal FAQ for BurgTV: is BurgTV legal, what is a neutral media player, DMCA compliance, user responsibilities, and more.">
   <link rel="icon" href="/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="/assets/js/lang-dropdown.js" defer></script>
   <style>
     :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.75}
     .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto;gap:12px}
     .brand{display:flex;align-items:center;text-decoration:none;color:#fff;gap:10px}
     .brand img{height:40px}
     .brand strong{font-size:1.05rem}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:12px;padding:6px 12px;cursor:pointer;font-size:14px;transition:all .3s}
+    .lang-switch button.active{background:rgba(255,255,255,.1);border-color:#fff}
     .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
     h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .subtitle{color:var(--muted);margin-bottom:40px;font-size:1.05rem}
@@ -25,188 +29,141 @@
     summary::-webkit-details-marker{display:none}
     summary::after{content:'+';font-size:1.5rem;color:var(--accent);transition:transform .2s}
     details[open] summary::after{transform:rotate(45deg)}
-    .body{margin-top:14px;color:var(--muted);font-size:0.98rem}
+    .body{margin-top:14px;color:var(--muted);font-size:.98rem}
     .body p{margin-bottom:12px}
-    .body a{color:var(--accent);text-decoration:none;border-bottom:1px dotted rgba(185,74,142,0.4)}
+    .body a{color:var(--accent);text-decoration:none;border-bottom:1px dotted rgba(185,74,142,.4)}
     .body a:hover{color:#fff;border-bottom-color:#fff}
     .body strong{color:#fff}
     .body ul{margin:10px 0 10px 22px}
     .body li{margin-bottom:6px}
-    .date{color:var(--muted);font-size:0.9rem;margin-bottom:8px}
-    footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.9rem}
+    .date{color:var(--muted);font-size:.9rem;margin-bottom:8px}
+    footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.9rem}
     footer a{color:var(--accent);text-decoration:none}
     footer a:hover{text-decoration:underline}
-    .back{display:inline-block;margin-bottom:24px;color:var(--muted);text-decoration:none;font-size:0.95rem}
+    .back{display:inline-block;margin-bottom:24px;color:var(--muted);text-decoration:none;font-size:.95rem}
     .back:hover{color:var(--accent)}
-    @media(max-width:640px){
-      .nav{padding:0 16px}
-      .nav-inner{height:60px}
-      .brand img{height:32px}
-      .brand strong{font-size:0.95rem}
-      .wrap{padding:32px 16px}
-      h1{font-size:1.7rem}
-      .subtitle{font-size:0.95rem}
-      details{padding:18px 20px}
-      summary{font-size:0.98rem}
-      .body{font-size:0.92rem}
-    }
+    .lang-block{display:none}
+    .lang-block.active{display:block}
+    @media(max-width:640px){.nav{padding:0 16px}.nav-inner{height:60px}.brand img{height:32px}.brand strong{font-size:.95rem}.wrap{padding:32px 16px}h1{font-size:1.7rem}.subtitle{font-size:.95rem}details{padding:18px 20px}summary{font-size:.98rem}.body{font-size:.92rem}}
   </style>
-  <script src="/assets/js/lang-dropdown.js" defer></script>
 </head>
 <body>
 
 <div class="nav">
   <div class="nav-inner">
     <a class="brand" href="https://burgtv.com/"><img src="/logo.png" alt="BurgTV"><strong>BurgTV Legal Hub</strong></a>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+      <button id="btn-de">DE</button>
+      <button id="btn-es">ES</button>
+      <button id="btn-fr">FR</button>
+    </div>
   </div>
 </div>
 
 <div class="wrap">
-  <a class="back" href="/legal/">← Back to Legal Hub</a>
+  <a class="back" href="/legal/">← Legal Hub</a>
 
+<div class="lang-block active" id="content-it">
+  <h1>FAQ Legali</h1>
+  <p class="date">Ultimo aggiornamento: 14 aprile 2026</p>
+  <p class="subtitle">Risposte alle domande legali più comuni su BurgTV. Per chiarimenti, contatta <a href="mailto:legal@burgtv.com" style="color:var(--accent)">legal@burgtv.com</a>.</p>
+  <details open><summary>BurgTV è legale?</summary><div class="body"><p><strong>Sì.</strong> BurgTV è un media player neutro, legalmente equivalente a player come VLC, MX Player, Kodi o Plex. L'app:</p><ul><li>Non ospita, distribuisce, trasmette o fornisce contenuti protetti</li><li>Non include playlist, canali o URL preconfigurati</li><li>Non promuove siti pirata, torrent o sorgenti illegali</li><li>Richiede all'utente di fornire la propria sorgente legittima</li></ul><p>La legalità del <em>contenuto</em> dipende interamente dalla tua sorgente.</p></div></details>
+  <details><summary>Cos'è un "media player neutro"?</summary><div class="body"><p>Software progettato esclusivamente per riprodurre file o stream, senza fornire o aggregare contenuti. Esempi: VLC, MX Player, mpv, Kodi, ExoPlayer, Plex client, Jellyfin client. BurgTV rientra nella stessa categoria.</p></div></details>
+  <details><summary>Posso usare BurgTV con abbonamenti IPTV pirata?</summary><div class="body"><p><strong>No.</strong> Viola i nostri <a href="/legal/terms.html">Termini</a> e la <a href="/legal/aup.html">Policy di Uso Accettabile</a>. BurgTV è progettato per:</p><ul><li>Abbonamenti IPTV legittimi</li><li>Server self-hosted (Plex, Jellyfin, Emby)</li><li>Contenuti Creative Commons/dominio pubblico</li><li>Playlist M3U legali</li></ul></div></details>
+  <details><summary>Chi è responsabile di ciò che guardo?</summary><div class="body"><p><strong>Tu.</strong> BurgTV è uno strumento passivo come un browser. La responsabilità è dell'utente. Dottrina "Sony Betamax" (USA) e principi simili in UE.</p></div></details>
+  <details><summary>E se per sbaglio uso una sorgente pirata?</summary><div class="body"><p>Rimuovila da <code>Impostazioni → Playlist</code>. Nessun log su cosa guardi sui nostri server.</p></div></details>
+  <details><summary>BurgTV rispetta il DMCA?</summary><div class="body"><p><strong>Sì.</strong> Conforme a DMCA (USA), Direttiva UE Copyright. <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>. Risposta entro 48h lavorative. Vedi <a href="/legal/dmca.html">DMCA Policy</a>.</p></div></details>
+  <details><summary>BurgTV è conforme a GDPR/CCPA?</summary><div class="body"><p><strong>Sì.</strong> Conforme a 🇪🇺 GDPR, 🇬🇧 UK GDPR, 🇺🇸 CCPA, 🇧🇷 LGPD, 🇨🇦 PIPEDA, 🇯🇵 APPI, 🇨🇭 nFADP. Vedi <a href="/legal/privacy.html">Privacy</a>.</p></div></details>
+  <details><summary>Perché BurgTV non è su Google Play/App Store/Amazon?</summary><div class="body"><p>Gli store applicano policy più severe della legge. App "IPTV player" sono spesso rifiutate da sistemi automatici. Disponibile su APKPure, Huawei AppGallery, <a href="https://download.burgtv.com">download.burgtv.com</a>.</p></div></details>
+  <details><summary>Posso distribuire l'APK ad altri?</summary><div class="body"><p>Sì, puoi condividere l'APK originale e non modificato. Non puoi modificarlo, distribuirlo con playlist pirata, venderlo o spacciartelo come tuo.</p></div></details>
+  <details><summary>Cosa fa un titolare di diritti se sospetta abusi?</summary><div class="body"><p>Contatta <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a> o <a href="mailto:abuse@burgtv.com">abuse@burgtv.com</a>. Cooperiamo con le forze dell'ordine.</p></div></details>
+  <details><summary>Quale giurisdizione governa BurgTV?</summary><div class="body"><p><strong>Svizzera.</strong> Termini regolati dalla legge svizzera. Per utenti UE, conformità alle norme di tutela del consumatore (es. diritto di recesso 14 giorni per Premium).</p></div></details>
+  <details><summary>BurgTV ha chat o contenuti utente-utente?</summary><div class="body"><p><strong>No.</strong> Solo media player. Nessuna chat, social, contenuti generati dagli utenti, P2P. "Servizio passivo della società dell'informazione" sotto la legge UE.</p></div></details>
+  <details><summary>Usate i miei dati per AI o vendita a terzi?</summary><div class="body"><p><strong>No.</strong> Non vendiamo né affittiamo dati. Nessun training AI. Solo crash report anonimi via Firebase Crashlytics.</p></div></details>
+  <details><summary>Come cancello account e dati?</summary><div class="body"><p>Diritto all'oblio (GDPR Art. 17). Vai su <a href="/legal/delete-account.html">Cancellazione Account</a> o scrivi a <a href="mailto:privacy@burgtv.com">privacy@burgtv.com</a>. Adempimento entro 30 giorni.</p></div></details>
+</div>
+
+<div class="lang-block" id="content-en">
   <h1>Legal FAQ</h1>
   <p class="date">Last updated: April 14, 2026</p>
-  <p class="subtitle">Answers to the most common legal questions about BurgTV. If you need clarification beyond what is covered here, contact <a href="mailto:legal@burgtv.com" style="color:var(--accent)">legal@burgtv.com</a>.</p>
+  <p class="subtitle">Answers to common legal questions about BurgTV. Contact <a href="mailto:legal@burgtv.com" style="color:var(--accent)">legal@burgtv.com</a>.</p>
+  <details open><summary>Is BurgTV legal?</summary><div class="body"><p><strong>Yes.</strong> BurgTV is a neutral media player, legally equivalent to VLC, MX Player, Kodi, or Plex. The app:</p><ul><li>Does not host, distribute, stream, or provide any copyrighted content</li><li>Does not include any pre-loaded playlists, channels, or streaming URLs</li><li>Does not promote piracy websites, torrents, or illegal sources</li><li>Requires users to provide their own legitimate media source</li></ul></div></details>
+  <details><summary>What is a "neutral media player"?</summary><div class="body"><p>Software designed solely to play media files or streams, without providing or aggregating content. Examples: VLC, MX Player, mpv, Kodi, ExoPlayer, Plex client, Jellyfin client. BurgTV is in the same category.</p></div></details>
+  <details><summary>Can I use BurgTV with pirated IPTV subscriptions?</summary><div class="body"><p><strong>No.</strong> Violates our <a href="/legal/terms.html">Terms</a> and <a href="/legal/aup.html">AUP</a>. BurgTV is for:</p><ul><li>Legitimate IPTV subscriptions</li><li>Self-hosted servers (Plex, Jellyfin, Emby)</li><li>Creative Commons/public-domain content</li><li>Legal M3U playlists</li></ul></div></details>
+  <details><summary>Who is legally responsible for what I watch?</summary><div class="body"><p><strong>You are.</strong> BurgTV is a passive tool like a web browser. "Sony Betamax" doctrine (USA), similar in EU.</p></div></details>
+  <details><summary>What if I accidentally use a pirated source?</summary><div class="body"><p>Remove it from <code>Settings → Playlists</code>. No logs of what you watch on our servers.</p></div></details>
+  <details><summary>Does BurgTV comply with DMCA?</summary><div class="body"><p><strong>Yes.</strong> Compliant with DMCA (USA), EU Copyright Directive. Contact <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>. 48h response. See <a href="/legal/dmca.html">DMCA Policy</a>.</p></div></details>
+  <details><summary>Is BurgTV GDPR/CCPA compliant?</summary><div class="body"><p><strong>Yes.</strong> Compliant with 🇪🇺 GDPR, 🇬🇧 UK GDPR, 🇺🇸 CCPA, 🇧🇷 LGPD, 🇨🇦 PIPEDA, 🇯🇵 APPI, 🇨🇭 nFADP. See <a href="/legal/privacy.html">Privacy</a>.</p></div></details>
+  <details><summary>Why is BurgTV not on Google Play/App Store/Amazon?</summary><div class="body"><p>Stores apply stricter policies than law. "IPTV player" apps often rejected by automated systems. Available on APKPure, Huawei AppGallery, <a href="https://download.burgtv.com">download.burgtv.com</a>.</p></div></details>
+  <details><summary>Can I distribute the APK to others?</summary><div class="body"><p>Yes, share the original unmodified APK. You cannot modify it, bundle with pirated playlists, sell it, or claim ownership.</p></div></details>
+  <details><summary>What if a rights holder suspects abuse?</summary><div class="body"><p>Contact <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a> or <a href="mailto:abuse@burgtv.com">abuse@burgtv.com</a>. We cooperate with law enforcement.</p></div></details>
+  <details><summary>What jurisdiction governs BurgTV?</summary><div class="body"><p><strong>Switzerland.</strong> Swiss law applies. EU users have full consumer rights (14-day cooling-off for Premium).</p></div></details>
+  <details><summary>Does BurgTV have chat or user-to-user content?</summary><div class="body"><p><strong>No.</strong> Only a media player. No chat, social, UGC, P2P. "Passive information society service" under EU law.</p></div></details>
+  <details><summary>Do you use my data for AI or sell to third parties?</summary><div class="body"><p><strong>No.</strong> No data sales, no AI training. Only anonymous crash reports via Firebase Crashlytics.</p></div></details>
+  <details><summary>How do I delete account and data?</summary><div class="body"><p>Right to erasure (GDPR Art. 17). Visit <a href="/legal/delete-account.html">Account Deletion</a> or email <a href="mailto:privacy@burgtv.com">privacy@burgtv.com</a>. Fulfilled within 30 days.</p></div></details>
+</div>
 
-  <details open>
-    <summary>Is BurgTV legal?</summary>
-    <div class="body">
-      <p><strong>Yes.</strong> BurgTV is a neutral media player, legally equivalent to well-known media players such as VLC Media Player, MX Player, Kodi, or Plex. The app itself:</p>
-      <ul>
-        <li>Does not host, distribute, stream, or provide any copyrighted content</li>
-        <li>Does not include any pre-loaded playlists, channels, or streaming URLs</li>
-        <li>Does not promote or link to piracy websites, torrents, or illegal sources</li>
-        <li>Requires users to provide their own legitimate media source</li>
-      </ul>
-      <p>The legality of the <em>content</em> you play through BurgTV depends entirely on whether your source is legitimate. BurgTV is not responsible for user content.</p>
-    </div>
-  </details>
+<div class="lang-block" id="content-de">
+  <h1>Rechtliche FAQ</h1>
+  <p class="date">Zuletzt aktualisiert: 14. April 2026</p>
+  <p class="subtitle">Antworten auf häufige rechtliche Fragen zu BurgTV. Kontakt <a href="mailto:legal@burgtv.com" style="color:var(--accent)">legal@burgtv.com</a>.</p>
+  <details open><summary>Ist BurgTV legal?</summary><div class="body"><p><strong>Ja.</strong> BurgTV ist ein neutraler Media Player, rechtlich gleichwertig mit VLC, MX Player, Kodi oder Plex. Die App:</p><ul><li>Hostet, verteilt, streamt oder liefert keine geschützten Inhalte</li><li>Enthält keine vorgeladenen Playlists, Sender oder URLs</li><li>Bewirbt keine Piraterie-Websites, Torrents oder illegalen Quellen</li><li>Erfordert eigene legitime Medienquelle</li></ul></div></details>
+  <details><summary>Was ist ein "neutraler Media Player"?</summary><div class="body"><p>Software ausschließlich zur Wiedergabe ohne Bereitstellung von Inhalten. Beispiele: VLC, MX Player, mpv, Kodi, ExoPlayer, Plex-Client, Jellyfin-Client. BurgTV ist in derselben Kategorie.</p></div></details>
+  <details><summary>Kann ich BurgTV mit raubkopierten IPTV-Abos nutzen?</summary><div class="body"><p><strong>Nein.</strong> Verstößt gegen <a href="/legal/terms.html">Bedingungen</a> und <a href="/legal/aup.html">Nutzungsrichtlinie</a>. BurgTV ist für:</p><ul><li>Legitime IPTV-Abos</li><li>Selbst-gehostete Server (Plex, Jellyfin, Emby)</li><li>Creative Commons / gemeinfreie Inhalte</li><li>Legale M3U-Playlists</li></ul></div></details>
+  <details><summary>Wer ist verantwortlich für das, was ich ansehe?</summary><div class="body"><p><strong>Sie.</strong> BurgTV ist ein passives Werkzeug wie ein Browser. "Sony Betamax"-Doktrin (USA), Ähnliches in EU.</p></div></details>
+  <details><summary>Was, wenn ich versehentlich eine raubkopierte Quelle verwende?</summary><div class="body"><p>Entfernen über <code>Einstellungen → Playlists</code>. Keine Logs auf unseren Servern.</p></div></details>
+  <details><summary>Erfüllt BurgTV DMCA?</summary><div class="body"><p><strong>Ja.</strong> Konform mit DMCA (USA), EU-Urheberrechtsrichtlinie. Kontakt <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>. 48h Antwort. Siehe <a href="/legal/dmca.html">DMCA</a>.</p></div></details>
+  <details><summary>Ist BurgTV DSGVO/CCPA-konform?</summary><div class="body"><p><strong>Ja.</strong> Konform mit 🇪🇺 DSGVO, 🇬🇧 UK GDPR, 🇺🇸 CCPA, 🇧🇷 LGPD, 🇨🇦 PIPEDA, 🇯🇵 APPI, 🇨🇭 nFADP. Siehe <a href="/legal/privacy.html">Datenschutz</a>.</p></div></details>
+  <details><summary>Warum ist BurgTV nicht im Google Play / App Store / Amazon?</summary><div class="body"><p>Stores wenden striktere Richtlinien an als das Gesetz. "IPTV-Player"-Apps werden oft abgelehnt. Verfügbar auf APKPure, Huawei AppGallery, <a href="https://download.burgtv.com">download.burgtv.com</a>.</p></div></details>
+  <details><summary>Kann ich die APK weitergeben?</summary><div class="body"><p>Ja, die originale unveränderte APK. Sie dürfen sie nicht modifizieren, mit raubkopierten Playlists bündeln, verkaufen oder als eigene ausgeben.</p></div></details>
+  <details><summary>Was tun Rechteinhaber bei Missbrauchsverdacht?</summary><div class="body"><p>Kontakt <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a> oder <a href="mailto:abuse@burgtv.com">abuse@burgtv.com</a>. Wir kooperieren mit Behörden.</p></div></details>
+  <details><summary>Welche Gerichtsbarkeit gilt für BurgTV?</summary><div class="body"><p><strong>Schweiz.</strong> Schweizer Recht. EU-Nutzer haben volle Verbraucherrechte (14-tägiges Widerrufsrecht für Premium).</p></div></details>
+  <details><summary>Hat BurgTV Chat oder Nutzerinhalte?</summary><div class="body"><p><strong>Nein.</strong> Nur Media Player. Keine Chats, Social, UGC, P2P. "Passiver Informationsdienst" nach EU-Recht.</p></div></details>
+  <details><summary>Nutzen Sie meine Daten für KI oder Verkauf?</summary><div class="body"><p><strong>Nein.</strong> Kein Datenverkauf, kein KI-Training. Nur anonyme Absturzberichte via Firebase Crashlytics.</p></div></details>
+  <details><summary>Wie lösche ich Konto und Daten?</summary><div class="body"><p>Recht auf Löschung (DSGVO Art. 17). Siehe <a href="/legal/delete-account.html">Kontolöschung</a> oder E-Mail <a href="mailto:privacy@burgtv.com">privacy@burgtv.com</a>. Innerhalb von 30 Tagen erfüllt.</p></div></details>
+</div>
 
-  <details>
-    <summary>What is a "neutral media player"?</summary>
-    <div class="body">
-      <p>A <strong>neutral media player</strong> is software designed solely to play back media files or streams, without itself providing, indexing, or aggregating content. The player is <em>content-agnostic</em>: it plays what you give it.</p>
-      <p>Examples of widely accepted neutral media players: VLC, MX Player, mpv, Kodi (core), ExoPlayer, Plex client, Jellyfin client.</p>
-      <p>BurgTV falls into the same category. The media you play is entirely under your control and sourced from your own legitimate subscription or server.</p>
-    </div>
-  </details>
+<div class="lang-block" id="content-es">
+  <h1>FAQ Legales</h1>
+  <p class="date">Última actualización: 14 de abril de 2026</p>
+  <p class="subtitle">Respuestas a preguntas legales comunes sobre BurgTV. Contacta <a href="mailto:legal@burgtv.com" style="color:var(--accent)">legal@burgtv.com</a>.</p>
+  <details open><summary>¿Es legal BurgTV?</summary><div class="body"><p><strong>Sí.</strong> BurgTV es un reproductor multimedia neutral, equivalente legal a VLC, MX Player, Kodi o Plex. La app:</p><ul><li>No aloja, distribuye o transmite contenido protegido</li><li>No incluye listas, canales o URLs precargadas</li><li>No promueve sitios pirata, torrents o fuentes ilegales</li><li>Requiere fuente legítima del usuario</li></ul></div></details>
+  <details><summary>¿Qué es un "reproductor multimedia neutral"?</summary><div class="body"><p>Software diseñado solo para reproducir archivos o streams, sin proporcionar contenido. Ejemplos: VLC, MX Player, mpv, Kodi, ExoPlayer, cliente Plex, cliente Jellyfin. BurgTV está en la misma categoría.</p></div></details>
+  <details><summary>¿Puedo usar BurgTV con suscripciones IPTV piratas?</summary><div class="body"><p><strong>No.</strong> Viola nuestros <a href="/legal/terms.html">Términos</a> y <a href="/legal/aup.html">AUP</a>. BurgTV es para:</p><ul><li>Suscripciones IPTV legítimas</li><li>Servidores auto-alojados (Plex, Jellyfin, Emby)</li><li>Contenido Creative Commons/dominio público</li><li>Listas M3U legales</li></ul></div></details>
+  <details><summary>¿Quién es responsable de lo que veo?</summary><div class="body"><p><strong>Tú.</strong> BurgTV es una herramienta pasiva como un navegador. Doctrina "Sony Betamax" (EE. UU.), similar en UE.</p></div></details>
+  <details><summary>¿Y si uso accidentalmente una fuente pirata?</summary><div class="body"><p>Elimínala desde <code>Configuración → Listas</code>. No hay logs en nuestros servidores.</p></div></details>
+  <details><summary>¿BurgTV cumple con DMCA?</summary><div class="body"><p><strong>Sí.</strong> Cumple con DMCA (EE. UU.), Directiva UE Copyright. Contacto <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>. Respuesta 48h. Ver <a href="/legal/dmca.html">DMCA</a>.</p></div></details>
+  <details><summary>¿BurgTV cumple GDPR/CCPA?</summary><div class="body"><p><strong>Sí.</strong> Cumple con 🇪🇺 GDPR, 🇬🇧 UK GDPR, 🇺🇸 CCPA, 🇧🇷 LGPD, 🇨🇦 PIPEDA, 🇯🇵 APPI, 🇨🇭 nFADP. Ver <a href="/legal/privacy.html">Privacidad</a>.</p></div></details>
+  <details><summary>¿Por qué no está en Google Play/App Store/Amazon?</summary><div class="body"><p>Los stores aplican políticas más estrictas que la ley. Apps "IPTV player" son frecuentemente rechazadas. Disponible en APKPure, Huawei AppGallery, <a href="https://download.burgtv.com">download.burgtv.com</a>.</p></div></details>
+  <details><summary>¿Puedo distribuir el APK a otros?</summary><div class="body"><p>Sí, comparte el APK original sin modificar. No puedes modificarlo, distribuirlo con listas piratas, venderlo o atribuirte autoría.</p></div></details>
+  <details><summary>¿Qué hace un titular de derechos si sospecha abuso?</summary><div class="body"><p>Contacta <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a> o <a href="mailto:abuse@burgtv.com">abuse@burgtv.com</a>. Cooperamos con autoridades.</p></div></details>
+  <details><summary>¿Qué jurisdicción rige BurgTV?</summary><div class="body"><p><strong>Suiza.</strong> Ley suiza. Usuarios UE tienen plenos derechos del consumidor (14 días desistimiento Premium).</p></div></details>
+  <details><summary>¿BurgTV tiene chat o contenido usuario-usuario?</summary><div class="body"><p><strong>No.</strong> Solo reproductor. Sin chat, social, UGC, P2P. "Servicio pasivo de la sociedad de la información" bajo ley UE.</p></div></details>
+  <details><summary>¿Usan mis datos para IA o venta a terceros?</summary><div class="body"><p><strong>No.</strong> Sin venta de datos, sin entrenamiento IA. Solo informes anónimos via Firebase Crashlytics.</p></div></details>
+  <details><summary>¿Cómo elimino cuenta y datos?</summary><div class="body"><p>Derecho al olvido (GDPR Art. 17). Ver <a href="/legal/delete-account.html">Eliminación</a> o email <a href="mailto:privacy@burgtv.com">privacy@burgtv.com</a>. Cumplido en 30 días.</p></div></details>
+</div>
 
-  <details>
-    <summary>Can I use BurgTV with pirated IPTV subscriptions?</summary>
-    <div class="body">
-      <p><strong>No.</strong> Using BurgTV to access unauthorized, pirated, or illegally-redistributed streams is a violation of our <a href="/legal/terms.html">Terms of Service</a> and <a href="/legal/aup.html">Acceptable Use Policy</a>.</p>
-      <p>BurgTV is designed for use with:</p>
-      <ul>
-        <li>Legitimate IPTV subscriptions purchased from authorized providers</li>
-        <li>Your own Plex, Jellyfin, Emby, or similar self-hosted media server</li>
-        <li>Creative Commons or public-domain content you own the rights to</li>
-        <li>Legal M3U playlists from broadcasters who explicitly authorize redistribution</li>
-      </ul>
-    </div>
-  </details>
-
-  <details>
-    <summary>Who is legally responsible for what I watch through BurgTV?</summary>
-    <div class="body">
-      <p><strong>You are.</strong> BurgTV is a passive tool, like a web browser or a video player. The responsibility for the legality of content accessed rests entirely with the user (you).</p>
-      <p>Courts worldwide have consistently held that neutral tools (VCR, web browsers, media players) are not liable for user misuse. This doctrine (the "Sony Betamax doctrine" in the USA, and similar principles in EU case law) is the basis on which BurgTV operates.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>What if I accidentally use a pirated source?</summary>
-    <div class="body">
-      <p>If you unknowingly added a pirated IPTV source, remove it immediately from <code>Settings → Playlists</code>. No logs are kept on our servers of what you watch.</p>
-      <p>If you receive a notice from your ISP or a rights holder, the responsibility is yours. BurgTV cannot protect users from the legal consequences of accessing unauthorized content.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>Does BurgTV comply with DMCA?</summary>
-    <div class="body">
-      <p><strong>Yes.</strong> BurgTV complies fully with the Digital Millennium Copyright Act (DMCA, USA), the EU Copyright Directive (2001/29/EC and 2019/790), and similar national copyright frameworks.</p>
-      <p>We maintain a full <a href="/legal/dmca.html">DMCA Takedown Policy</a> with dedicated contact procedures at <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>.</p>
-      <p>We respond to valid takedown notices within 48 hours (business days).</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>Is BurgTV compliant with GDPR, CCPA, and other privacy laws?</summary>
-    <div class="body">
-      <p><strong>Yes.</strong> BurgTV is compliant with:</p>
-      <ul>
-        <li>🇪🇺 <strong>GDPR</strong> (EU General Data Protection Regulation)</li>
-        <li>🇬🇧 <strong>UK GDPR</strong></li>
-        <li>🇺🇸 <strong>CCPA / CPRA</strong> (California Consumer Privacy Act)</li>
-        <li>🇧🇷 <strong>LGPD</strong> (Brazil General Data Protection Law)</li>
-        <li>🇨🇦 <strong>PIPEDA</strong> (Canada)</li>
-        <li>🇯🇵 <strong>APPI</strong> (Japan)</li>
-        <li>🇨🇭 <strong>nFADP</strong> (Swiss Federal Act on Data Protection)</li>
-      </ul>
-      <p>See our <a href="/legal/privacy.html">Privacy Policy</a> for the full data processing information.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>Why is BurgTV not on Google Play / App Store / Amazon?</summary>
-    <div class="body">
-      <p>Many official app stores apply stricter content policies than the law itself. Apps classified as "IPTV players" are frequently rejected by automated review systems, even when the app is legally a neutral media player.</p>
-      <p>BurgTV has been submitted to multiple stores. We're available on APKPure, Huawei AppGallery, and via direct download from <a href="https://download.burgtv.com">download.burgtv.com</a>. We continue to work with store reviews to clarify our neutral-player nature.</p>
-      <p>This situation is common in our category — similar apps like IPTV Smarters, Kodi, and Xciptv are distributed primarily outside main stores.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>Can I distribute BurgTV or the APK to others?</summary>
-    <div class="body">
-      <p>Yes, <strong>you can freely share the original, unmodified APK</strong> downloaded from <a href="https://download.burgtv.com">download.burgtv.com</a> or our official GitHub releases. The app is free for personal use.</p>
-      <p>You may <strong>not</strong>:</p>
-      <ul>
-        <li>Modify or repackage the APK (this breaks the digital signature)</li>
-        <li>Distribute the app bundled with pirated playlists or IPTV credentials</li>
-        <li>Sell the app or charge for access to it</li>
-        <li>Claim it as your own work</li>
-      </ul>
-    </div>
-  </details>
-
-  <details>
-    <summary>What if a rights holder wants to contact BurgTV about misuse?</summary>
-    <div class="body">
-      <p>We welcome direct communication from rights holders. For copyright issues, contact <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>. For abuse reports, contact <a href="mailto:abuse@burgtv.com">abuse@burgtv.com</a>.</p>
-      <p>BurgTV does not and cannot identify specific users, as the app does not collect such data. However, we cooperate fully with law enforcement in response to valid legal process.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>What jurisdiction governs BurgTV?</summary>
-    <div class="body">
-      <p>BurgTV is developed and operated from <strong>Switzerland</strong>. Our Terms of Service are governed by Swiss law. Our data handling follows the Swiss Federal Act on Data Protection (nFADP) and, where applicable, GDPR (via Swiss–EU adequacy).</p>
-      <p>For EU users, we comply with EU consumer protection rights, including the right of withdrawal (14-day cooling-off period for Premium subscriptions).</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>Does BurgTV support two-way communication / chat / user-to-user content?</summary>
-    <div class="body">
-      <p><strong>No.</strong> BurgTV is a media player. It does not offer any social features, chat, user-generated content hosting, messaging, or peer-to-peer sharing. This reduces our regulatory footprint and matches the definition of a "passive information society service" under EU e-commerce law.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>Do you use my data for AI training or sell it to third parties?</summary>
-    <div class="body">
-      <p><strong>No, absolutely not.</strong> BurgTV does not sell, rent, or lease user data to any third party. We do not use user data for AI training. The only data collected are anonymous crash reports (Firebase Crashlytics) used exclusively to diagnose and fix bugs.</p>
-    </div>
-  </details>
-
-  <details>
-    <summary>How do I delete my account and all data?</summary>
-    <div class="body">
-      <p>You have the right to erasure under GDPR Article 17, CCPA, LGPD, and equivalent laws. Visit our <a href="/legal/delete-account.html">Account Deletion page</a> or email <a href="mailto:privacy@burgtv.com">privacy@burgtv.com</a>.</p>
-      <p>We fulfill deletion requests within 30 days (typically much sooner).</p>
-    </div>
-  </details>
+<div class="lang-block" id="content-fr">
+  <h1>FAQ Juridique</h1>
+  <p class="date">Dernière mise à jour : 14 avril 2026</p>
+  <p class="subtitle">Réponses aux questions juridiques courantes sur BurgTV. Contact <a href="mailto:legal@burgtv.com" style="color:var(--accent)">legal@burgtv.com</a>.</p>
+  <details open><summary>BurgTV est-il légal ?</summary><div class="body"><p><strong>Oui.</strong> BurgTV est un lecteur multimédia neutre, équivalent légal à VLC, MX Player, Kodi ou Plex. L'application :</p><ul><li>N'héberge, distribue ou diffuse aucun contenu protégé</li><li>N'inclut aucune playlist, chaîne ou URL préchargées</li><li>Ne promeut aucun site pirate, torrent ou source illégale</li><li>Nécessite source légitime de l'utilisateur</li></ul></div></details>
+  <details><summary>Qu'est-ce qu'un "lecteur multimédia neutre" ?</summary><div class="body"><p>Logiciel uniquement pour lire des fichiers ou streams, sans fournir de contenu. Exemples : VLC, MX Player, mpv, Kodi, ExoPlayer, client Plex, client Jellyfin. BurgTV est dans la même catégorie.</p></div></details>
+  <details><summary>Puis-je utiliser BurgTV avec abonnements IPTV piratés ?</summary><div class="body"><p><strong>Non.</strong> Viole nos <a href="/legal/terms.html">Conditions</a> et <a href="/legal/aup.html">Politique d'Usage</a>. BurgTV est pour :</p><ul><li>Abonnements IPTV légitimes</li><li>Serveurs auto-hébergés (Plex, Jellyfin, Emby)</li><li>Contenus Creative Commons/domaine public</li><li>Playlists M3U légales</li></ul></div></details>
+  <details><summary>Qui est responsable de ce que je regarde ?</summary><div class="body"><p><strong>Vous.</strong> BurgTV est un outil passif comme un navigateur. Doctrine "Sony Betamax" (USA), similaire en UE.</p></div></details>
+  <details><summary>Et si j'utilise accidentellement une source piratée ?</summary><div class="body"><p>Supprimez-la depuis <code>Paramètres → Playlists</code>. Aucun journal sur nos serveurs.</p></div></details>
+  <details><summary>BurgTV respecte-t-il le DMCA ?</summary><div class="body"><p><strong>Oui.</strong> Conforme au DMCA (USA), Directive Européenne. Contact <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a>. Réponse 48h. Voir <a href="/legal/dmca.html">DMCA</a>.</p></div></details>
+  <details><summary>BurgTV est-il conforme RGPD/CCPA ?</summary><div class="body"><p><strong>Oui.</strong> Conforme à 🇪🇺 RGPD, 🇬🇧 UK GDPR, 🇺🇸 CCPA, 🇧🇷 LGPD, 🇨🇦 PIPEDA, 🇯🇵 APPI, 🇨🇭 nFADP. Voir <a href="/legal/privacy.html">Confidentialité</a>.</p></div></details>
+  <details><summary>Pourquoi pas sur Google Play/App Store/Amazon ?</summary><div class="body"><p>Les stores appliquent des politiques plus strictes que la loi. Les apps "IPTV player" sont fréquemment rejetées. Disponible sur APKPure, Huawei AppGallery, <a href="https://download.burgtv.com">download.burgtv.com</a>.</p></div></details>
+  <details><summary>Puis-je distribuer l'APK ?</summary><div class="body"><p>Oui, l'APK original non modifié. Vous ne pouvez pas le modifier, l'associer à des playlists pirates, le vendre ou en revendiquer la paternité.</p></div></details>
+  <details><summary>Que fait un titulaire de droits en cas de soupçon d'abus ?</summary><div class="body"><p>Contact <a href="mailto:dmca@burgtv.com">dmca@burgtv.com</a> ou <a href="mailto:abuse@burgtv.com">abuse@burgtv.com</a>. Nous coopérons avec les autorités.</p></div></details>
+  <details><summary>Quelle juridiction régit BurgTV ?</summary><div class="body"><p><strong>Suisse.</strong> Droit suisse. Utilisateurs UE ont droits consommateurs complets (rétractation 14j Premium).</p></div></details>
+  <details><summary>BurgTV a-t-il chat ou contenu utilisateur ?</summary><div class="body"><p><strong>Non.</strong> Uniquement lecteur. Pas de chat, social, UGC, P2P. "Service passif de la société de l'information" sous loi UE.</p></div></details>
+  <details><summary>Utilisez mes données pour IA ou vente ?</summary><div class="body"><p><strong>Non.</strong> Pas de vente, pas d'IA. Uniquement rapports de plantage anonymes via Firebase Crashlytics.</p></div></details>
+  <details><summary>Comment supprimer compte et données ?</summary><div class="body"><p>Droit à l'effacement (RGPD Art. 17). Voir <a href="/legal/delete-account.html">Suppression</a> ou email <a href="mailto:privacy@burgtv.com">privacy@burgtv.com</a>. Réalisé sous 30 jours.</p></div></details>
+</div>
 
 </div>
 
@@ -214,6 +171,14 @@
   <p>© 2026 BurgTV — Developed in Switzerland 🇨🇭</p>
   <p style="margin-top:10px"><a href="/legal/">Legal Hub</a> · <a href="https://burgtv.com/">BurgTV Home</a> · <a href="mailto:legal@burgtv.com">legal@burgtv.com</a></p>
 </footer>
+
+<script>
+function setLang(l){document.querySelectorAll('.lang-block').forEach(b=>b.classList.toggle('active',b.id==='content-'+l));document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));const btn=document.getElementById('btn-'+l);if(btn)btn.classList.add('active');document.documentElement.lang=l;localStorage.setItem('preferredLang',l)}
+document.addEventListener('DOMContentLoaded',function(){
+  ['it','en','de','es','fr'].forEach(l=>{const b=document.getElementById('btn-'+l);if(b)b.addEventListener('click',()=>setLang(l))});
+  setLang(localStorage.getItem('preferredLang')||'it');
+});
+</script>
 
 </body>
 </html>
