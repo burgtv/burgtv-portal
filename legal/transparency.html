@@ -28,9 +28,11 @@
     .kpi{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
     .kpi .value{font-size:2rem;font-weight:800;color:var(--accent);display:block;margin-bottom:6px}
     .kpi .label{color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px}
-    table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.93rem}
-    th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border);color:var(--muted)}
+    .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;border-radius:8px}
+    table{width:100%;border-collapse:collapse;font-size:0.93rem;min-width:480px}
+    th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border);color:var(--muted);white-space:nowrap}
     th{color:var(--accent);font-weight:600;text-transform:uppercase;font-size:0.8rem;letter-spacing:0.5px}
+    @media(max-width:640px){h1{font-size:1.7rem}h2{font-size:1.2rem}h3{font-size:1rem}.wrap{padding:28px 16px}.card{padding:16px}.kpi{padding:14px}.kpi .value{font-size:1.5rem}th,td{padding:10px;font-size:0.85rem}}
     a{color:var(--accent);text-decoration:none;border-bottom:1px dotted rgba(185,74,142,0.4)}
     a:hover{color:#fff;border-bottom-color:#fff}
     .pill-green{display:inline-block;background:rgba(61,220,132,0.15);color:var(--green);font-size:0.75rem;padding:3px 10px;border-radius:999px;border:1px solid rgba(61,220,132,0.3)}
@@ -91,6 +93,7 @@
   <p>Below is a log of valid DMCA takedown notices received during this reporting period.</p>
 
   <div class="card">
+    <div class="table-wrap">
     <table>
       <thead>
         <tr>
@@ -108,6 +111,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 
   <p style="font-size:0.9rem;font-style:italic;margin-top:12px">To submit a DMCA notice, please follow the procedure in our <a href="/legal/dmca.html">DMCA Policy</a>. Valid notices are processed within 48 business hours.</p>
@@ -132,6 +136,7 @@
   </div>
 
   <div class="card">
+    <div class="table-wrap">
     <table>
       <thead>
         <tr>
@@ -149,6 +154,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 
   <h2>🔐 Data Breach Disclosures</h2>
@@ -161,6 +167,7 @@
   <h2>🚫 Terms of Service Enforcement</h2>
   <p>Actions taken against users violating our Terms of Service or Acceptable Use Policy.</p>
   <div class="card">
+    <div class="table-wrap">
     <table>
       <thead>
         <tr>
@@ -176,11 +183,13 @@
         <tr><td>Technical abuse (scraping, rate-limiting violations)</td><td>0</td><td>0</td><td>0</td></tr>
       </tbody>
     </table>
+    </div>
   </div>
 
   <h2>🌍 Store Submission Status</h2>
   <p>Transparency on our app store distribution efforts.</p>
   <div class="card">
+    <div class="table-wrap">
     <table>
       <thead>
         <tr>
@@ -227,6 +236,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 
   <h2>📈 Methodology</h2>
