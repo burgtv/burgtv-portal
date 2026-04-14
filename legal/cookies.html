@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BurgTV – Cookie Policy</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
+    .brand img{height:48px;width:auto}
+    .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px;transition:all 0.3s ease}
+    .sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,0.98);backdrop-filter:blur(20px);border-right:1px solid var(--border);transition:left 0.3s ease;z-index:99;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
+    .sidebar-logo{height:40px}
+    .sidebar-nav a{display:flex;align-items:center;padding:16px 24px;color:var(--text);text-decoration:none;font-size:16px;border-left:3px solid transparent}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+    .sidebar-nav a.active{background:rgba(185,74,142,.1);border-left-color:var(--accent)}
+    .sidebar-nav a span{margin-right:12px;font-size:20px}
+    .sidebar-divider{height:1px;background:var(--border);margin:10px 20px}
+    .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:98}
+    .sidebar-overlay.active{display:block}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px}
+    .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
+    .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
+    h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
+    p,li{color:var(--muted)}
+    ul{margin:0 0 18px 22px}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+    a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+    a.link:hover{color:#fff}
+    .update-date{margin:8px 0 18px;color:var(--muted);font-size:0.95rem}
+    .cookie-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:0.9rem}
+    .cookie-table th,.cookie-table td{text-align:left;padding:10px;border-bottom:1px solid var(--border);vertical-align:top}
+    .cookie-table th{color:var(--accent)}
+    .highlight-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:20px;margin:16px 0}
+  </style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><img src="/assets/branding/logo.png" class="sidebar-logo" alt="BurgTV"/></div>
+  <nav class="sidebar-nav">
+    <a href="/"><span>🏠</span><span>Home</span></a>
+    <a href="https://app.burgtv.com/login.html"><span>🔐</span><span>Accedi</span></a>
+    <div class="sidebar-divider"></div>
+    <a href="/legal/terms.html"><span>📄</span><span>Termini di Servizio</span></a>
+    <a href="/legal/privacy.html"><span>🔒</span><span>Privacy Policy</span></a>
+    <a href="/legal/cookies.html" class="active"><span>🍪</span><span>Cookie Policy</span></a>
+    <a href="/legal/aup.html"><span>📋</span><span>Acceptable Use</span></a>
+    <a href="/legal/dmca.html"><span>©</span><span>DMCA</span></a>
+    <a href="/legal/delete-account.html"><span>🗑️</span><span>Cancellazione Account</span></a>
+    <a href="mailto:info@burgtv.com"><span>📧</span><span>Contatti</span></a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div style="display:flex;align-items:center;gap:16px">
+      <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+      <a class="brand" href="/"><img src="/assets/branding/logo.png" alt="BurgTV"/></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+
+<div id="content-it" class="card">
+  <h1>Cookie Policy</h1>
+  <p class="update-date">Versione 2.0 — In vigore dal 14 aprile 2026</p>
+
+  <p>La presente Cookie Policy fornisce informazioni dettagliate sull'utilizzo dei cookie e di altre tecnologie di archiviazione locale sui siti web <strong>burgtv.com</strong> e <strong>app.burgtv.com</strong> (i "<strong>Siti</strong>") e nelle applicazioni <strong>BurgTV TV</strong> e <strong>BurgTV Mobile</strong> (le "<strong>Applicazioni</strong>"), in conformita' alla Direttiva ePrivacy 2002/58/CE, al GDPR e alla Legge federale svizzera sulla protezione dei dati.</p>
+
+  <h2>1. Cosa sono i cookie</h2>
+  <p>I cookie sono piccoli file di testo memorizzati dal browser dell'Utente sul dispositivo utilizzato per accedere ai Siti. Consentono di ricordare informazioni relative alle preferenze o all'identificazione della sessione.</p>
+
+  <h2>2. Tipologie di cookie utilizzati sui Siti</h2>
+  <p>I Siti utilizzano <strong>esclusivamente cookie tecnici strettamente necessari</strong> al funzionamento. Non vengono utilizzati cookie di profilazione, pubblicita' o tracciamento di terze parti.</p>
+
+  <h3>2.1 Cookie tecnici essenziali (esenti da consenso)</h3>
+  <table class="cookie-table">
+    <tr><th>Nome</th><th>Finalita'</th><th>Durata</th><th>Provenienza</th></tr>
+    <tr><td>burgtv_session</td><td>Token di autenticazione della sessione Utente</td><td>Sessione (max 30 giorni)</td><td>Prima parte</td></tr>
+    <tr><td>burgtv_lang</td><td>Memorizzazione lingua preferita</td><td>1 anno</td><td>Prima parte</td></tr>
+    <tr><td>cf_clearance</td><td>Cookie di sicurezza Cloudflare (protezione DDoS e bot)</td><td>30 giorni</td><td>Cloudflare (CDN)</td></tr>
+    <tr><td>__cf_bm</td><td>Cookie anti-bot Cloudflare</td><td>30 minuti</td><td>Cloudflare (CDN)</td></tr>
+  </table>
+  <p>Tali cookie sono <strong>strettamente necessari</strong> ai sensi dell'articolo 122 del Codice Privacy italiano e della normativa ePrivacy. Non richiedono consenso preventivo dell'Utente.</p>
+
+  <h3>2.2 Cookie NON utilizzati</h3>
+  <p>BurgTV <strong>non utilizza</strong> le seguenti categorie di cookie:</p>
+  <ul>
+    <li>Cookie di profilazione;</li>
+    <li>Cookie pubblicitari;</li>
+    <li>Cookie di social media (Facebook Pixel, Twitter, ecc.);</li>
+    <li>Cookie di analytics di terze parti (Google Analytics, Meta, ecc.);</li>
+    <li>Cookie di retargeting o remarketing.</li>
+  </ul>
+
+  <h2>3. Archiviazione locale nelle Applicazioni</h2>
+  <p>Le applicazioni BurgTV TV e BurgTV Mobile utilizzano l'archiviazione locale del dispositivo (localStorage, SharedPreferences, Keychain, Keystore) esclusivamente per:</p>
+  <table class="cookie-table">
+    <tr><th>Dato</th><th>Finalita'</th><th>Durata</th></tr>
+    <tr><td>Token di sessione</td><td>Autenticazione automatica</td><td>Fino a logout o scadenza</td></tr>
+    <tr><td>Preferenze Utente</td><td>Lingua, layout, impostazioni</td><td>Permanente</td></tr>
+    <tr><td>Cache tecnica</td><td>Performance e funzionamento offline</td><td>Gestione automatica</td></tr>
+    <tr><td>Device ID</td><td>Identificazione univoca del dispositivo</td><td>Fino a disinstallazione</td></tr>
+  </table>
+  <p>I dati sensibili (token di autenticazione) sono cifrati tramite i meccanismi di sicurezza nativi del sistema operativo (Android Keystore, iOS Keychain).</p>
+
+  <h2>4. Come gestire i cookie</h2>
+  <p>La maggior parte dei browser accetta i cookie per impostazione predefinita. L'Utente puo' configurare il proprio browser per:</p>
+  <ul>
+    <li>Visualizzare i cookie presenti sul dispositivo;</li>
+    <li>Accettare o rifiutare i cookie;</li>
+    <li>Cancellare i cookie gia' presenti;</li>
+    <li>Bloccare i cookie di determinati siti.</li>
+  </ul>
+  <p>Link utili per la gestione dei cookie nei principali browser:</p>
+  <ul>
+    <li><a href="https://support.google.com/chrome/answer/95647" class="link" target="_blank" rel="noopener">Google Chrome</a></li>
+    <li><a href="https://support.mozilla.org/kb/enable-and-disable-cookies-website-preferences" class="link" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+    <li><a href="https://support.apple.com/guide/safari/manage-cookies-sfri11471" class="link" target="_blank" rel="noopener">Apple Safari</a></li>
+    <li><a href="https://support.microsoft.com/help/4027947/microsoft-edge-delete-cookies" class="link" target="_blank" rel="noopener">Microsoft Edge</a></li>
+  </ul>
+  <div class="highlight-box">
+    <p><strong>Importante:</strong> la disabilitazione dei cookie strettamente necessari puo' compromettere il funzionamento dei Siti e impedire l'accesso all'area Utente.</p>
+  </div>
+
+  <h2>5. Do Not Track</h2>
+  <p>I Siti rispettano le impostazioni "Do Not Track" (DNT) del browser. Poiche' non utilizziamo cookie di tracciamento, tale impostazione non ha impatto pratico sulla navigazione.</p>
+
+  <h2>6. Modifiche alla Cookie Policy</h2>
+  <p>La presente Cookie Policy puo' essere aggiornata periodicamente. Le modifiche sostanziali saranno comunicate attraverso un avviso sui Siti con almeno 30 giorni di preavviso.</p>
+
+  <h2>7. Contatti</h2>
+  <div class="highlight-box">
+    <p><strong>BurgTV</strong></p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Svizzera</p>
+    <p>Email: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+</div>
+
+<div id="content-en" class="card" style="display:none">
+  <h1>Cookie Policy</h1>
+  <p class="update-date">Version 2.0 — Effective April 14, 2026</p>
+
+  <p>This Cookie Policy provides detailed information on the use of cookies and other local storage technologies on the <strong>burgtv.com</strong> and <strong>app.burgtv.com</strong> websites (the "<strong>Sites</strong>") and in the <strong>BurgTV TV</strong> and <strong>BurgTV Mobile</strong> applications (the "<strong>Applications</strong>"), in compliance with ePrivacy Directive 2002/58/EC, the GDPR, and the Swiss Federal Act on Data Protection.</p>
+
+  <h2>1. What are cookies</h2>
+  <p>Cookies are small text files stored by the User's browser on the device used to access the Sites. They enable remembering information related to preferences or session identification.</p>
+
+  <h2>2. Types of cookies used on the Sites</h2>
+  <p>The Sites use <strong>exclusively strictly necessary technical cookies</strong> for operation. No profiling, advertising, or third-party tracking cookies are used.</p>
+
+  <h3>2.1 Essential technical cookies (consent-exempt)</h3>
+  <table class="cookie-table">
+    <tr><th>Name</th><th>Purpose</th><th>Duration</th><th>Origin</th></tr>
+    <tr><td>burgtv_session</td><td>User session authentication token</td><td>Session (max 30 days)</td><td>First party</td></tr>
+    <tr><td>burgtv_lang</td><td>Store preferred language</td><td>1 year</td><td>First party</td></tr>
+    <tr><td>cf_clearance</td><td>Cloudflare security cookie (DDoS and bot protection)</td><td>30 days</td><td>Cloudflare (CDN)</td></tr>
+    <tr><td>__cf_bm</td><td>Cloudflare anti-bot cookie</td><td>30 minutes</td><td>Cloudflare (CDN)</td></tr>
+  </table>
+  <p>These cookies are <strong>strictly necessary</strong> under Article 5(3) of the ePrivacy Directive. They do not require prior User consent.</p>
+
+  <h3>2.2 Cookies NOT used</h3>
+  <p>BurgTV <strong>does not use</strong> the following cookie categories:</p>
+  <ul>
+    <li>Profiling cookies;</li>
+    <li>Advertising cookies;</li>
+    <li>Social media cookies (Facebook Pixel, Twitter, etc.);</li>
+    <li>Third-party analytics cookies (Google Analytics, Meta, etc.);</li>
+    <li>Retargeting or remarketing cookies.</li>
+  </ul>
+
+  <h2>3. Local storage in Applications</h2>
+  <p>The BurgTV TV and BurgTV Mobile applications use device local storage (localStorage, SharedPreferences, Keychain, Keystore) exclusively for:</p>
+  <table class="cookie-table">
+    <tr><th>Data</th><th>Purpose</th><th>Duration</th></tr>
+    <tr><td>Session token</td><td>Automatic authentication</td><td>Until logout or expiry</td></tr>
+    <tr><td>User preferences</td><td>Language, layout, settings</td><td>Permanent</td></tr>
+    <tr><td>Technical cache</td><td>Performance and offline operation</td><td>Automatic management</td></tr>
+    <tr><td>Device ID</td><td>Unique device identification</td><td>Until uninstall</td></tr>
+  </table>
+  <p>Sensitive data (authentication tokens) is encrypted via native operating system security mechanisms (Android Keystore, iOS Keychain).</p>
+
+  <h2>4. How to manage cookies</h2>
+  <p>Most browsers accept cookies by default. The User can configure their browser to:</p>
+  <ul>
+    <li>View cookies present on the device;</li>
+    <li>Accept or reject cookies;</li>
+    <li>Delete existing cookies;</li>
+    <li>Block cookies from specific sites.</li>
+  </ul>
+  <p>Useful links for cookie management in major browsers:</p>
+  <ul>
+    <li><a href="https://support.google.com/chrome/answer/95647" class="link" target="_blank" rel="noopener">Google Chrome</a></li>
+    <li><a href="https://support.mozilla.org/kb/enable-and-disable-cookies-website-preferences" class="link" target="_blank" rel="noopener">Mozilla Firefox</a></li>
+    <li><a href="https://support.apple.com/guide/safari/manage-cookies-sfri11471" class="link" target="_blank" rel="noopener">Apple Safari</a></li>
+    <li><a href="https://support.microsoft.com/help/4027947/microsoft-edge-delete-cookies" class="link" target="_blank" rel="noopener">Microsoft Edge</a></li>
+  </ul>
+  <div class="highlight-box">
+    <p><strong>Important:</strong> disabling strictly necessary cookies may impair Site functionality and prevent access to the User area.</p>
+  </div>
+
+  <h2>5. Do Not Track</h2>
+  <p>The Sites respect browser "Do Not Track" (DNT) settings. Since we do not use tracking cookies, this setting has no practical impact on navigation.</p>
+
+  <h2>6. Changes to this Cookie Policy</h2>
+  <p>This Cookie Policy may be updated periodically. Material changes will be communicated via notice on the Sites at least 30 days in advance.</p>
+
+  <h2>7. Contact</h2>
+  <div class="highlight-box">
+    <p><strong>BurgTV</strong></p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Switzerland</p>
+    <p>Email: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+</div>
+
+</div>
+<script>
+  ['it','en'].forEach(l=>{
+    document.getElementById('btn-'+l).addEventListener('click',()=>{
+      ['it','en'].forEach(x=>{
+        document.getElementById('content-'+x).style.display=(x===l?'block':'none');
+        document.getElementById('btn-'+x).classList.toggle('active',x===l);
+      });
+    });
+  });
+  const toggle=document.getElementById('menuToggle');
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('overlay');
+  toggle.addEventListener('click',()=>{sidebar.classList.toggle('active');overlay.classList.toggle('active');toggle.classList.toggle('active')});
+  overlay.addEventListener('click',()=>{sidebar.classList.remove('active');overlay.classList.remove('active');toggle.classList.remove('active')});
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BurgTV – Acceptable Use Policy</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12);--warn:#ff9b6f}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
+    .brand img{height:48px}
+    .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px}
+    .sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,0.98);backdrop-filter:blur(20px);border-right:1px solid var(--border);transition:left 0.3s ease;z-index:99;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
+    .sidebar-logo{height:40px}
+    .sidebar-nav a{display:flex;align-items:center;padding:16px 24px;color:var(--text);text-decoration:none;font-size:16px;border-left:3px solid transparent}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+    .sidebar-nav a.active{background:rgba(185,74,142,.1);border-left-color:var(--accent)}
+    .sidebar-nav a span{margin-right:12px;font-size:20px}
+    .sidebar-divider{height:1px;background:var(--border);margin:10px 20px}
+    .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:98}
+    .sidebar-overlay.active{display:block}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px}
+    .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
+    .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
+    h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
+    p,li{color:var(--muted)}
+    ul{margin:0 0 18px 22px}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+    a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+    a.link:hover{color:#fff}
+    .update-date{margin:8px 0 18px;color:var(--muted);font-size:0.95rem}
+    .warn-box{background:rgba(255,155,111,0.08);border:1px solid rgba(255,155,111,0.4);border-radius:10px;padding:20px;margin:16px 0}
+    .warn-box strong{color:var(--warn)}
+    .highlight-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:20px;margin:16px 0}
+  </style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><img src="/assets/branding/logo.png" class="sidebar-logo" alt="BurgTV"/></div>
+  <nav class="sidebar-nav">
+    <a href="/"><span>🏠</span><span>Home</span></a>
+    <a href="https://app.burgtv.com/login.html"><span>🔐</span><span>Accedi</span></a>
+    <div class="sidebar-divider"></div>
+    <a href="/legal/terms.html"><span>📄</span><span>Termini di Servizio</span></a>
+    <a href="/legal/privacy.html"><span>🔒</span><span>Privacy Policy</span></a>
+    <a href="/legal/cookies.html"><span>🍪</span><span>Cookie Policy</span></a>
+    <a href="/legal/aup.html" class="active"><span>📋</span><span>Acceptable Use</span></a>
+    <a href="/legal/dmca.html"><span>©</span><span>DMCA</span></a>
+    <a href="/legal/delete-account.html"><span>🗑️</span><span>Cancellazione Account</span></a>
+    <a href="mailto:info@burgtv.com"><span>📧</span><span>Contatti</span></a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div style="display:flex;align-items:center;gap:16px">
+      <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+      <a class="brand" href="/"><img src="/assets/branding/logo.png" alt="BurgTV"/></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+
+<div id="content-it" class="card">
+  <h1>Acceptable Use Policy (Politica di Uso Accettabile)</h1>
+  <p class="update-date">Versione 1.0 — In vigore dal 14 aprile 2026</p>
+
+  <p>La presente Acceptable Use Policy ("<strong>AUP</strong>") costituisce parte integrante dei Termini di Servizio di <strong>BurgTV</strong> e descrive i comportamenti consentiti e proibiti nell'utilizzo del Servizio. L'accettazione dei Termini di Servizio implica l'accettazione della presente AUP.</p>
+
+  <div class="warn-box">
+    <p><strong>⚠ BurgTV e' un media player neutro.</strong> L'Utente e' l'unico responsabile dei contenuti che riproduce tramite il Servizio. La presente AUP si applica al <strong>comportamento dell'Utente</strong> nell'uso del Servizio e alle <strong>fonti multimediali</strong> da esso utilizzate.</p>
+  </div>
+
+  <h2>1. Comportamenti Consentiti</h2>
+  <p>L'Utente puo' utilizzare il Servizio esclusivamente per:</p>
+  <ul>
+    <li>Scopi personali, privati e non commerciali;</li>
+    <li>Riprodurre contenuti multimediali di cui possiede legalmente i diritti di visualizzazione (contenuti acquistati, licenziati, di pubblico dominio, o forniti gratuitamente da titolari autorizzati);</li>
+    <li>Utilizzare servizi IPTV legali acquistati dall'Utente presso fornitori autorizzati, nei limiti delle condizioni contrattuali di tali fornitori;</li>
+    <li>Riprodurre contenuti sotto licenza Creative Commons o equivalenti;</li>
+    <li>Utilizzare le proprie playlist M3U o credenziali Xtream Codes di propria legittima titolarita';</li>
+    <li>Effettuare il backup e la riproduzione di DVD/Blu-ray di propria proprieta' nei limiti delle eccezioni di legge per la copia privata;</li>
+    <li>Gestire preferiti, cronologia e impostazioni personali;</li>
+    <li>Condividere feedback e suggerimenti costruttivi con il supporto BurgTV.</li>
+  </ul>
+
+  <h2>2. Comportamenti Proibiti</h2>
+  <p>E' espressamente vietato utilizzare il Servizio per attivita' che violino la presente AUP, incluse le seguenti categorie:</p>
+
+  <h3>2.1 Violazioni della proprieta' intellettuale</h3>
+  <ul>
+    <li>Riprodurre contenuti protetti da copyright senza la necessaria autorizzazione dei titolari dei diritti;</li>
+    <li>Utilizzare fonti IPTV pirata, servizi non autorizzati o abbonamenti ottenuti illegalmente;</li>
+    <li>Accedere a canali televisivi a pagamento senza regolare abbonamento presso il titolare originario;</li>
+    <li>Riprodurre materiale protetto da DRM bypassando le misure di protezione tecnologiche;</li>
+    <li>Condividere, redistribuire o rivendere contenuti di terze parti.</li>
+  </ul>
+
+  <h3>2.2 Attivita' illegali</h3>
+  <ul>
+    <li>Utilizzare il Servizio per commettere, facilitare o promuovere reati;</li>
+    <li>Riprodurre materiale illegale quale, a titolo esemplificativo: pornografia minorile, contenuti che incitano alla violenza, terrorismo, genocidio, discriminazione razziale o religiosa;</li>
+    <li>Utilizzare il Servizio per ricettazione, frode o altre attivita' illecite;</li>
+    <li>Violare leggi applicabili del paese di utilizzo.</li>
+  </ul>
+
+  <h3>2.3 Abusi tecnici</h3>
+  <ul>
+    <li>Decompilare, disassemblare, sottoporre a reverse engineering, modificare o creare opere derivate dell'applicazione;</li>
+    <li>Estrarre, copiare o riprodurre il codice sorgente dell'applicazione;</li>
+    <li>Bypassare misure di sicurezza, autenticazione, limitazioni del periodo di prova o restrizioni funzionali;</li>
+    <li>Utilizzare bot, scraper, crawler o altri strumenti automatizzati per accedere al Servizio;</li>
+    <li>Tentare di accedere ad account di altri Utenti o a sistemi non autorizzati;</li>
+    <li>Effettuare attacchi di qualsiasi tipo contro i server BurgTV (DDoS, SQL injection, XSS, ecc.);</li>
+    <li>Caricare malware, virus, worm, trojan, spyware o codice dannoso;</li>
+    <li>Eseguire port scanning, penetration testing non autorizzato o altre attivita' di hacking;</li>
+    <li>Creare account multipli con lo scopo di ottenere ripetuti periodi di prova gratuiti.</li>
+  </ul>
+
+  <h3>2.4 Uso commerciale non autorizzato</h3>
+  <ul>
+    <li>Rivendere, sublicenziare, noleggiare o trasferire l'accesso al Servizio a terzi;</li>
+    <li>Utilizzare il Servizio per attivita' commerciali, salvo specifica autorizzazione scritta di BurgTV;</li>
+    <li>Offrire il Servizio come parte di un pacchetto commerciale di terzi;</li>
+    <li>Utilizzare il Servizio in locali pubblici (bar, hotel, palestre) senza autorizzazione;</li>
+    <li>Effettuare trasmissioni pubbliche, broadcast o webcast dei contenuti riprodotti.</li>
+  </ul>
+
+  <h3>2.5 Uso improprio dell'account</h3>
+  <ul>
+    <li>Condividere credenziali con terzi non autorizzati;</li>
+    <li>Utilizzare informazioni false o impersonare terzi durante la registrazione;</li>
+    <li>Effettuare ripetute violazioni per ottenere rimborsi indebiti;</li>
+    <li>Eludere sospensioni o revoche precedenti tramite nuovi account.</li>
+  </ul>
+
+  <h3>2.6 Violazioni di diritti di terzi</h3>
+  <ul>
+    <li>Diffondere informazioni personali di terzi senza consenso;</li>
+    <li>Commettere diffamazione o violare il diritto alla riservatezza altrui;</li>
+    <li>Violare accordi contrattuali con fornitori IPTV autorizzati (es. servizi solo per uso personale che l'Utente distribuisce a terzi).</li>
+  </ul>
+
+  <h2>3. Responsabilita' dell'Utente</h2>
+  <p>L'Utente e' l'unico responsabile dei contenuti riprodotti tramite il Servizio e di tutte le conseguenze legali, civili, amministrative e penali che ne derivano. BurgTV non ha alcun controllo sui contenuti riprodotti dagli Utenti e declina ogni responsabilita' al riguardo.</p>
+  <p>Qualora un Utente ritenga di essere stato accusato ingiustamente di violazione dell'AUP, puo' contattare <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> fornendo documentazione a supporto della propria posizione.</p>
+
+  <h2>4. Segnalazioni di Violazioni</h2>
+  <p>Chiunque ritenga che un Utente del Servizio stia violando la presente AUP puo' segnalarlo a:</p>
+  <div class="highlight-box">
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><strong>Oggetto:</strong> "AUP Violation Report"</p>
+    <p><strong>Contenuto:</strong> descrizione della presunta violazione, identificativo dell'Utente (se noto), prove disponibili.</p>
+  </div>
+  <p>BurgTV esaminera' ogni segnalazione e adottera' le misure ritenute opportune, nel rispetto dei diritti di tutte le parti coinvolte.</p>
+
+  <h2>5. Conseguenze delle Violazioni</h2>
+  <p>In caso di violazione della presente AUP, BurgTV puo', a propria discrezione:</p>
+  <ul>
+    <li>Inviare un avviso formale all'Utente;</li>
+    <li>Sospendere temporaneamente l'accesso al Servizio;</li>
+    <li>Revocare permanentemente l'accesso al Servizio, senza diritto a rimborso;</li>
+    <li>Bloccare il device ID o l'indirizzo IP dell'Utente;</li>
+    <li>Segnalare la violazione alle autorita' competenti in caso di attivita' illegali;</li>
+    <li>Avviare azioni legali per il risarcimento di eventuali danni.</li>
+  </ul>
+  <p>Le misure adottate saranno proporzionate alla gravita' della violazione e terranno conto dell'eventuale ripetizione della condotta.</p>
+
+  <h2>6. Politica Repeat Infringer</h2>
+  <p>Gli Utenti che violino ripetutamente diritti di proprieta' intellettuale di terzi o altre disposizioni della presente AUP vedranno il proprio account permanentemente chiuso, in conformita' ai requisiti di legge (incluso il Digital Millennium Copyright Act e la Direttiva UE 2019/790).</p>
+
+  <h2>7. Modifiche all'AUP</h2>
+  <p>BurgTV puo' aggiornare la presente AUP in qualsiasi momento. Le modifiche sostanziali saranno comunicate tramite email o avviso nell'applicazione con preavviso di almeno 30 giorni.</p>
+
+  <h2>8. Contatti</h2>
+  <div class="highlight-box">
+    <p><strong>BurgTV</strong></p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Svizzera</p>
+    <p>Email: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+</div>
+
+<div id="content-en" class="card" style="display:none">
+  <h1>Acceptable Use Policy</h1>
+  <p class="update-date">Version 1.0 — Effective April 14, 2026</p>
+
+  <p>This Acceptable Use Policy ("<strong>AUP</strong>") forms an integral part of the <strong>BurgTV</strong> Terms of Service and describes permitted and prohibited conduct in Service use. Acceptance of the Terms of Service implies acceptance of this AUP.</p>
+
+  <div class="warn-box">
+    <p><strong>⚠ BurgTV is a neutral media player.</strong> The User is solely responsible for content played through the Service. This AUP applies to <strong>User conduct</strong> in Service use and to <strong>media sources</strong> used.</p>
+  </div>
+
+  <h2>1. Permitted Conduct</h2>
+  <p>The User may use the Service exclusively for:</p>
+  <ul>
+    <li>Personal, private, and non-commercial purposes;</li>
+    <li>Playing media content for which the User legally holds viewing rights (purchased, licensed, public domain, or freely provided by authorized rights holders);</li>
+    <li>Using legal IPTV services purchased by the User from authorized providers, within the contractual terms of such providers;</li>
+    <li>Playing content under Creative Commons or equivalent licenses;</li>
+    <li>Using the User's own M3U playlists or Xtream Codes credentials of legitimate ownership;</li>
+    <li>Backing up and playing DVDs/Blu-rays owned by the User within the legal exceptions for private copying;</li>
+    <li>Managing favorites, history, and personal settings;</li>
+    <li>Sharing constructive feedback and suggestions with BurgTV support.</li>
+  </ul>
+
+  <h2>2. Prohibited Conduct</h2>
+  <p>It is expressly prohibited to use the Service for activities violating this AUP, including the following categories:</p>
+
+  <h3>2.1 Intellectual property violations</h3>
+  <ul>
+    <li>Playing copyrighted content without necessary authorization from rights holders;</li>
+    <li>Using pirated IPTV sources, unauthorized services, or illegally obtained subscriptions;</li>
+    <li>Accessing pay TV channels without a regular subscription with the original rights holder;</li>
+    <li>Playing DRM-protected material bypassing technological protection measures;</li>
+    <li>Sharing, redistributing, or reselling third-party content.</li>
+  </ul>
+
+  <h3>2.2 Illegal activities</h3>
+  <ul>
+    <li>Using the Service to commit, facilitate, or promote crimes;</li>
+    <li>Playing illegal material such as, by way of example: child pornography, content inciting violence, terrorism, genocide, racial or religious discrimination;</li>
+    <li>Using the Service for receiving stolen goods, fraud, or other unlawful activities;</li>
+    <li>Violating applicable laws of the country of use.</li>
+  </ul>
+
+  <h3>2.3 Technical abuse</h3>
+  <ul>
+    <li>Decompiling, disassembling, reverse engineering, modifying, or creating derivative works of the application;</li>
+    <li>Extracting, copying, or reproducing application source code;</li>
+    <li>Bypassing security measures, authentication, trial period limitations, or functional restrictions;</li>
+    <li>Using bots, scrapers, crawlers, or other automated tools to access the Service;</li>
+    <li>Attempting to access other Users' accounts or unauthorized systems;</li>
+    <li>Performing attacks of any kind against BurgTV servers (DDoS, SQL injection, XSS, etc.);</li>
+    <li>Uploading malware, viruses, worms, trojans, spyware, or harmful code;</li>
+    <li>Performing port scanning, unauthorized penetration testing, or other hacking activities;</li>
+    <li>Creating multiple accounts to obtain repeated free trial periods.</li>
+  </ul>
+
+  <h3>2.4 Unauthorized commercial use</h3>
+  <ul>
+    <li>Reselling, sublicensing, renting, or transferring Service access to third parties;</li>
+    <li>Using the Service for commercial activities, except with BurgTV's specific written authorization;</li>
+    <li>Offering the Service as part of a third-party commercial package;</li>
+    <li>Using the Service in public premises (bars, hotels, gyms) without authorization;</li>
+    <li>Performing public transmissions, broadcasts, or webcasts of played content.</li>
+  </ul>
+
+  <h3>2.5 Account misuse</h3>
+  <ul>
+    <li>Sharing credentials with unauthorized third parties;</li>
+    <li>Using false information or impersonating others during registration;</li>
+    <li>Repeated violations to obtain undue refunds;</li>
+    <li>Evading previous suspensions or revocations through new accounts.</li>
+  </ul>
+
+  <h3>2.6 Third-party rights violations</h3>
+  <ul>
+    <li>Disclosing personal information of third parties without consent;</li>
+    <li>Defaming or violating others' right to privacy;</li>
+    <li>Violating contractual agreements with authorized IPTV providers (e.g., personal-use services that the User distributes to third parties).</li>
+  </ul>
+
+  <h2>3. User Responsibility</h2>
+  <p>The User is solely responsible for content played through the Service and all legal, civil, administrative, and criminal consequences arising. BurgTV has no control over content played by Users and disclaims all responsibility in this regard.</p>
+  <p>If a User believes they have been unjustly accused of AUP violation, they may contact <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a> providing supporting documentation.</p>
+
+  <h2>4. Violation Reports</h2>
+  <p>Anyone believing a Service User is violating this AUP may report to:</p>
+  <div class="highlight-box">
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><strong>Subject:</strong> "AUP Violation Report"</p>
+    <p><strong>Content:</strong> description of alleged violation, User identifier (if known), available evidence.</p>
+  </div>
+  <p>BurgTV will examine every report and take measures deemed appropriate, respecting the rights of all parties involved.</p>
+
+  <h2>5. Consequences of Violations</h2>
+  <p>In case of AUP violation, BurgTV may, at its discretion:</p>
+  <ul>
+    <li>Send a formal warning to the User;</li>
+    <li>Temporarily suspend Service access;</li>
+    <li>Permanently revoke Service access, without refund rights;</li>
+    <li>Block the User's device ID or IP address;</li>
+    <li>Report the violation to competent authorities in case of illegal activities;</li>
+    <li>Initiate legal actions for damages compensation.</li>
+  </ul>
+  <p>Measures adopted will be proportionate to violation severity and will consider any repeat conduct.</p>
+
+  <h2>6. Repeat Infringer Policy</h2>
+  <p>Users repeatedly violating third-party intellectual property rights or other provisions of this AUP will have their account permanently closed, in compliance with legal requirements (including the Digital Millennium Copyright Act and EU Directive 2019/790).</p>
+
+  <h2>7. Changes to this AUP</h2>
+  <p>BurgTV may update this AUP at any time. Material changes will be communicated via email or in-app notice at least 30 days in advance.</p>
+
+  <h2>8. Contact</h2>
+  <div class="highlight-box">
+    <p><strong>BurgTV</strong></p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Switzerland</p>
+    <p>Email: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+  </div>
+</div>
+
+</div>
+<script>
+  ['it','en'].forEach(l=>{
+    document.getElementById('btn-'+l).addEventListener('click',()=>{
+      ['it','en'].forEach(x=>{
+        document.getElementById('content-'+x).style.display=(x===l?'block':'none');
+        document.getElementById('btn-'+x).classList.toggle('active',x===l);
+      });
+    });
+  });
+  const toggle=document.getElementById('menuToggle');
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('overlay');
+  toggle.addEventListener('click',()=>{sidebar.classList.toggle('active');overlay.classList.toggle('active')});
+  overlay.addEventListener('click',()=>{sidebar.classList.remove('active');overlay.classList.remove('active')});
+</script>
+</body>
+</html>

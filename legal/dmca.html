@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BurgTV – DMCA Policy</title>
+  <link rel="icon" href="/favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
+    .brand img{height:48px}
+    .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px}
+    .sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,0.98);backdrop-filter:blur(20px);border-right:1px solid var(--border);transition:left 0.3s ease;z-index:99;overflow-y:auto}
+    .sidebar.active{left:0}
+    .sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
+    .sidebar-logo{height:40px}
+    .sidebar-nav a{display:flex;align-items:center;padding:16px 24px;color:var(--text);text-decoration:none;font-size:16px;border-left:3px solid transparent}
+    .sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:var(--accent)}
+    .sidebar-nav a.active{background:rgba(185,74,142,.1);border-left-color:var(--accent)}
+    .sidebar-nav a span{margin-right:12px;font-size:20px}
+    .sidebar-divider{height:1px;background:var(--border);margin:10px 20px}
+    .sidebar-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;z-index:98}
+    .sidebar-overlay.active{display:block}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px}
+    .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
+    .wrap{max-width:860px;margin:0 auto;padding:48px 20px}
+    h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
+    p,li{color:var(--muted)}
+    ul,ol{margin:0 0 18px 22px}
+    .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+    a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+    a.link:hover{color:#fff}
+    .update-date{margin:8px 0 18px;color:var(--muted);font-size:0.95rem}
+    .highlight-box{background:rgba(185,74,142,0.1);border:1px solid rgba(185,74,142,0.3);border-radius:10px;padding:20px;margin:16px 0}
+    .warn-box{background:rgba(255,155,111,0.08);border:1px solid rgba(255,155,111,0.4);border-radius:10px;padding:20px;margin:16px 0}
+    .warn-box strong{color:#ff9b6f}
+  </style>
+</head>
+<body>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header"><img src="/assets/branding/logo.png" class="sidebar-logo" alt="BurgTV"/></div>
+  <nav class="sidebar-nav">
+    <a href="/"><span>🏠</span><span>Home</span></a>
+    <a href="https://app.burgtv.com/login.html"><span>🔐</span><span>Accedi</span></a>
+    <div class="sidebar-divider"></div>
+    <a href="/legal/terms.html"><span>📄</span><span>Termini di Servizio</span></a>
+    <a href="/legal/privacy.html"><span>🔒</span><span>Privacy Policy</span></a>
+    <a href="/legal/cookies.html"><span>🍪</span><span>Cookie Policy</span></a>
+    <a href="/legal/aup.html"><span>📋</span><span>Acceptable Use</span></a>
+    <a href="/legal/dmca.html" class="active"><span>©</span><span>DMCA</span></a>
+    <a href="/legal/delete-account.html"><span>🗑️</span><span>Cancellazione Account</span></a>
+    <a href="mailto:info@burgtv.com"><span>📧</span><span>Contatti</span></a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="overlay"></div>
+<header class="nav">
+  <div class="nav-inner">
+    <div style="display:flex;align-items:center;gap:16px">
+      <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
+      <a class="brand" href="/"><img src="/assets/branding/logo.png" alt="BurgTV"/></a>
+    </div>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+
+<div id="content-it" class="card">
+  <h1>DMCA Copyright Policy</h1>
+  <p class="update-date">Versione 1.0 — In vigore dal 14 aprile 2026</p>
+
+  <p>BurgTV rispetta i diritti di proprieta' intellettuale e si aspetta che anche i propri Utenti facciano lo stesso. La presente politica DMCA ("<strong>Policy</strong>") stabilisce la procedura per la notifica di presunte violazioni del diritto d'autore e il trattamento di tali notifiche, in conformita' al Digital Millennium Copyright Act statunitense (17 U.S.C. § 512), alla Direttiva UE 2001/29/CE sul diritto d'autore, alla Direttiva UE 2019/790 sul diritto d'autore nel mercato unico digitale e alla Legge federale svizzera sul diritto d'autore (LDA).</p>
+
+  <div class="warn-box">
+    <p><strong>IMPORTANTE — LA NATURA DEL SERVIZIO BURGTV</strong></p>
+    <p>BurgTV e' un <strong>media player software</strong>. BurgTV <strong>non ospita, non archivia, non distribuisce, non indicizza e non riproduce direttamente</strong> alcun contenuto audiovisivo. L'applicazione consente esclusivamente agli Utenti di riprodurre contenuti da fonti esterne di propria scelta. BurgTV non ha alcun controllo, conoscenza o capacita' di intervento sui contenuti che l'Utente decide di riprodurre. Pertanto, le notifiche DMCA relative a specifici contenuti audiovisivi dovrebbero essere indirizzate direttamente al soggetto che ospita, trasmette o distribuisce tali contenuti.</p>
+  </div>
+
+  <h2>1. Agente Designato DMCA</h2>
+  <p>Ai sensi del DMCA (17 U.S.C. § 512(c)(2)), BurgTV ha designato il seguente agente per la ricezione di notifiche di presunta violazione del diritto d'autore:</p>
+  <div class="highlight-box">
+    <p><strong>DMCA Designated Agent</strong></p>
+    <p>BurgTV — Ditta individuale di Musa Bushi</p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Svizzera</p>
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><strong>Oggetto:</strong> "DMCA Notice"</p>
+  </div>
+
+  <h2>2. Presentazione di una Notifica DMCA (Takedown Notice)</h2>
+  <p>I titolari di diritti d'autore (o loro rappresentanti autorizzati) che ritengano che materiale protetto sia stato utilizzato in modo che costituisca violazione del diritto d'autore nell'ambito del Servizio possono inviare una notifica all'agente DMCA designato.</p>
+
+  <h3>2.1 Requisiti della Notifica (17 U.S.C. § 512(c)(3))</h3>
+  <p>Affinche' sia valida, la notifica DMCA deve essere redatta per iscritto e includere i seguenti elementi obbligatori:</p>
+  <ol>
+    <li><strong>Firma fisica o elettronica</strong> della persona autorizzata ad agire per conto del titolare del diritto d'autore esclusivo presunto violato;</li>
+    <li><strong>Identificazione dell'opera protetta da copyright</strong> che si presume essere stata violata (o, in caso di piu' opere, un elenco rappresentativo);</li>
+    <li><strong>Identificazione del materiale</strong> che si asserisce essere oggetto di violazione, con informazioni ragionevolmente sufficienti per consentire a BurgTV di localizzarlo (URL, descrizione, ecc.);</li>
+    <li><strong>Informazioni di contatto</strong> del soggetto notificante (indirizzo, numero di telefono, email);</li>
+    <li><strong>Dichiarazione in buona fede</strong> che l'uso del materiale contestato non e' autorizzato dal titolare del diritto, da un suo agente o dalla legge;</li>
+    <li><strong>Dichiarazione, sotto pena di spergiuro,</strong> che le informazioni nella notifica sono accurate e che il notificante e' il titolare del diritto d'autore o autorizzato ad agire per conto dello stesso.</li>
+  </ol>
+
+  <h3>2.2 Invio della Notifica</h3>
+  <p>La notifica deve essere inviata all'agente designato via email o posta cartacea agli indirizzi indicati al paragrafo 1. L'invio di notifiche incomplete potra' ritardarne l'elaborazione.</p>
+
+  <div class="warn-box">
+    <p><strong>⚠ AVVERTENZA:</strong> ai sensi del 17 U.S.C. § 512(f), chiunque presenti scientemente una notifica DMCA falsa o in malafede puo' essere ritenuto responsabile per i danni causati.</p>
+  </div>
+
+  <h2>3. Processo di Gestione delle Notifiche</h2>
+  <p>Alla ricezione di una notifica DMCA conforme ai requisiti di cui al paragrafo 2, BurgTV provvedera' entro tempi ragionevoli a:</p>
+  <ol>
+    <li>Valutare la notifica e verificare la sua conformita' ai requisiti legali;</li>
+    <li>Qualora il materiale contestato sia riconducibile a contenuti sotto il controllo di BurgTV (es. materiale promozionale, guide utente), procedere alla rimozione o disabilitazione dell'accesso;</li>
+    <li>Qualora il materiale contestato sia un contenuto audiovisivo riprodotto dagli Utenti tramite fonti esterne (caso tipico), informare il notificante che <strong>BurgTV non ospita tale contenuto</strong> e indirizzarlo al soggetto appropriato;</li>
+    <li>Nei casi in cui l'Utente utilizzi il Servizio in modo ripetutamente violativo, applicare le misure previste dalla Repeat Infringer Policy di cui al paragrafo 6.</li>
+  </ol>
+
+  <h2>4. Presentazione di una Controdenuncia (Counter-Notice)</h2>
+  <p>Qualora un Utente ritenga che il proprio contenuto sia stato erroneamente rimosso o disabilitato, puo' presentare una controdenuncia all'agente DMCA designato.</p>
+
+  <h3>4.1 Requisiti della Controdenuncia (17 U.S.C. § 512(g)(3))</h3>
+  <p>La controdenuncia deve essere redatta per iscritto e includere:</p>
+  <ol>
+    <li><strong>Firma fisica o elettronica</strong> dell'Utente;</li>
+    <li><strong>Identificazione del materiale</strong> che e' stato rimosso o disabilitato e della sua ubicazione prima della rimozione;</li>
+    <li><strong>Dichiarazione, sotto pena di spergiuro,</strong> che l'Utente ritiene in buona fede che il materiale sia stato rimosso per errore o errata identificazione;</li>
+    <li><strong>Informazioni di contatto</strong> dell'Utente (nome, indirizzo, numero di telefono);</li>
+    <li><strong>Dichiarazione di consenso</strong> alla giurisdizione del tribunale federale del distretto in cui risiede l'Utente (o, se al di fuori degli Stati Uniti, di qualsiasi giurisdizione in cui possa essere presentata un'azione), e di accettazione del servizio di notifiche del denunciante originario.</li>
+  </ol>
+
+  <h3>4.2 Ricezione e Trattamento</h3>
+  <p>Alla ricezione di una controdenuncia conforme, BurgTV:</p>
+  <ol>
+    <li>Fornira' copia della controdenuncia al notificante originario;</li>
+    <li>Informera' il notificante che BurgTV ripristinera' il materiale rimosso entro 10-14 giorni lavorativi, salvo che il notificante presenti prova di aver avviato un'azione legale per ottenere un'ingiunzione contro l'Utente.</li>
+  </ol>
+
+  <h2>5. Rimozione o Blocco Preventivo</h2>
+  <p>BurgTV puo', a propria discrezione e senza notifica preventiva, rimuovere o bloccare l'accesso a materiale che ritenga, in buona fede, violare diritti d'autore o violare la presente Policy.</p>
+
+  <h2>6. Repeat Infringer Policy</h2>
+  <p>In conformita' al 17 U.S.C. § 512(i)(1)(A), BurgTV adotta una politica di chiusura degli account di Utenti che siano recidivi nella violazione dei diritti d'autore.</p>
+  <p>Un Utente e' considerato recidivo (<em>repeat infringer</em>) quando:</p>
+  <ul>
+    <li>Riceve almeno <strong>3 notifiche DMCA valide</strong> entro un periodo di 12 mesi, senza presentare controdenunce valide; <strong>OPPURE</strong></li>
+    <li>Continua a violare diritti d'autore nonostante avvertimenti formali; <strong>OPPURE</strong></li>
+    <li>Violi manifestamente e consapevolmente i diritti di terzi.</li>
+  </ul>
+  <p>Le conseguenze per i recidivi includono:</p>
+  <ul>
+    <li>Chiusura permanente dell'account senza diritto a rimborso;</li>
+    <li>Blocco del device ID e dell'indirizzo IP;</li>
+    <li>Divieto di registrazione di nuovi account;</li>
+    <li>Eventuale segnalazione alle autorita' competenti.</li>
+  </ul>
+
+  <h2>7. Non-DMCA Jurisdictions</h2>
+  <p>Per titolari di diritti che operino al di fuori della giurisdizione del DMCA statunitense, BurgTV accetta notifiche equivalenti ai sensi della normativa applicabile (Direttiva UE 2019/790, LDA svizzera, ecc.). Tali notifiche devono contenere elementi equivalenti a quelli del paragrafo 2 e devono essere inviate al medesimo indirizzo di cui al paragrafo 1.</p>
+
+  <h2>8. Limitazione di Responsabilita'</h2>
+  <p>BurgTV non assume alcuna responsabilita' per contenuti riprodotti dagli Utenti tramite fonti esterne. BurgTV non e' un content provider e non rientra nella definizione di "service provider" ai sensi del 17 U.S.C. § 512 in relazione a tali contenuti. La presente Policy e' adottata in uno spirito di cooperazione e di rispetto dei diritti di proprieta' intellettuale, e non costituisce riconoscimento di alcuna responsabilita' legale.</p>
+
+  <h2>9. Rappresentazioni False</h2>
+  <p>Chiunque presenti notifiche DMCA o controdenuncie false potra' essere ritenuto civilmente e penalmente responsabile ai sensi del 17 U.S.C. § 512(f) e della legislazione applicabile.</p>
+
+  <h2>10. Modifiche alla DMCA Policy</h2>
+  <p>BurgTV puo' aggiornare la presente Policy in qualsiasi momento per riflettere cambiamenti normativi o organizzativi. Le modifiche sostanziali saranno comunicate tramite avviso sul sito web con almeno 30 giorni di preavviso.</p>
+
+  <h2>11. Contatti</h2>
+  <div class="highlight-box">
+    <p><strong>BurgTV — DMCA Designated Agent</strong></p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Svizzera</p>
+    <p>Email: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p>Oggetto: "DMCA Notice"</p>
+  </div>
+</div>
+
+<div id="content-en" class="card" style="display:none">
+  <h1>DMCA Copyright Policy</h1>
+  <p class="update-date">Version 1.0 — Effective April 14, 2026</p>
+
+  <p>BurgTV respects intellectual property rights and expects its Users to do the same. This DMCA Policy ("<strong>Policy</strong>") establishes the procedure for notifying alleged copyright infringements and handling such notices, in compliance with the US Digital Millennium Copyright Act (17 U.S.C. § 512), EU Directive 2001/29/EC on copyright, EU Directive 2019/790 on copyright in the digital single market, and the Swiss Federal Copyright Act (URG/LDA).</p>
+
+  <div class="warn-box">
+    <p><strong>IMPORTANT — NATURE OF THE BURGTV SERVICE</strong></p>
+    <p>BurgTV is a <strong>media player software application</strong>. BurgTV <strong>does not host, does not store, does not distribute, does not index, and does not directly reproduce</strong> any audiovisual content. The application solely enables Users to play content from external sources of their own choosing. BurgTV has no control, knowledge, or ability to intervene over content that Users choose to play. Therefore, DMCA notices relating to specific audiovisual content should be directed to the party that hosts, transmits, or distributes such content.</p>
+  </div>
+
+  <h2>1. DMCA Designated Agent</h2>
+  <p>Pursuant to DMCA (17 U.S.C. § 512(c)(2)), BurgTV has designated the following agent for receiving copyright infringement notices:</p>
+  <div class="highlight-box">
+    <p><strong>DMCA Designated Agent</strong></p>
+    <p>BurgTV — Sole proprietorship of Musa Bushi</p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Switzerland</p>
+    <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p><strong>Subject:</strong> "DMCA Notice"</p>
+  </div>
+
+  <h2>2. Submitting a DMCA Notice (Takedown Notice)</h2>
+  <p>Copyright holders (or their authorized representatives) who believe protected material has been used in a way constituting copyright infringement within the Service may send a notice to the DMCA Designated Agent.</p>
+
+  <h3>2.1 Notice Requirements (17 U.S.C. § 512(c)(3))</h3>
+  <p>To be valid, the DMCA notice must be in writing and include the following mandatory elements:</p>
+  <ol>
+    <li><strong>Physical or electronic signature</strong> of the person authorized to act on behalf of the owner of the exclusive copyright allegedly infringed;</li>
+    <li><strong>Identification of the copyrighted work</strong> alleged to have been infringed (or, in the case of multiple works, a representative list);</li>
+    <li><strong>Identification of the material</strong> claimed to be infringing, with information reasonably sufficient to enable BurgTV to locate it (URL, description, etc.);</li>
+    <li><strong>Contact information</strong> of the notifying party (address, telephone number, email);</li>
+    <li><strong>Good faith statement</strong> that use of the contested material is not authorized by the copyright owner, its agent, or the law;</li>
+    <li><strong>Statement, under penalty of perjury,</strong> that the information in the notice is accurate and that the notifier is the copyright owner or authorized to act on behalf thereof.</li>
+  </ol>
+
+  <h3>2.2 Sending the Notice</h3>
+  <p>The notice must be sent to the designated agent via email or postal mail to the addresses listed in paragraph 1. Incomplete notices may delay processing.</p>
+
+  <div class="warn-box">
+    <p><strong>⚠ WARNING:</strong> under 17 U.S.C. § 512(f), anyone who knowingly submits a false or bad-faith DMCA notice may be held liable for damages caused.</p>
+  </div>
+
+  <h2>3. Notice Handling Process</h2>
+  <p>Upon receipt of a DMCA notice compliant with the requirements in paragraph 2, BurgTV will within reasonable time:</p>
+  <ol>
+    <li>Evaluate the notice and verify its compliance with legal requirements;</li>
+    <li>If the contested material is attributable to content under BurgTV's control (e.g., promotional material, user guides), proceed with removal or access disabling;</li>
+    <li>If the contested material is audiovisual content played by Users through external sources (typical case), inform the notifier that <strong>BurgTV does not host such content</strong> and direct them to the appropriate party;</li>
+    <li>In cases where the User uses the Service in a repeatedly infringing manner, apply the measures set forth in the Repeat Infringer Policy in paragraph 6.</li>
+  </ol>
+
+  <h2>4. Submitting a Counter-Notice</h2>
+  <p>If a User believes their content has been erroneously removed or disabled, they may submit a counter-notice to the DMCA Designated Agent.</p>
+
+  <h3>4.1 Counter-Notice Requirements (17 U.S.C. § 512(g)(3))</h3>
+  <p>The counter-notice must be in writing and include:</p>
+  <ol>
+    <li><strong>Physical or electronic signature</strong> of the User;</li>
+    <li><strong>Identification of the material</strong> that was removed or disabled and its location prior to removal;</li>
+    <li><strong>Statement, under penalty of perjury,</strong> that the User has a good faith belief that the material was removed in error or misidentification;</li>
+    <li><strong>Contact information</strong> of the User (name, address, telephone number);</li>
+    <li><strong>Statement of consent</strong> to the jurisdiction of the federal court of the district in which the User resides (or, if outside the United States, of any jurisdiction in which an action may be brought), and acceptance of service from the original complainant.</li>
+  </ol>
+
+  <h3>4.2 Receipt and Handling</h3>
+  <p>Upon receipt of a compliant counter-notice, BurgTV will:</p>
+  <ol>
+    <li>Provide a copy of the counter-notice to the original notifier;</li>
+    <li>Inform the notifier that BurgTV will restore the removed material within 10-14 business days, unless the notifier provides evidence of having initiated legal action seeking injunction against the User.</li>
+  </ol>
+
+  <h2>5. Preventive Removal or Blocking</h2>
+  <p>BurgTV may, at its discretion and without prior notice, remove or block access to material it believes, in good faith, to infringe copyrights or violate this Policy.</p>
+
+  <h2>6. Repeat Infringer Policy</h2>
+  <p>In accordance with 17 U.S.C. § 512(i)(1)(A), BurgTV adopts a policy of terminating accounts of Users who are repeat infringers of copyrights.</p>
+  <p>A User is considered a repeat infringer when:</p>
+  <ul>
+    <li>They receive at least <strong>3 valid DMCA notices</strong> within a 12-month period, without submitting valid counter-notices; <strong>OR</strong></li>
+    <li>Continues infringing copyrights despite formal warnings; <strong>OR</strong></li>
+    <li>Manifestly and knowingly violates third-party rights.</li>
+  </ul>
+  <p>Consequences for repeat infringers include:</p>
+  <ul>
+    <li>Permanent account termination without refund rights;</li>
+    <li>Blocking of device ID and IP address;</li>
+    <li>Prohibition of registering new accounts;</li>
+    <li>Possible reporting to competent authorities.</li>
+  </ul>
+
+  <h2>7. Non-DMCA Jurisdictions</h2>
+  <p>For rights holders operating outside US DMCA jurisdiction, BurgTV accepts equivalent notices under applicable law (EU Directive 2019/790, Swiss LDA, etc.). Such notices must contain elements equivalent to those in paragraph 2 and must be sent to the same address as in paragraph 1.</p>
+
+  <h2>8. Limitation of Liability</h2>
+  <p>BurgTV assumes no liability for content played by Users through external sources. BurgTV is not a content provider and does not fall within the definition of "service provider" under 17 U.S.C. § 512 in relation to such content. This Policy is adopted in a spirit of cooperation and respect for intellectual property rights, and does not constitute acknowledgment of any legal liability.</p>
+
+  <h2>9. False Representations</h2>
+  <p>Anyone submitting false DMCA notices or counter-notices may be held civilly and criminally liable under 17 U.S.C. § 512(f) and applicable legislation.</p>
+
+  <h2>10. Changes to this DMCA Policy</h2>
+  <p>BurgTV may update this Policy at any time to reflect regulatory or organizational changes. Material changes will be communicated via notice on the website at least 30 days in advance.</p>
+
+  <h2>11. Contact</h2>
+  <div class="highlight-box">
+    <p><strong>BurgTV — DMCA Designated Agent</strong></p>
+    <p>Via Rinaldo Simen 18, 6900 Lugano, Switzerland</p>
+    <p>Email: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    <p>Subject: "DMCA Notice"</p>
+  </div>
+</div>
+
+</div>
+<script>
+  ['it','en'].forEach(l=>{
+    document.getElementById('btn-'+l).addEventListener('click',()=>{
+      ['it','en'].forEach(x=>{
+        document.getElementById('content-'+x).style.display=(x===l?'block':'none');
+        document.getElementById('btn-'+x).classList.toggle('active',x===l);
+      });
+    });
+  });
+  const toggle=document.getElementById('menuToggle');
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('overlay');
+  toggle.addEventListener('click',()=>{sidebar.classList.toggle('active');overlay.classList.toggle('active')});
+  overlay.addEventListener('click',()=>{sidebar.classList.remove('active');overlay.classList.remove('active')});
+</script>
+</body>
+</html>
