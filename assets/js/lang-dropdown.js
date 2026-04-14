@@ -38,6 +38,16 @@
       .bv-lang-dd-opt .bv-check { width: 14px; height: 14px; opacity: 0; color: #B94A8E; flex-shrink: 0; }
       .bv-lang-dd-opt.active .bv-check { opacity: 1; }
       .bv-lang-replaced { display: none !important; }
+      /* Fallback: if dropdown was inserted next to a hidden .lang-switch, mimic its typical fixed positioning */
+      .lang-switch.bv-lang-replaced + .bv-lang-dd {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 1000;
+      }
+      @media (max-width: 640px) {
+        .lang-switch.bv-lang-replaced + .bv-lang-dd { top: 1rem; right: 1rem; }
+      }
     `;
     const style = document.createElement('style');
     style.id = 'burgtv-lang-dd-styles';
