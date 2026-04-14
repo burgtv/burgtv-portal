@@ -802,30 +802,543 @@
   <div id="content-de" class="card" style="display:none">
     <h1>Datenschutzerklaerung</h1>
     <p class="update-date">Version 2.0 — Gueltig ab 14. April 2026</p>
-    <p>Diese Datenschutzerklaerung beschreibt, wie <strong>BurgTV</strong>, Einzelunternehmen von Musa Bushi mit Sitz in Via Rinaldo Simen 18, 6900 Lugano, Schweiz, personenbezogene Daten der Nutzer des Dienstes sammelt, verwendet, speichert und weitergibt.</p>
-    <p>Die vollstaendige Version dieser Datenschutzerklaerung ist in italienischer und englischer Sprache verfuegbar. Fuer spezifische Fragen oder eine vollstaendige Uebersetzung wenden Sie sich bitte an <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>.</p>
-    <p>Die wesentlichen Inhalte umfassen: Verantwortlicher (BurgTV, Lugano, CH), Rechtsgrundlagen (DSGVO Art. 6, Schweizer DSG), Datenkategorien (E-Mail, Geraete-ID, technische Daten), Drittanbieter (Stripe, Google, Apple, Netcup, Cloudflare), internationale Datenuebermittlungen (EU-US Data Privacy Framework, SCCs), Betroffenenrechte (Auskunft, Berichtigung, Loeschung, Datenuebertragbarkeit), Aufbewahrungsfristen, Sicherheitsmassnahmen und Beschwerdemoeglichkeiten bei Aufsichtsbehoerden.</p>
-    <p><strong>Kontakt:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <p>Diese Datenschutzerklaerung (die "<strong>Erklaerung</strong>") beschreibt, wie <strong>BurgTV</strong>, Einzelunternehmen von Musa Bushi, mit Sitz in Via Rinaldo Simen 18, 6900 Lugano, Schweiz ("<strong>BurgTV</strong>", "<strong>wir</strong>", "<strong>unser</strong>" oder "<strong>Verantwortlicher</strong>"), personenbezogene Daten der Nutzer (der "<strong>Nutzer</strong>" oder "<strong>Sie</strong>") der Anwendung BurgTV TV, der Anwendung BurgTV Mobile und der Websites burgtv.com und app.burgtv.com (gemeinsam der "<strong>Dienst</strong>") sammelt, verwendet, speichert und weitergibt.</p>
+
+    <p>Diese Erklaerung wurde unter Einhaltung folgender Datenschutzbestimmungen erstellt:</p>
+    <ul>
+      <li>Schweizer Bundesgesetz ueber den Datenschutz (<strong>revDSG/nDSG</strong>, gueltig ab 1. September 2023)</li>
+      <li>Datenschutz-Grundverordnung der EU (<strong>DSGVO – Verordnung EU 2016/679</strong>)</li>
+      <li>UK Datenschutz-Grundverordnung (<strong>UK GDPR</strong>)</li>
+      <li>California Consumer Privacy Act mit CPRA (<strong>CCPA/CPRA</strong>)</li>
+      <li>Brasilianisches Datenschutzgesetz (<strong>LGPD</strong>)</li>
+      <li>Kanadisches PIPEDA</li>
+      <li>US Children's Online Privacy Protection Act (<strong>COPPA</strong>)</li>
+      <li>Japanisches APPI</li>
+    </ul>
+
+    <h2>1. Verantwortlicher und Kontakt</h2>
+    <div class="highlight-box">
+      <p><strong>BurgTV</strong> — Einzelunternehmen von Musa Bushi</p>
+      <p>Sitz: Via Rinaldo Simen 18, 6900 Lugano, Schweiz</p>
+      <p><strong>E-Mail:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    </div>
+    <p>Aufgrund unserer Groesse wurde kein formaler Datenschutzbeauftragter (DSB) gemaess Artikel 37 DSGVO ernannt, da die Voraussetzungen fuer eine Pflichternennung nicht vorliegen.</p>
+
+    <h2>2. Erhobene personenbezogene Daten</h2>
+    <p>Wir erheben ausschliesslich die fuer die Dienstbereitstellung erforderlichen Daten:</p>
+
+    <h3>2.1 Vom Nutzer bereitgestellte Daten</h3>
+    <table class="data-table">
+      <tr><th>Kategorie</th><th>Daten</th></tr>
+      <tr><td>Registrierung</td><td>E-Mail-Adresse, Passwort (verschluesselt mit bcrypt)</td></tr>
+      <tr><td>Praeferenzen</td><td>Sprache, Anzeigeeinstellungen</td></tr>
+    </table>
+
+    <h3>2.2 Automatisch erhobene Daten</h3>
+    <table class="data-table">
+      <tr><th>Kategorie</th><th>Daten</th></tr>
+      <tr><td>Geraete-ID</td><td>Eindeutige Kennung (anonymer Hash, nicht MAC-Adresse)</td></tr>
+      <tr><td>Technische Daten</td><td>Geraetemodell, Betriebssystem, App-Version</td></tr>
+      <tr><td>IP-Adresse</td><td>Temporaere Speicherung fuer Sicherheit</td></tr>
+    </table>
+
+    <h3>2.3 Zahlungsdaten</h3>
+    <p>BurgTV <strong>sammelt, verarbeitet oder speichert KEINE</strong> vollstaendigen Kartenzahlungsdaten. Alle Zahlungen werden direkt von Stripe, Google Play oder Apple verarbeitet (PCI DSS Level 1 zertifiziert).</p>
+
+    <h2>3. Daten, die wir NICHT sammeln</h2>
+    <ul>
+      <li>Geraete-MAC-Adresse</li>
+      <li>Geolokalisierungsdaten (GPS)</li>
+      <li>Wiedergegebene Medieninhalte</li>
+      <li>Browserverlauf, Kontakte, Fotos, Dateien</li>
+      <li>Biometrische Daten</li>
+      <li>Besondere Kategorien personenbezogener Daten (Art. 9 DSGVO)</li>
+    </ul>
+
+    <h2>4. Verarbeitungszwecke und Rechtsgrundlagen</h2>
+    <table class="data-table">
+      <tr><th>Zweck</th><th>Rechtsgrundlage</th></tr>
+      <tr><td>Kontoregistrierung und Verwaltung</td><td>Art. 6(1)(b) — Vertragserfuellung</td></tr>
+      <tr><td>Authentifizierung</td><td>Art. 6(1)(b) — Vertragserfuellung</td></tr>
+      <tr><td>Abonnementverwaltung</td><td>Art. 6(1)(b) — Vertragserfuellung</td></tr>
+      <tr><td>Sicherheit und Missbrauchsprevention</td><td>Art. 6(1)(f) — Berechtigtes Interesse</td></tr>
+      <tr><td>Rechtliche Verpflichtungen (Steuer)</td><td>Art. 6(1)(c) — Gesetzliche Verpflichtung</td></tr>
+    </table>
+    <p>BurgTV fuehrt <strong>KEINE</strong> auf Einwilligung basierende Verarbeitung fuer Marketing oder Profiling durch.</p>
+
+    <h2>5. Drittanbieter und Auftragsverarbeiter</h2>
+
+    <div class="provider-box">
+      <h4>Netcup GmbH (Hosting)</h4>
+      <p>Rolle: Auftragsverarbeiter. Standort: Nuernberg, Deutschland (EU). Keine Uebermittlungen ausserhalb der EU.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Stripe, Inc. (Zahlungen TV)</h4>
+      <p>Rolle: Eigenstaendiger Verantwortlicher. Standort: USA mit EU-Verarbeitung. PCI DSS Level 1.</p>
+      <p>Uebermittlung: EU-US Data Privacy Framework, SCC 2021/914.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Google LLC (Android IAP)</h4>
+      <p>Rolle: Eigenstaendiger Verantwortlicher. Uebermittlung: EU-US Data Privacy Framework.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Apple Inc. (iOS IAP)</h4>
+      <p>Rolle: Eigenstaendiger Verantwortlicher. Uebermittlung: EU-US Data Privacy Framework.</p>
+    </div>
+    <div class="provider-box">
+      <h4>TMDB (Film-Metadaten)</h4>
+      <p>Keine Nutzerdaten uebermittelt, nur oeffentliche Metadaten-Abfragen.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Resend (transaktionale E-Mails)</h4>
+      <p>Rolle: Unterauftragsverarbeiter. Uebermittlung: SCC 2021/914.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Cloudflare (CDN, DDoS-Schutz)</h4>
+      <p>Rolle: Unterauftragsverarbeiter. Uebermittlung: EU-US Data Privacy Framework.</p>
+    </div>
+
+    <h2>6. Internationale Datenuebermittlungen</h2>
+    <p>Daten werden primaer auf Servern in der EU (Deutschland) gespeichert. Uebermittlungen in Drittlaender erfolgen auf Grundlage von:</p>
+    <ul>
+      <li>Angemessenheitsbeschluessen der Europaeischen Kommission;</li>
+      <li>EU-US Data Privacy Framework (Durchfuehrungsbeschluss 2023/1795);</li>
+      <li>Swiss-US Data Privacy Framework;</li>
+      <li>Standardvertragsklauseln (SCC) 2021/914;</li>
+      <li>Verschluesselung im Transit (TLS 1.2+) und ruhend (AES-256).</li>
+    </ul>
+    <p>Die Schweiz wird von der EU als Land mit angemessenem Datenschutzniveau anerkannt (Art. 45 DSGVO).</p>
+
+    <h2>7. Aufbewahrungsfristen</h2>
+    <table class="data-table">
+      <tr><th>Kategorie</th><th>Aufbewahrung</th></tr>
+      <tr><td>Aktives Konto</td><td>Dauer der Vertragsbeziehung</td></tr>
+      <tr><td>Nach Kontoloeschung</td><td>Maximal 30 Tage</td></tr>
+      <tr><td>Transaktionsdaten</td><td>10 Jahre (Schweizer Buchhaltungspflicht, Art. 958f OR)</td></tr>
+      <tr><td>Zugriffsprotokolle</td><td>Maximal 90 Tage</td></tr>
+    </table>
+
+    <h2>8. Betroffenenrechte (DSGVO / nDSG)</h2>
+    <ul>
+      <li><strong>Auskunftsrecht</strong> (Art. 15 DSGVO)</li>
+      <li><strong>Recht auf Berichtigung</strong> (Art. 16 DSGVO)</li>
+      <li><strong>Recht auf Loeschung</strong> / Recht auf Vergessenwerden (Art. 17 DSGVO)</li>
+      <li><strong>Recht auf Einschraenkung</strong> (Art. 18 DSGVO)</li>
+      <li><strong>Recht auf Datenuebertragbarkeit</strong> (Art. 20 DSGVO)</li>
+      <li><strong>Widerspruchsrecht</strong> (Art. 21 DSGVO)</li>
+      <li><strong>Recht auf Widerruf der Einwilligung</strong> (Art. 7 DSGVO)</li>
+      <li><strong>Beschwerderecht</strong> bei einer Aufsichtsbehoerde (Art. 77 DSGVO)</li>
+    </ul>
+    <p>Um Rechte auszuueben: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Antwortzeit: innerhalb von 30 Tagen.</p>
+
+    <h2>9. Spezifische Rechte Kalifornien (CCPA/CPRA)</h2>
+    <p>Einwohner Kaliforniens haben folgende Rechte: Recht auf Wissen, Loeschung, Korrektur, Widerspruch gegen Verkauf/Teilen, Nicht-Diskriminierung. BurgTV <strong>verkauft oder teilt KEINE</strong> personenbezogenen Daten fuer Werbezwecke.</p>
+
+    <h2>10. Spezifische Rechte Brasilien (LGPD)</h2>
+    <p>Einwohner Brasiliens haben die Rechte gemaess LGPD (Gesetz 13.709/2018): Bestaetigung, Zugriff, Berichtigung, Anonymisierung, Portabilitaet, Loeschung, Widerruf der Einwilligung.</p>
+
+    <h2>11. Kinderschutz</h2>
+    <p>Der Dienst richtet sich nicht an Kinder unter <strong>13 Jahren</strong>. Bei Kenntnis einer unbefugten Datenerhebung von Minderjaehrigen werden die Daten umgehend geloescht.</p>
+
+    <h2>12. Automatisierte Entscheidungsfindung</h2>
+    <p>BurgTV fuehrt <strong>KEINE</strong> ausschliesslich automatisierte Entscheidungsfindung gemaess Art. 22 DSGVO durch.</p>
+
+    <h2>13. Cookies und aehnliche Technologien</h2>
+    <p>Unsere Websites verwenden ausschliesslich technisch notwendige Cookies. Keine Profiling- oder Tracking-Cookies. Weitere Informationen: <a href="/legal/cookies.html" class="link">Cookie Policy</a>.</p>
+
+    <h2>14. Sicherheitsmassnahmen</h2>
+    <ul>
+      <li>HTTPS/TLS 1.2+ Verschluesselung;</li>
+      <li>Passwort-Hashing mit bcrypt;</li>
+      <li>AES-256 Verschluesselung sensibler Daten;</li>
+      <li>Multi-Faktor-Authentifizierung fuer Administratorzugriffe;</li>
+      <li>Kontinuierliche Systemueberwachung;</li>
+      <li>Verschluesselte Backups.</li>
+    </ul>
+
+    <h2>15. Datenschutzverletzungen</h2>
+    <p>Im Falle einer Datenschutzverletzung benachrichtigen wir die Aufsichtsbehoerde innerhalb von <strong>72 Stunden</strong> (Art. 33 DSGVO) und betroffene Nutzer bei hohem Risiko ohne unangemessene Verzoegerung (Art. 34 DSGVO).</p>
+
+    <h2>16. EU-Vertreter</h2>
+    <p>Gemaess Art. 27 DSGVO wurde kein EU-Vertreter ernannt, da die Ausnahmebedingungen nach Art. 27(2) vorliegen und die Schweiz einen Angemessenheitsbeschluss der Europaeischen Kommission geniesst.</p>
+
+    <h2>17. Beschwerden bei Aufsichtsbehoerden</h2>
+    <ul>
+      <li><strong>Schweiz:</strong> EDOEB — <a href="https://www.edoeb.admin.ch" class="link" target="_blank" rel="noopener">edoeb.admin.ch</a></li>
+      <li><strong>Deutschland:</strong> Zustaendige Landesdatenschutzbehoerde</li>
+      <li><strong>Oesterreich:</strong> Datenschutzbehoerde — <a href="https://www.dsb.gv.at" class="link" target="_blank" rel="noopener">dsb.gv.at</a></li>
+      <li><strong>EU:</strong> Nationale Aufsichtsbehoerde — <a href="https://edpb.europa.eu/about-edpb/about-edpb/members_en" class="link" target="_blank" rel="noopener">edpb.europa.eu</a></li>
+    </ul>
+
+    <h2>18. Aenderungen dieser Erklaerung</h2>
+    <p>Wesentliche Aenderungen werden per E-Mail oder In-App-Benachrichtigung mit einer Vorlaufzeit von mindestens <strong>30 Tagen</strong> mitgeteilt.</p>
+
+    <h2>19. Kontakt</h2>
+    <div class="highlight-box">
+      <p><strong>BurgTV</strong> — Datenschutz</p>
+      <p>Via Rinaldo Simen 18, 6900 Lugano, Schweiz</p>
+      <p><strong>E-Mail:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    </div>
   </div>
 
   <!-- ==================== ESPANOL ==================== -->
   <div id="content-es" class="card" style="display:none">
     <h1>Politica de Privacidad</h1>
     <p class="update-date">Version 2.0 — Vigente desde el 14 de abril de 2026</p>
-    <p>Esta Politica de Privacidad describe como <strong>BurgTV</strong>, empresa individual de Musa Bushi con domicilio en Via Rinaldo Simen 18, 6900 Lugano, Suiza, recopila, utiliza, almacena y comparte los datos personales de los usuarios del Servicio.</p>
-    <p>La version completa de esta Politica de Privacidad esta disponible en italiano e ingles. Para preguntas especificas o una traduccion completa, contacte con <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>.</p>
-    <p>Los contenidos esenciales incluyen: Responsable del tratamiento (BurgTV, Lugano, Suiza), bases legales (RGPD Art. 6, LPD Suiza), categorias de datos (email, ID del dispositivo, datos tecnicos), proveedores terceros (Stripe, Google, Apple, Netcup, Cloudflare), transferencias internacionales (EU-US Data Privacy Framework, CCE), derechos del interesado (acceso, rectificacion, supresion, portabilidad), periodos de conservacion, medidas de seguridad y posibilidad de reclamacion ante autoridades de control.</p>
-    <p><strong>Contacto:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <p>La presente Politica de Privacidad (la "<strong>Politica</strong>") describe como <strong>BurgTV</strong>, empresa individual de Musa Bushi, con domicilio en Via Rinaldo Simen 18, 6900 Lugano, Suiza ("<strong>BurgTV</strong>", "<strong>nosotros</strong>", "<strong>nuestro</strong>" o "<strong>Responsable del tratamiento</strong>"), recopila, utiliza, almacena y comparte los datos personales de los usuarios ("<strong>Usuario</strong>" o "<strong>usted</strong>") de la aplicacion BurgTV TV, BurgTV Mobile y los sitios web burgtv.com y app.burgtv.com (conjuntamente, el "<strong>Servicio</strong>").</p>
+
+    <p>Esta Politica cumple con los siguientes marcos normativos:</p>
+    <ul>
+      <li>Ley Federal Suiza de Proteccion de Datos (<strong>nLPD/LPD</strong>, vigente desde el 1 de septiembre de 2023)</li>
+      <li>Reglamento General de Proteccion de Datos de la UE (<strong>RGPD – Reglamento UE 2016/679</strong>)</li>
+      <li>Reglamento britanico (<strong>UK GDPR</strong>)</li>
+      <li>California Consumer Privacy Act / CPRA (<strong>CCPA/CPRA</strong>)</li>
+      <li>Ley brasilena (<strong>LGPD</strong>)</li>
+      <li>PIPEDA de Canada</li>
+      <li>COPPA de EE.UU. (menores)</li>
+      <li>APPI de Japon</li>
+    </ul>
+
+    <h2>1. Responsable del Tratamiento y Contacto</h2>
+    <div class="highlight-box">
+      <p><strong>BurgTV</strong> — Empresa individual de Musa Bushi</p>
+      <p>Domicilio: Via Rinaldo Simen 18, 6900 Lugano, Suiza</p>
+      <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    </div>
+    <p>Dado el tamano de nuestra actividad, no se ha designado formalmente un Delegado de Proteccion de Datos (DPO) conforme al articulo 37 del RGPD, al no concurrir las condiciones de obligatoriedad.</p>
+
+    <h2>2. Categorias de Datos Personales Recopilados</h2>
+
+    <h3>2.1 Datos proporcionados directamente por el Usuario</h3>
+    <table class="data-table">
+      <tr><th>Categoria</th><th>Datos</th></tr>
+      <tr><td>Registro</td><td>Direccion email, contrasena (cifrada con bcrypt)</td></tr>
+      <tr><td>Preferencias</td><td>Idioma, configuracion de visualizacion</td></tr>
+    </table>
+
+    <h3>2.2 Datos recopilados automaticamente</h3>
+    <table class="data-table">
+      <tr><th>Categoria</th><th>Datos</th></tr>
+      <tr><td>ID del dispositivo</td><td>Identificador unico (hash anonimo, no direccion MAC)</td></tr>
+      <tr><td>Datos tecnicos</td><td>Modelo del dispositivo, sistema operativo, version de la app</td></tr>
+      <tr><td>Direccion IP</td><td>Almacenamiento temporal para seguridad</td></tr>
+    </table>
+
+    <h3>2.3 Datos de transacciones</h3>
+    <p>BurgTV <strong>NO recopila, procesa ni almacena</strong> datos completos de tarjetas de pago. Todos los pagos son procesados directamente por Stripe, Google Play o Apple (certificados PCI DSS Nivel 1).</p>
+
+    <h2>3. Datos que NO Recopilamos</h2>
+    <ul>
+      <li>Direccion MAC del dispositivo</li>
+      <li>Datos de geolocalizacion (GPS)</li>
+      <li>Contenidos multimedia reproducidos</li>
+      <li>Historial de navegacion, contactos, fotos, archivos</li>
+      <li>Datos biometricos</li>
+      <li>Categorias especiales de datos personales (Art. 9 RGPD)</li>
+    </ul>
+
+    <h2>4. Finalidades del Tratamiento y Bases Legales</h2>
+    <table class="data-table">
+      <tr><th>Finalidad</th><th>Base legal</th></tr>
+      <tr><td>Registro y gestion de cuenta</td><td>Art. 6(1)(b) — Ejecucion del contrato</td></tr>
+      <tr><td>Autenticacion y acceso</td><td>Art. 6(1)(b) — Ejecucion del contrato</td></tr>
+      <tr><td>Gestion de suscripciones</td><td>Art. 6(1)(b) — Ejecucion del contrato</td></tr>
+      <tr><td>Seguridad y prevencion de fraudes</td><td>Art. 6(1)(f) — Interes legitimo</td></tr>
+      <tr><td>Obligaciones legales (fiscales)</td><td>Art. 6(1)(c) — Obligacion legal</td></tr>
+    </table>
+    <p>BurgTV <strong>NO realiza</strong> tratamientos basados en consentimiento para marketing, perfilado o publicidad.</p>
+
+    <h2>5. Proveedores Terceros y Subencargados</h2>
+    <div class="provider-box">
+      <h4>Netcup GmbH (alojamiento)</h4>
+      <p>Encargado del tratamiento. Ubicacion: Nuremberg, Alemania (UE). Sin transferencias fuera de la UE.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Stripe, Inc. (pagos TV)</h4>
+      <p>Responsable autonomo. Ubicacion: EE.UU. con tratamiento UE. PCI DSS Nivel 1. EU-US Data Privacy Framework + CCE 2021/914.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Google LLC (IAP Android)</h4>
+      <p>Responsable autonomo. Transferencias: EU-US Data Privacy Framework.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Apple Inc. (IAP iOS)</h4>
+      <p>Responsable autonomo. Transferencias: EU-US Data Privacy Framework.</p>
+    </div>
+    <div class="provider-box">
+      <h4>TMDB (metadatos)</h4>
+      <p>No se comparten datos de usuario. Solo solicitudes de metadatos publicos.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Resend (emails)</h4>
+      <p>Subencargado. Transferencias: CCE 2021/914.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Cloudflare (CDN, DDoS)</h4>
+      <p>Subencargado. Transferencias: EU-US Data Privacy Framework.</p>
+    </div>
+
+    <h2>6. Transferencias Internacionales de Datos</h2>
+    <p>Los datos se almacenan principalmente en servidores de la UE (Alemania). Las transferencias a terceros paises se realizan mediante:</p>
+    <ul>
+      <li>Decisiones de adecuacion de la Comision Europea;</li>
+      <li>EU-US Data Privacy Framework (Decision 2023/1795);</li>
+      <li>Swiss-US Data Privacy Framework;</li>
+      <li>Clausulas Contractuales Estandar (CCE) 2021/914;</li>
+      <li>Cifrado en transito (TLS 1.2+) y en reposo (AES-256).</li>
+    </ul>
+    <p>Suiza es reconocida por la UE como pais con nivel adecuado de proteccion (Art. 45 RGPD).</p>
+
+    <h2>7. Periodos de Conservacion</h2>
+    <table class="data-table">
+      <tr><th>Categoria</th><th>Periodo</th></tr>
+      <tr><td>Cuenta activa</td><td>Duracion de la relacion contractual</td></tr>
+      <tr><td>Tras cierre de cuenta</td><td>Maximo 30 dias</td></tr>
+      <tr><td>Datos de transacciones</td><td>10 anos (obligaciones fiscales suizas, Art. 958f CO)</td></tr>
+      <tr><td>Logs tecnicos</td><td>Maximo 90 dias</td></tr>
+    </table>
+
+    <h2>8. Derechos del Interesado (RGPD / nLPD)</h2>
+    <ul>
+      <li><strong>Derecho de acceso</strong> (Art. 15 RGPD)</li>
+      <li><strong>Rectificacion</strong> (Art. 16 RGPD)</li>
+      <li><strong>Supresion</strong> / derecho al olvido (Art. 17 RGPD)</li>
+      <li><strong>Limitacion del tratamiento</strong> (Art. 18 RGPD)</li>
+      <li><strong>Portabilidad</strong> (Art. 20 RGPD)</li>
+      <li><strong>Oposicion</strong> (Art. 21 RGPD)</li>
+      <li><strong>Revocacion del consentimiento</strong> (Art. 7 RGPD)</li>
+      <li><strong>Reclamacion ante autoridad de control</strong> (Art. 77 RGPD)</li>
+    </ul>
+    <p>Contacto: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Respuesta en 30 dias.</p>
+
+    <h2>9. Derechos Especificos California (CCPA/CPRA)</h2>
+    <p>Los residentes en California tienen: derecho a conocer, eliminar, corregir, optar por no vender/compartir, limitar el uso de informacion personal sensible y no discriminacion. BurgTV <strong>NO vende ni comparte</strong> datos personales para publicidad.</p>
+
+    <h2>10. Derechos Especificos Brasil (LGPD)</h2>
+    <p>Residentes en Brasil tienen derechos segun LGPD (Ley 13.709/2018): confirmacion, acceso, correccion, anonimizacion, portabilidad, eliminacion, revocacion del consentimiento.</p>
+
+    <h2>11. Proteccion de Menores</h2>
+    <p>El Servicio no esta dirigido a menores de <strong>13 anos</strong>. BurgTV no recopila conscientemente datos de menores de 13 anos. Los padres pueden contactarnos para eliminar cualquier dato recopilado accidentalmente.</p>
+
+    <h2>12. Decisiones Automatizadas</h2>
+    <p>BurgTV <strong>NO realiza</strong> decisiones automatizadas con efectos juridicos segun Art. 22 RGPD.</p>
+
+    <h2>13. Cookies</h2>
+    <p>Los sitios web usan exclusivamente cookies tecnicas necesarias. Ver <a href="/legal/cookies.html" class="link">Cookie Policy</a>.</p>
+
+    <h2>14. Medidas de Seguridad</h2>
+    <ul>
+      <li>Cifrado HTTPS/TLS 1.2+;</li>
+      <li>Hash de contrasenas con bcrypt;</li>
+      <li>Cifrado AES-256 de datos sensibles;</li>
+      <li>Autenticacion multifactor para acceso administrativo;</li>
+      <li>Monitoreo continuo y copias de seguridad cifradas.</li>
+    </ul>
+
+    <h2>15. Violaciones de Datos Personales</h2>
+    <p>En caso de violacion notificaremos a la autoridad de control dentro de <strong>72 horas</strong> (Art. 33 RGPD) y a los usuarios afectados sin demora injustificada si existe alto riesgo (Art. 34 RGPD).</p>
+
+    <h2>16. Representante en la UE</h2>
+    <p>Conforme al Art. 27 RGPD, no se ha designado representante en la UE por aplicarse las exenciones del Art. 27(2) y por beneficiarse Suiza de decision de adecuacion.</p>
+
+    <h2>17. Reclamaciones ante Autoridades de Control</h2>
+    <ul>
+      <li><strong>Suiza:</strong> IFPDT — <a href="https://www.edoeb.admin.ch" class="link" target="_blank" rel="noopener">edoeb.admin.ch</a></li>
+      <li><strong>Espana:</strong> AEPD — <a href="https://www.aepd.es" class="link" target="_blank" rel="noopener">aepd.es</a></li>
+      <li><strong>UE:</strong> Autoridad nacional competente</li>
+    </ul>
+
+    <h2>18. Modificaciones de esta Politica</h2>
+    <p>Las modificaciones sustanciales se comunicaran por email y notificacion in-app con <strong>30 dias</strong> de preaviso.</p>
+
+    <h2>19. Contacto</h2>
+    <div class="highlight-box">
+      <p><strong>BurgTV</strong> — Proteccion de Datos</p>
+      <p>Via Rinaldo Simen 18, 6900 Lugano, Suiza</p>
+      <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    </div>
   </div>
 
   <!-- ==================== FRANCAIS ==================== -->
   <div id="content-fr" class="card" style="display:none">
     <h1>Politique de Confidentialite</h1>
     <p class="update-date">Version 2.0 — En vigueur le 14 avril 2026</p>
-    <p>Cette Politique de Confidentialite decrit comment <strong>BurgTV</strong>, entreprise individuelle de Musa Bushi ayant son siege au Via Rinaldo Simen 18, 6900 Lugano, Suisse, collecte, utilise, conserve et partage les donnees personnelles des utilisateurs du Service.</p>
-    <p>La version complete de cette Politique de Confidentialite est disponible en italien et en anglais. Pour toute question specifique ou une traduction complete, veuillez contacter <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>.</p>
-    <p>Les contenus essentiels incluent: Responsable du traitement (BurgTV, Lugano, Suisse), bases legales (RGPD Art. 6, LPD Suisse), categories de donnees (email, ID de l'appareil, donnees techniques), fournisseurs tiers (Stripe, Google, Apple, Netcup, Cloudflare), transferts internationaux (EU-US Data Privacy Framework, CCT), droits des personnes concernees (acces, rectification, effacement, portabilite), durees de conservation, mesures de securite et possibilite de reclamation aupres des autorites de controle.</p>
-    <p><strong>Contact:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+
+    <p>La presente Politique de Confidentialite (la "<strong>Politique</strong>") decrit comment <strong>BurgTV</strong>, entreprise individuelle de Musa Bushi, ayant son siege au Via Rinaldo Simen 18, 6900 Lugano, Suisse ("<strong>BurgTV</strong>", "<strong>nous</strong>", "<strong>notre</strong>" ou "<strong>Responsable du traitement</strong>"), collecte, utilise, conserve et partage les donnees personnelles des utilisateurs ("<strong>Utilisateur</strong>" ou "<strong>vous</strong>") de l'application BurgTV TV, BurgTV Mobile et des sites web burgtv.com et app.burgtv.com (collectivement le "<strong>Service</strong>").</p>
+
+    <p>La presente Politique est conforme aux reglementations suivantes:</p>
+    <ul>
+      <li>Loi federale suisse sur la protection des donnees (<strong>nLPD/LPD</strong>, en vigueur depuis le 1er septembre 2023)</li>
+      <li>Reglement general sur la protection des donnees UE (<strong>RGPD – Reglement UE 2016/679</strong>)</li>
+      <li>Reglement britannique (<strong>UK GDPR</strong>)</li>
+      <li>California Consumer Privacy Act / CPRA (<strong>CCPA/CPRA</strong>)</li>
+      <li>Loi bresilienne (<strong>LGPD</strong>)</li>
+      <li>PIPEDA du Canada</li>
+      <li>COPPA des Etats-Unis (mineurs)</li>
+      <li>APPI du Japon</li>
+    </ul>
+
+    <h2>1. Responsable du Traitement et Contact</h2>
+    <div class="highlight-box">
+      <p><strong>BurgTV</strong> — Entreprise individuelle de Musa Bushi</p>
+      <p>Siege: Via Rinaldo Simen 18, 6900 Lugano, Suisse</p>
+      <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    </div>
+    <p>Compte tenu de notre taille, aucun Delegue a la Protection des Donnees (DPO) formel n'a ete designe au titre de l'article 37 RGPD, les conditions d'obligation n'etant pas reunies.</p>
+
+    <h2>2. Categories de Donnees Personnelles Collectees</h2>
+
+    <h3>2.1 Donnees fournies directement par l'Utilisateur</h3>
+    <table class="data-table">
+      <tr><th>Categorie</th><th>Donnees</th></tr>
+      <tr><td>Inscription</td><td>Adresse email, mot de passe (chiffre avec bcrypt)</td></tr>
+      <tr><td>Preferences</td><td>Langue, parametres d'affichage</td></tr>
+    </table>
+
+    <h3>2.2 Donnees collectees automatiquement</h3>
+    <table class="data-table">
+      <tr><th>Categorie</th><th>Donnees</th></tr>
+      <tr><td>ID de l'appareil</td><td>Identifiant unique (hash anonyme, pas l'adresse MAC)</td></tr>
+      <tr><td>Donnees techniques</td><td>Modele d'appareil, systeme d'exploitation, version de l'app</td></tr>
+      <tr><td>Adresse IP</td><td>Stockage temporaire pour la securite</td></tr>
+    </table>
+
+    <h3>2.3 Donnees de transactions</h3>
+    <p>BurgTV <strong>NE collecte, traite ou stocke AUCUNE</strong> donnee complete de cartes de paiement. Tous les paiements sont traites directement par Stripe, Google Play ou Apple (certifies PCI DSS Niveau 1).</p>
+
+    <h2>3. Donnees que Nous NE Collectons PAS</h2>
+    <ul>
+      <li>Adresse MAC de l'appareil</li>
+      <li>Donnees de geolocalisation (GPS)</li>
+      <li>Contenus multimedia lus</li>
+      <li>Historique de navigation, contacts, photos, fichiers</li>
+      <li>Donnees biometriques</li>
+      <li>Categories particulieres de donnees (Art. 9 RGPD)</li>
+    </ul>
+
+    <h2>4. Finalites du Traitement et Bases Legales</h2>
+    <table class="data-table">
+      <tr><th>Finalite</th><th>Base legale</th></tr>
+      <tr><td>Inscription et gestion du compte</td><td>Art. 6(1)(b) — Execution du contrat</td></tr>
+      <tr><td>Authentification et acces</td><td>Art. 6(1)(b) — Execution du contrat</td></tr>
+      <tr><td>Gestion des abonnements</td><td>Art. 6(1)(b) — Execution du contrat</td></tr>
+      <tr><td>Securite et prevention de la fraude</td><td>Art. 6(1)(f) — Interet legitime</td></tr>
+      <tr><td>Obligations legales (fiscales)</td><td>Art. 6(1)(c) — Obligation legale</td></tr>
+    </table>
+    <p>BurgTV <strong>N'EFFECTUE PAS</strong> de traitement base sur le consentement pour marketing, profilage ou publicite.</p>
+
+    <h2>5. Fournisseurs Tiers et Sous-Traitants</h2>
+    <div class="provider-box">
+      <h4>Netcup GmbH (hebergement)</h4>
+      <p>Sous-traitant. Emplacement: Nuremberg, Allemagne (UE). Aucun transfert hors UE.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Stripe, Inc. (paiements TV)</h4>
+      <p>Responsable autonome. Emplacement: USA avec traitement UE. PCI DSS Niveau 1. EU-US Data Privacy Framework + CCT 2021/914.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Google LLC (IAP Android)</h4>
+      <p>Responsable autonome. Transferts: EU-US Data Privacy Framework.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Apple Inc. (IAP iOS)</h4>
+      <p>Responsable autonome. Transferts: EU-US Data Privacy Framework.</p>
+    </div>
+    <div class="provider-box">
+      <h4>TMDB (metadonnees)</h4>
+      <p>Aucune donnee utilisateur partagee. Uniquement requetes de metadonnees publiques.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Resend (emails)</h4>
+      <p>Sous-traitant. Transferts: CCT 2021/914.</p>
+    </div>
+    <div class="provider-box">
+      <h4>Cloudflare (CDN, DDoS)</h4>
+      <p>Sous-traitant. Transferts: EU-US Data Privacy Framework.</p>
+    </div>
+
+    <h2>6. Transferts Internationaux de Donnees</h2>
+    <p>Les donnees sont stockees principalement sur des serveurs dans l'UE (Allemagne). Les transferts vers des pays tiers se font sur la base de:</p>
+    <ul>
+      <li>Decisions d'adequation de la Commission europeenne;</li>
+      <li>EU-US Data Privacy Framework (Decision 2023/1795);</li>
+      <li>Swiss-US Data Privacy Framework;</li>
+      <li>Clauses Contractuelles Types (CCT) 2021/914;</li>
+      <li>Chiffrement en transit (TLS 1.2+) et au repos (AES-256).</li>
+    </ul>
+    <p>La Suisse est reconnue par l'UE comme pays offrant un niveau adequat de protection (Art. 45 RGPD).</p>
+
+    <h2>7. Durees de Conservation</h2>
+    <table class="data-table">
+      <tr><th>Categorie</th><th>Duree</th></tr>
+      <tr><td>Compte actif</td><td>Duree de la relation contractuelle</td></tr>
+      <tr><td>Apres fermeture du compte</td><td>Maximum 30 jours</td></tr>
+      <tr><td>Donnees de transactions</td><td>10 ans (obligations fiscales suisses, Art. 958f CO)</td></tr>
+      <tr><td>Journaux techniques</td><td>Maximum 90 jours</td></tr>
+    </table>
+
+    <h2>8. Droits des Personnes Concernees (RGPD / nLPD)</h2>
+    <ul>
+      <li><strong>Droit d'acces</strong> (Art. 15 RGPD)</li>
+      <li><strong>Rectification</strong> (Art. 16 RGPD)</li>
+      <li><strong>Effacement</strong> / droit a l'oubli (Art. 17 RGPD)</li>
+      <li><strong>Limitation</strong> (Art. 18 RGPD)</li>
+      <li><strong>Portabilite</strong> (Art. 20 RGPD)</li>
+      <li><strong>Opposition</strong> (Art. 21 RGPD)</li>
+      <li><strong>Retrait du consentement</strong> (Art. 7 RGPD)</li>
+      <li><strong>Reclamation aupres de l'autorite de controle</strong> (Art. 77 RGPD)</li>
+    </ul>
+    <p>Contact: <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a>. Reponse sous 30 jours.</p>
+
+    <h2>9. Droits Specifiques Californie (CCPA/CPRA)</h2>
+    <p>Les residents californiens disposent du droit de savoir, supprimer, corriger, refuser la vente/partage, limiter l'utilisation d'informations sensibles, et non-discrimination. BurgTV <strong>NE VEND NI NE PARTAGE</strong> de donnees personnelles a des fins publicitaires.</p>
+
+    <h2>10. Droits Specifiques Bresil (LGPD)</h2>
+    <p>Les residents au Bresil beneficient des droits selon la LGPD (Loi 13.709/2018): confirmation, acces, correction, anonymisation, portabilite, suppression, retrait du consentement.</p>
+
+    <h2>11. Protection des Mineurs</h2>
+    <p>Le Service n'est pas destine aux enfants de moins de <strong>13 ans</strong>. BurgTV ne collecte pas sciemment de donnees de mineurs de moins de 13 ans. Les parents peuvent nous contacter pour faire supprimer toute donnee collectee involontairement.</p>
+
+    <h2>12. Decisions Automatisees</h2>
+    <p>BurgTV <strong>N'EFFECTUE PAS</strong> de decisions automatisees avec effet juridique selon l'Art. 22 RGPD.</p>
+
+    <h2>13. Cookies</h2>
+    <p>Les sites web utilisent exclusivement des cookies techniques necessaires. Voir la <a href="/legal/cookies.html" class="link">Cookie Policy</a>.</p>
+
+    <h2>14. Mesures de Securite</h2>
+    <ul>
+      <li>Chiffrement HTTPS/TLS 1.2+;</li>
+      <li>Hash des mots de passe avec bcrypt;</li>
+      <li>Chiffrement AES-256 des donnees sensibles;</li>
+      <li>Authentification multi-facteur pour acces administratif;</li>
+      <li>Surveillance continue et sauvegardes chiffrees.</li>
+    </ul>
+
+    <h2>15. Violations de Donnees Personnelles</h2>
+    <p>En cas de violation, nous notifierons l'autorite de controle dans un delai de <strong>72 heures</strong> (Art. 33 RGPD) et les utilisateurs affectes sans retard injustifie en cas de risque eleve (Art. 34 RGPD).</p>
+
+    <h2>16. Representant dans l'UE</h2>
+    <p>Conformement a l'Art. 27 RGPD, aucun representant dans l'UE n'a ete designe car les conditions d'exemption de l'Art. 27(2) sont reunies et la Suisse beneficie d'une decision d'adequation.</p>
+
+    <h2>17. Reclamations aux Autorites de Controle</h2>
+    <ul>
+      <li><strong>Suisse:</strong> PFPDT — <a href="https://www.edoeb.admin.ch" class="link" target="_blank" rel="noopener">edoeb.admin.ch</a></li>
+      <li><strong>France:</strong> CNIL — <a href="https://www.cnil.fr" class="link" target="_blank" rel="noopener">cnil.fr</a></li>
+      <li><strong>Belgique:</strong> APD — <a href="https://www.autoriteprotectiondonnees.be" class="link" target="_blank" rel="noopener">autoriteprotectiondonnees.be</a></li>
+      <li><strong>UE:</strong> Autorite nationale competente</li>
+    </ul>
+
+    <h2>18. Modifications de cette Politique</h2>
+    <p>Les modifications substantielles seront communiquees par email et notification in-app avec un preavis de <strong>30 jours</strong>.</p>
+
+    <h2>19. Contact</h2>
+    <div class="highlight-box">
+      <p><strong>BurgTV</strong> — Protection des Donnees</p>
+      <p>Via Rinaldo Simen 18, 6900 Lugano, Suisse</p>
+      <p><strong>Email:</strong> <a href="mailto:info@burgtv.com" class="link">info@burgtv.com</a></p>
+    </div>
   </div>
 
 </div>
