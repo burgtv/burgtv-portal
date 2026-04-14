@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,256 +7,341 @@
   <meta name="description" content="BurgTV Transparency Report: DMCA notices received, takedown actions, government requests, and compliance metrics.">
   <link rel="icon" href="/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="/assets/js/lang-dropdown.js" defer></script>
   <style>
     :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12);--green:#3ddc84}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
     .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto;gap:12px}
     .brand{display:flex;align-items:center;text-decoration:none;color:#fff;gap:10px}
     .brand img{height:40px}
     .brand strong{font-size:1.05rem}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:12px;padding:6px 12px;cursor:pointer;font-size:14px;transition:all .3s}
+    .lang-switch button.active{background:rgba(255,255,255,.1);border-color:#fff}
     .wrap{max-width:900px;margin:0 auto;padding:48px 20px}
     h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     h2{font-size:1.4rem;margin:36px 0 14px;color:#fff;padding-bottom:8px;border-bottom:1px solid var(--border)}
     h3{font-size:1.1rem;margin:20px 0 10px;color:var(--accent)}
     p,li{color:var(--muted)}
     .subtitle{color:var(--muted);margin-bottom:30px;font-size:1.05rem}
-    .date{color:var(--muted);font-size:0.9rem;margin-bottom:18px}
+    .date{color:var(--muted);font-size:.9rem;margin-bottom:18px}
     .card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:24px;margin:18px 0}
     .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin:20px 0}
     .kpi{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
     .kpi .value{font-size:2rem;font-weight:800;color:var(--accent);display:block;margin-bottom:6px}
-    .kpi .label{color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px}
+    .kpi .label{color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.5px}
     .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;border-radius:8px}
-    table{width:100%;border-collapse:collapse;font-size:0.93rem;min-width:480px}
+    table{width:100%;border-collapse:collapse;font-size:.93rem;min-width:480px}
     th,td{text-align:left;padding:12px;border-bottom:1px solid var(--border);color:var(--muted);white-space:nowrap}
-    th{color:var(--accent);font-weight:600;text-transform:uppercase;font-size:0.8rem;letter-spacing:0.5px}
-    @media(max-width:640px){h1{font-size:1.7rem}h2{font-size:1.2rem}h3{font-size:1rem}.wrap{padding:28px 16px}.card{padding:16px}.kpi{padding:14px}.kpi .value{font-size:1.5rem}th,td{padding:10px;font-size:0.85rem}}
-    a{color:var(--accent);text-decoration:none;border-bottom:1px dotted rgba(185,74,142,0.4)}
+    th{color:var(--accent);font-weight:600;text-transform:uppercase;font-size:.8rem;letter-spacing:.5px}
+    a{color:var(--accent);text-decoration:none;border-bottom:1px dotted rgba(185,74,142,.4)}
     a:hover{color:#fff;border-bottom-color:#fff}
-    .pill-green{display:inline-block;background:rgba(61,220,132,0.15);color:var(--green);font-size:0.75rem;padding:3px 10px;border-radius:999px;border:1px solid rgba(61,220,132,0.3)}
+    .pill-green{display:inline-block;background:rgba(61,220,132,.15);color:var(--green);font-size:.75rem;padding:3px 10px;border-radius:999px;border:1px solid rgba(61,220,132,.3)}
     ul{margin:10px 0 14px 22px}
     ul li{margin-bottom:6px}
-    footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.9rem}
+    footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.9rem}
     footer a{color:var(--accent);text-decoration:none}
     footer a:hover{text-decoration:underline}
-    .back{display:inline-block;margin-bottom:24px;color:var(--muted);text-decoration:none;font-size:0.95rem;border-bottom:none}
+    .back{display:inline-block;margin-bottom:24px;color:var(--muted);text-decoration:none;font-size:.95rem;border-bottom:none}
     .back:hover{color:var(--accent)}
+    .lang-block{display:none}
+    .lang-block.active{display:block}
+    @media(max-width:640px){h1{font-size:1.7rem}h2{font-size:1.2rem}h3{font-size:1rem}.wrap{padding:28px 16px}.card{padding:16px}.kpi{padding:14px}.kpi .value{font-size:1.5rem}th,td{padding:10px;font-size:.85rem}}
   </style>
-  <script src="/assets/js/lang-dropdown.js" defer></script>
 </head>
 <body>
 
 <div class="nav">
   <div class="nav-inner">
     <a class="brand" href="https://burgtv.com/"><img src="/logo.png" alt="BurgTV"><strong>BurgTV Legal Hub</strong></a>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+      <button id="btn-de">DE</button>
+      <button id="btn-es">ES</button>
+      <button id="btn-fr">FR</button>
+    </div>
   </div>
 </div>
 
 <div class="wrap">
-  <a class="back" href="/legal/">← Back to Legal Hub</a>
+  <a class="back" href="/legal/">← Legal Hub</a>
 
+<div class="lang-block active" id="content-it">
+  <h1>Report di Trasparenza</h1>
+  <p class="date">Periodo: 1 gennaio 2026 – 14 aprile 2026 · Prossimo aggiornamento: luglio 2026</p>
+  <p class="subtitle">BurgTV pubblica report di trasparenza trimestrali per documentare le attività di conformità, le notifiche DMCA ricevute, le richieste governative e le azioni di applicazione. Questo report copre il primo periodo dal lancio.</p>
+
+  <h2>📊 Riepilogo del Periodo</h2>
+  <div class="kpi-grid">
+    <div class="kpi"><span class="value">0</span><span class="label">Notifiche DMCA ricevute</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Richieste governative</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Utenti sospesi/bannati</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Violazioni dati</span></div>
+    <div class="kpi"><span class="value">100%</span><span class="label">Tasso risposta DMCA</span></div>
+    <div class="kpi"><span class="value">&lt; 48h</span><span class="label">Tempo medio risposta DMCA</span></div>
+  </div>
+
+  <h2>© Notifiche DMCA</h2>
+  <p>Di seguito un registro delle notifiche DMCA valide ricevute durante questo periodo.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Data</th><th>Tipo Reclamante</th><th>Azione</th><th>Tempo</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">Nessuna notifica DMCA ricevuta in questo periodo.</td></tr></tbody></table></div></div>
+  <p style="font-size:.9rem;font-style:italic;margin-top:12px">Per inviare una notifica DMCA, segui la procedura nella nostra <a href="/legal/dmca.html">DMCA Policy</a>. Le notifiche valide vengono processate entro 48h lavorative.</p>
+
+  <h2>🏛️ Richieste Governative e Forze dell'Ordine</h2>
+  <p>BurgTV risponde a procedure legali valide. Tuttavia, data la natura del nostro servizio (un media player, non un provider di streaming), abbiamo tipicamente dati utente molto limitati da condividere.</p>
+  <div class="card">
+    <h3>Quali dati BurgTV può fornire</h3>
+    <ul><li>Email account (se l'utente ha un account Premium)</li><li>ID transazione abbonamento (Stripe)</li><li>Ultimo IP di login (per utenti Premium)</li></ul>
+    <h3>Quali dati BurgTV NON ha</h3>
+    <ul><li>Contenuti visti (non logghiamo la riproduzione)</li><li>Credenziali M3U/Xtream utente (solo sul dispositivo, criptate)</li><li>URL sorgenti di streaming (gestite lato dispositivo)</li><li>Cronologia visione personale (solo sul dispositivo)</li></ul>
+  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Data</th><th>Giurisdizione</th><th>Tipo Richiesta</th><th>Azione</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">Nessuna richiesta governativa ricevuta in questo periodo.</td></tr></tbody></table></div></div>
+
+  <h2>🔐 Divulgazioni Violazioni Dati</h2>
+  <div class="card">
+    <p><span class="pill-green">✓ ZERO violazioni</span></p>
+    <p style="margin-top:12px">Nessuna violazione di dati, accesso non autorizzato o perdita di dati durante questo periodo.</p>
+    <p>In caso di violazione, BurgTV si impegna a notificare gli utenti interessati entro 72 ore, come richiesto dall'Art. 33 GDPR.</p>
+  </div>
+
+  <h2>🚫 Applicazione dei Termini di Servizio</h2>
+  <p>Azioni intraprese contro utenti che violano i nostri Termini o la Policy di Uso Accettabile.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Tipo Violazione</th><th>Avvisi</th><th>Sospensioni</th><th>Ban Permanenti</th></tr></thead><tbody><tr><td>Chargeback / frode</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Segnalazioni abusi</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Abuso tecnico (scraping, rate-limit)</td><td>0</td><td>0</td><td>0</td></tr></tbody></table></div></div>
+
+  <h2>🌍 Stato Submission Store</h2>
+  <p>Trasparenza sui nostri sforzi di distribuzione su app store.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Piattaforma</th><th>Stato</th><th>Note</th></tr></thead><tbody>
+    <tr><td>Download diretto (download.burgtv.com)</td><td><span class="pill-green">✓ Live</span></td><td>Canale primario</td></tr>
+    <tr><td>GitHub Releases</td><td><span class="pill-green">✓ Live</span></td><td>Verifica aperta (hash SHA256 pubblicati)</td></tr>
+    <tr><td>APKPure</td><td>⏳ Review</td><td>Inviata 14 aprile 2026</td></tr>
+    <tr><td>Huawei AppGallery</td><td>⏳ Registrazione</td><td>Verifica developer in corso</td></tr>
+    <tr><td>Amazon Appstore</td><td>⏳ Appello</td><td>Caso #19952802271 — chiarimento policy</td></tr>
+    <tr><td>Google Play</td><td>📅 Pianificata</td><td>Submission dopo trazione iniziale</td></tr>
+    <tr><td>Apple App Store / TestFlight</td><td>📅 Pianificata</td><td>Versione iOS in beta</td></tr>
+  </tbody></table></div></div>
+
+  <h2>📈 Metodologia</h2>
+  <p>Questo report segue gli standard metodologici dei principali transparency report (Google, Cloudflare, Automattic). Pubblichiamo:</p>
+  <ul><li><strong>Trimestralmente</strong>: figure aggiornate per tutte le categorie</li><li><strong>Tempestivamente</strong>: incidenti di sicurezza significativi</li><li><strong>Annualmente</strong>: revisione completa dell'anno</li></ul>
+  <p>Per domande sul report, contatta <a href="mailto:transparency@burgtv.com">transparency@burgtv.com</a>.</p>
+
+  <h2>🔗 Documenti Correlati</h2>
+  <ul><li><a href="/legal/terms.html">Termini di Servizio</a></li><li><a href="/legal/privacy.html">Informativa Privacy</a></li><li><a href="/legal/dmca.html">DMCA Policy</a></li><li><a href="/legal/aup.html">Uso Accettabile</a></li><li><a href="/legal/good-faith.html">Dichiarazione di Buona Fede</a></li></ul>
+</div>
+
+<div class="lang-block" id="content-en">
   <h1>Transparency Report</h1>
   <p class="date">Reporting period: January 1, 2026 – April 14, 2026 · Next update: July 2026</p>
-
   <p class="subtitle">BurgTV publishes transparency reports quarterly to document our compliance activities, DMCA notices received, government requests, and enforcement actions. This report covers the first reporting period since BurgTV launched.</p>
 
   <h2>📊 Reporting Period Summary</h2>
   <div class="kpi-grid">
-    <div class="kpi">
-      <span class="value">0</span>
-      <span class="label">DMCA notices received</span>
-    </div>
-    <div class="kpi">
-      <span class="value">0</span>
-      <span class="label">Government requests</span>
-    </div>
-    <div class="kpi">
-      <span class="value">0</span>
-      <span class="label">Users suspended / banned</span>
-    </div>
-    <div class="kpi">
-      <span class="value">0</span>
-      <span class="label">Data breaches</span>
-    </div>
-    <div class="kpi">
-      <span class="value">100%</span>
-      <span class="label">DMCA response rate</span>
-    </div>
-    <div class="kpi">
-      <span class="value">&lt; 48h</span>
-      <span class="label">Average DMCA response time</span>
-    </div>
+    <div class="kpi"><span class="value">0</span><span class="label">DMCA notices received</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Government requests</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Users suspended/banned</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Data breaches</span></div>
+    <div class="kpi"><span class="value">100%</span><span class="label">DMCA response rate</span></div>
+    <div class="kpi"><span class="value">&lt; 48h</span><span class="label">Avg DMCA response time</span></div>
   </div>
 
   <h2>© DMCA Notices</h2>
   <p>Below is a log of valid DMCA takedown notices received during this reporting period.</p>
-
-  <div class="card">
-    <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Complainant Type</th>
-          <th>Action Taken</th>
-          <th>Time to Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="4" style="text-align:center;padding:24px">
-            No DMCA notices received during this reporting period.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-  </div>
-
-  <p style="font-size:0.9rem;font-style:italic;margin-top:12px">To submit a DMCA notice, please follow the procedure in our <a href="/legal/dmca.html">DMCA Policy</a>. Valid notices are processed within 48 business hours.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Complainant Type</th><th>Action Taken</th><th>Time to Action</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">No DMCA notices received during this reporting period.</td></tr></tbody></table></div></div>
+  <p style="font-size:.9rem;font-style:italic;margin-top:12px">To submit a DMCA notice, follow the procedure in our <a href="/legal/dmca.html">DMCA Policy</a>. Valid notices processed within 48 business hours.</p>
 
   <h2>🏛️ Government &amp; Law Enforcement Requests</h2>
-  <p>BurgTV responds to valid legal process from law enforcement agencies. However, due to the nature of our service (a media player, not a streaming provider), we typically have very limited user data to share.</p>
-
+  <p>BurgTV responds to valid legal process. However, due to our service nature (a media player, not a streaming provider), we typically have very limited user data to share.</p>
   <div class="card">
     <h3>What data BurgTV can provide</h3>
-    <ul>
-      <li>Account email (if user has a Premium account)</li>
-      <li>Subscription transaction IDs (Stripe)</li>
-      <li>Last sign-in IP address (for Premium users)</li>
-    </ul>
+    <ul><li>Account email (if user has Premium)</li><li>Subscription transaction IDs (Stripe)</li><li>Last sign-in IP address (Premium users)</li></ul>
     <h3>What data BurgTV does NOT have</h3>
-    <ul>
-      <li>Content watched by users (we do not log playback)</li>
-      <li>User M3U / Xtream credentials (stored only on device, encrypted)</li>
-      <li>Streaming source URLs (handled device-side)</li>
-      <li>Personal viewing history (stored only on user device)</li>
-    </ul>
+    <ul><li>Content watched (we do not log playback)</li><li>User M3U/Xtream credentials (only on device, encrypted)</li><li>Streaming source URLs (handled device-side)</li><li>Personal viewing history (only on user device)</li></ul>
   </div>
-
-  <div class="card">
-    <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Jurisdiction</th>
-          <th>Request Type</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td colspan="4" style="text-align:center;padding:24px">
-            No government requests received during this reporting period.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Jurisdiction</th><th>Request Type</th><th>Action</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">No government requests received during this reporting period.</td></tr></tbody></table></div></div>
 
   <h2>🔐 Data Breach Disclosures</h2>
   <div class="card">
     <p><span class="pill-green">✓ ZERO breaches</span></p>
-    <p style="margin-top:12px">No data breaches, unauthorized access incidents, or data loss events have occurred during this reporting period.</p>
-    <p>In case of a data breach, BurgTV commits to notify affected users within 72 hours, as required by GDPR Article 33 and similar frameworks.</p>
+    <p style="margin-top:12px">No data breaches, unauthorized access, or data loss events during this reporting period.</p>
+    <p>In case of breach, BurgTV commits to notify affected users within 72 hours, as required by GDPR Article 33.</p>
   </div>
 
   <h2>🚫 Terms of Service Enforcement</h2>
-  <p>Actions taken against users violating our Terms of Service or Acceptable Use Policy.</p>
-  <div class="card">
-    <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Violation Type</th>
-          <th>Warnings</th>
-          <th>Suspensions</th>
-          <th>Permanent Bans</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Chargebacks / fraud</td><td>0</td><td>0</td><td>0</td></tr>
-        <tr><td>Abuse reports</td><td>0</td><td>0</td><td>0</td></tr>
-        <tr><td>Technical abuse (scraping, rate-limiting violations)</td><td>0</td><td>0</td><td>0</td></tr>
-      </tbody>
-    </table>
-    </div>
-  </div>
+  <p>Actions taken against users violating our Terms or Acceptable Use Policy.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Violation Type</th><th>Warnings</th><th>Suspensions</th><th>Permanent Bans</th></tr></thead><tbody><tr><td>Chargebacks/fraud</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Abuse reports</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Technical abuse (scraping, rate-limit)</td><td>0</td><td>0</td><td>0</td></tr></tbody></table></div></div>
 
   <h2>🌍 Store Submission Status</h2>
   <p>Transparency on our app store distribution efforts.</p>
-  <div class="card">
-    <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Platform</th>
-          <th>Status</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Direct download (download.burgtv.com)</td>
-          <td><span class="pill-green">✓ Live</span></td>
-          <td>Primary distribution channel</td>
-        </tr>
-        <tr>
-          <td>GitHub Releases</td>
-          <td><span class="pill-green">✓ Live</span></td>
-          <td>Open verification (SHA256 hashes published)</td>
-        </tr>
-        <tr>
-          <td>APKPure</td>
-          <td>⏳ Review</td>
-          <td>Submitted April 14, 2026</td>
-        </tr>
-        <tr>
-          <td>Huawei AppGallery</td>
-          <td>⏳ Registration</td>
-          <td>Developer verification in progress</td>
-        </tr>
-        <tr>
-          <td>Amazon Appstore</td>
-          <td>⏳ Appeal</td>
-          <td>Case #19952802271 — content policy clarification</td>
-        </tr>
-        <tr>
-          <td>Google Play</td>
-          <td>📅 Planned</td>
-          <td>Submission scheduled after initial traction</td>
-        </tr>
-        <tr>
-          <td>Apple App Store / TestFlight</td>
-          <td>📅 Planned</td>
-          <td>iOS version in beta testing</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-  </div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Platform</th><th>Status</th><th>Notes</th></tr></thead><tbody>
+    <tr><td>Direct download (download.burgtv.com)</td><td><span class="pill-green">✓ Live</span></td><td>Primary distribution channel</td></tr>
+    <tr><td>GitHub Releases</td><td><span class="pill-green">✓ Live</span></td><td>Open verification (SHA256 hashes published)</td></tr>
+    <tr><td>APKPure</td><td>⏳ Review</td><td>Submitted April 14, 2026</td></tr>
+    <tr><td>Huawei AppGallery</td><td>⏳ Registration</td><td>Developer verification in progress</td></tr>
+    <tr><td>Amazon Appstore</td><td>⏳ Appeal</td><td>Case #19952802271 — content policy clarification</td></tr>
+    <tr><td>Google Play</td><td>📅 Planned</td><td>Submission scheduled after initial traction</td></tr>
+    <tr><td>Apple App Store / TestFlight</td><td>📅 Planned</td><td>iOS version in beta</td></tr>
+  </tbody></table></div></div>
 
   <h2>📈 Methodology</h2>
-  <p>This transparency report follows methodology standards established by leading transparency reports (Google, Cloudflare, Automattic). We publish:</p>
-  <ul>
-    <li><strong>Quarterly</strong>: updated figures for all categories</li>
-    <li><strong>Promptly</strong>: any material security incidents</li>
-    <li><strong>Annually</strong>: comprehensive year-in-review</li>
-  </ul>
-  <p>For questions about the report or to request additional information, contact <a href="mailto:transparency@burgtv.com">transparency@burgtv.com</a>.</p>
+  <p>Methodology follows standards established by leading transparency reports (Google, Cloudflare, Automattic). We publish:</p>
+  <ul><li><strong>Quarterly</strong>: updated figures for all categories</li><li><strong>Promptly</strong>: any material security incidents</li><li><strong>Annually</strong>: comprehensive year-in-review</li></ul>
+  <p>For questions, contact <a href="mailto:transparency@burgtv.com">transparency@burgtv.com</a>.</p>
 
   <h2>🔗 Related Documents</h2>
-  <ul>
-    <li><a href="/legal/terms.html">Terms of Service</a></li>
-    <li><a href="/legal/privacy.html">Privacy Policy</a></li>
-    <li><a href="/legal/dmca.html">DMCA Policy</a></li>
-    <li><a href="/legal/aup.html">Acceptable Use Policy</a></li>
-    <li><a href="/legal/good-faith.html">Good Faith Statement</a></li>
-  </ul>
+  <ul><li><a href="/legal/terms.html">Terms of Service</a></li><li><a href="/legal/privacy.html">Privacy Policy</a></li><li><a href="/legal/dmca.html">DMCA Policy</a></li><li><a href="/legal/aup.html">Acceptable Use</a></li><li><a href="/legal/good-faith.html">Good Faith Statement</a></li></ul>
+</div>
+
+<div class="lang-block" id="content-de">
+  <h1>Transparenzbericht</h1>
+  <p class="date">Berichtszeitraum: 1. Januar 2026 – 14. April 2026 · Nächstes Update: Juli 2026</p>
+  <p class="subtitle">BurgTV veröffentlicht vierteljährliche Transparenzberichte über unsere Compliance-Aktivitäten, erhaltene DMCA-Meldungen, behördliche Anfragen und Durchsetzungsmaßnahmen.</p>
+
+  <h2>📊 Zusammenfassung des Berichtszeitraums</h2>
+  <div class="kpi-grid">
+    <div class="kpi"><span class="value">0</span><span class="label">Erhaltene DMCA-Meldungen</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Behördliche Anfragen</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Gesperrte/Gebannte Nutzer</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Datenpannen</span></div>
+    <div class="kpi"><span class="value">100%</span><span class="label">DMCA-Antwortrate</span></div>
+    <div class="kpi"><span class="value">&lt; 48h</span><span class="label">Ø DMCA-Reaktionszeit</span></div>
+  </div>
+
+  <h2>© DMCA-Meldungen</h2>
+  <p>Nachstehend ein Protokoll der gültigen DMCA-Takedown-Meldungen während dieses Zeitraums.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Datum</th><th>Beschwerdeführer</th><th>Aktion</th><th>Zeit</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">Keine DMCA-Meldungen in diesem Zeitraum erhalten.</td></tr></tbody></table></div></div>
+
+  <h2>🏛️ Behördliche Anfragen</h2>
+  <p>BurgTV reagiert auf gültige rechtliche Verfahren. Aufgrund unserer Dienstnatur (Media Player, kein Streaming-Anbieter) haben wir typischerweise sehr begrenzte Nutzerdaten.</p>
+  <div class="card">
+    <h3>Welche Daten BurgTV bereitstellen kann</h3>
+    <ul><li>Konto-E-Mail (bei Premium-Konto)</li><li>Abonnement-Transaktions-IDs (Stripe)</li><li>Letzte Anmelde-IP (Premium-Nutzer)</li></ul>
+    <h3>Welche Daten BurgTV NICHT hat</h3>
+    <ul><li>Angesehene Inhalte (keine Wiedergabe-Logs)</li><li>M3U/Xtream-Anmeldedaten (nur auf Gerät, verschlüsselt)</li><li>Streaming-Quell-URLs (geräteseitig)</li><li>Persönlicher Wiedergabeverlauf (nur auf Gerät)</li></ul>
+  </div>
+
+  <h2>🔐 Datenpannen-Offenlegungen</h2>
+  <div class="card">
+    <p><span class="pill-green">✓ NULL Datenpannen</span></p>
+    <p style="margin-top:12px">Keine Datenpannen, unbefugten Zugriffe oder Datenverluste in diesem Zeitraum.</p>
+    <p>Im Falle einer Datenpanne verpflichtet sich BurgTV, betroffene Nutzer innerhalb von 72 Stunden zu benachrichtigen (DSGVO Art. 33).</p>
+  </div>
+
+  <h2>🌍 App-Store-Submission-Status</h2>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Plattform</th><th>Status</th><th>Hinweise</th></tr></thead><tbody>
+    <tr><td>Direkter Download (download.burgtv.com)</td><td><span class="pill-green">✓ Live</span></td><td>Hauptvertriebskanal</td></tr>
+    <tr><td>GitHub Releases</td><td><span class="pill-green">✓ Live</span></td><td>Offene Verifikation (SHA256-Hashes veröffentlicht)</td></tr>
+    <tr><td>APKPure</td><td>⏳ Prüfung</td><td>Eingereicht 14. April 2026</td></tr>
+    <tr><td>Huawei AppGallery</td><td>⏳ Registrierung</td><td>Developer-Verifikation läuft</td></tr>
+    <tr><td>Amazon Appstore</td><td>⏳ Einspruch</td><td>Fall #19952802271</td></tr>
+    <tr><td>Google Play</td><td>📅 Geplant</td><td>Submission nach erster Traktion</td></tr>
+    <tr><td>Apple App Store / TestFlight</td><td>📅 Geplant</td><td>iOS-Version in Beta</td></tr>
+  </tbody></table></div></div>
+
+  <h2>🔗 Verwandte Dokumente</h2>
+  <ul><li><a href="/legal/terms.html">Nutzungsbedingungen</a></li><li><a href="/legal/privacy.html">Datenschutz</a></li><li><a href="/legal/dmca.html">DMCA</a></li><li><a href="/legal/aup.html">Nutzungsrichtlinie</a></li><li><a href="/legal/good-faith.html">Good-Faith-Erklärung</a></li></ul>
+</div>
+
+<div class="lang-block" id="content-es">
+  <h1>Informe de Transparencia</h1>
+  <p class="date">Período: 1 de enero 2026 – 14 de abril 2026 · Próxima actualización: julio 2026</p>
+  <p class="subtitle">BurgTV publica informes de transparencia trimestrales para documentar actividades de cumplimiento, avisos DMCA recibidos, solicitudes gubernamentales y acciones de aplicación.</p>
+
+  <h2>📊 Resumen del Período</h2>
+  <div class="kpi-grid">
+    <div class="kpi"><span class="value">0</span><span class="label">Avisos DMCA recibidos</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Solicitudes gubernamentales</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Usuarios suspendidos/baneados</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Filtraciones de datos</span></div>
+    <div class="kpi"><span class="value">100%</span><span class="label">Tasa respuesta DMCA</span></div>
+    <div class="kpi"><span class="value">&lt; 48h</span><span class="label">Tiempo medio respuesta DMCA</span></div>
+  </div>
+
+  <h2>© Avisos DMCA</h2>
+  <p>A continuación, registro de avisos DMCA válidos recibidos durante este período.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Tipo Reclamante</th><th>Acción</th><th>Tiempo</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">No se recibieron avisos DMCA durante este período.</td></tr></tbody></table></div></div>
+
+  <h2>🏛️ Solicitudes Gubernamentales</h2>
+  <p>BurgTV responde a procesos legales válidos. Sin embargo, dada la naturaleza de nuestro servicio (un reproductor multimedia, no un proveedor de streaming), tenemos típicamente datos de usuario muy limitados.</p>
+  <div class="card">
+    <h3>Qué datos puede proporcionar BurgTV</h3>
+    <ul><li>Email cuenta (si tiene Premium)</li><li>IDs transacción suscripción (Stripe)</li><li>Última IP login (usuarios Premium)</li></ul>
+    <h3>Qué datos BurgTV NO tiene</h3>
+    <ul><li>Contenido visto (no registramos reproducción)</li><li>Credenciales M3U/Xtream (solo en dispositivo, cifradas)</li><li>URLs de streaming (gestión en dispositivo)</li><li>Historial visualización personal (solo en dispositivo)</li></ul>
+  </div>
+
+  <h2>🔐 Divulgación de Filtraciones</h2>
+  <div class="card">
+    <p><span class="pill-green">✓ CERO filtraciones</span></p>
+    <p style="margin-top:12px">No hubo filtraciones, accesos no autorizados ni pérdidas de datos durante este período.</p>
+    <p>En caso de filtración, BurgTV se compromete a notificar a usuarios afectados dentro de 72 horas (GDPR Art. 33).</p>
+  </div>
+
+  <h2>🌍 Estado Submission App Stores</h2>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Plataforma</th><th>Estado</th><th>Notas</th></tr></thead><tbody>
+    <tr><td>Descarga directa (download.burgtv.com)</td><td><span class="pill-green">✓ Live</span></td><td>Canal principal</td></tr>
+    <tr><td>GitHub Releases</td><td><span class="pill-green">✓ Live</span></td><td>Verificación abierta (hashes SHA256 publicados)</td></tr>
+    <tr><td>APKPure</td><td>⏳ Revisión</td><td>Enviado 14 abril 2026</td></tr>
+    <tr><td>Huawei AppGallery</td><td>⏳ Registro</td><td>Verificación developer en curso</td></tr>
+    <tr><td>Amazon Appstore</td><td>⏳ Apelación</td><td>Caso #19952802271</td></tr>
+    <tr><td>Google Play</td><td>📅 Planificado</td><td>Submission tras tracción inicial</td></tr>
+    <tr><td>Apple App Store / TestFlight</td><td>📅 Planificado</td><td>Versión iOS en beta</td></tr>
+  </tbody></table></div></div>
+
+  <h2>🔗 Documentos Relacionados</h2>
+  <ul><li><a href="/legal/terms.html">Términos del Servicio</a></li><li><a href="/legal/privacy.html">Privacidad</a></li><li><a href="/legal/dmca.html">DMCA</a></li><li><a href="/legal/aup.html">Uso Aceptable</a></li><li><a href="/legal/good-faith.html">Declaración de Buena Fe</a></li></ul>
+</div>
+
+<div class="lang-block" id="content-fr">
+  <h1>Rapport de Transparence</h1>
+  <p class="date">Période: 1er janvier 2026 – 14 avril 2026 · Prochaine mise à jour: juillet 2026</p>
+  <p class="subtitle">BurgTV publie des rapports de transparence trimestriels pour documenter nos activités de conformité, notifications DMCA reçues, demandes gouvernementales et actions d'application.</p>
+
+  <h2>📊 Résumé de la Période</h2>
+  <div class="kpi-grid">
+    <div class="kpi"><span class="value">0</span><span class="label">Notifications DMCA reçues</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Demandes gouvernementales</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Utilisateurs suspendus/bannis</span></div>
+    <div class="kpi"><span class="value">0</span><span class="label">Violations de données</span></div>
+    <div class="kpi"><span class="value">100%</span><span class="label">Taux de réponse DMCA</span></div>
+    <div class="kpi"><span class="value">&lt; 48h</span><span class="label">Temps moyen réponse DMCA</span></div>
+  </div>
+
+  <h2>© Notifications DMCA</h2>
+  <p>Ci-dessous, registre des notifications DMCA valides reçues durant cette période.</p>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Type Plaignant</th><th>Action</th><th>Temps</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center;padding:24px">Aucune notification DMCA reçue durant cette période.</td></tr></tbody></table></div></div>
+
+  <h2>🏛️ Demandes Gouvernementales</h2>
+  <p>BurgTV répond aux processus juridiques valides. Cependant, vu la nature de notre service (lecteur multimédia, pas fournisseur de streaming), nous avons typiquement très peu de données utilisateur.</p>
+  <div class="card">
+    <h3>Quelles données BurgTV peut fournir</h3>
+    <ul><li>Email du compte (si Premium)</li><li>IDs transactions abonnement (Stripe)</li><li>Dernière IP de connexion (utilisateurs Premium)</li></ul>
+    <h3>Quelles données BurgTV N'A PAS</h3>
+    <ul><li>Contenu visionné (aucun journal de lecture)</li><li>Identifiants M3U/Xtream (uniquement sur l'appareil, chiffrés)</li><li>URLs sources de streaming (gérées côté appareil)</li><li>Historique de visionnage personnel (uniquement sur l'appareil)</li></ul>
+  </div>
+
+  <h2>🔐 Divulgation des Violations de Données</h2>
+  <div class="card">
+    <p><span class="pill-green">✓ ZÉRO violation</span></p>
+    <p style="margin-top:12px">Aucune violation de données, accès non autorisé ou perte de données durant cette période.</p>
+    <p>En cas de violation, BurgTV s'engage à notifier les utilisateurs concernés dans les 72 heures (RGPD Art. 33).</p>
+  </div>
+
+  <h2>🌍 Statut Soumission App Stores</h2>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Plateforme</th><th>Statut</th><th>Notes</th></tr></thead><tbody>
+    <tr><td>Téléchargement direct (download.burgtv.com)</td><td><span class="pill-green">✓ Live</span></td><td>Canal principal</td></tr>
+    <tr><td>GitHub Releases</td><td><span class="pill-green">✓ Live</span></td><td>Vérification ouverte (hashes SHA256 publiés)</td></tr>
+    <tr><td>APKPure</td><td>⏳ Examen</td><td>Soumis 14 avril 2026</td></tr>
+    <tr><td>Huawei AppGallery</td><td>⏳ Inscription</td><td>Vérification développeur en cours</td></tr>
+    <tr><td>Amazon Appstore</td><td>⏳ Recours</td><td>Dossier #19952802271</td></tr>
+    <tr><td>Google Play</td><td>📅 Planifié</td><td>Soumission après traction initiale</td></tr>
+    <tr><td>Apple App Store / TestFlight</td><td>📅 Planifié</td><td>Version iOS en bêta</td></tr>
+  </tbody></table></div></div>
+
+  <h2>🔗 Documents Connexes</h2>
+  <ul><li><a href="/legal/terms.html">Conditions d'Utilisation</a></li><li><a href="/legal/privacy.html">Confidentialité</a></li><li><a href="/legal/dmca.html">DMCA</a></li><li><a href="/legal/aup.html">Usage Acceptable</a></li><li><a href="/legal/good-faith.html">Bonne Foi</a></li></ul>
+</div>
 
 </div>
 
@@ -264,6 +349,14 @@
   <p>© 2026 BurgTV — Developed in Switzerland 🇨🇭</p>
   <p style="margin-top:10px"><a href="/legal/">Legal Hub</a> · <a href="https://burgtv.com/">BurgTV Home</a> · <a href="mailto:transparency@burgtv.com">transparency@burgtv.com</a></p>
 </footer>
+
+<script>
+function setLang(l){document.querySelectorAll('.lang-block').forEach(b=>b.classList.toggle('active',b.id==='content-'+l));document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));const btn=document.getElementById('btn-'+l);if(btn)btn.classList.add('active');document.documentElement.lang=l;localStorage.setItem('preferredLang',l)}
+document.addEventListener('DOMContentLoaded',function(){
+  ['it','en','de','es','fr'].forEach(l=>{const b=document.getElementById('btn-'+l);if(b)b.addEventListener('click',()=>setLang(l))});
+  setLang(localStorage.getItem('preferredLang')||'it');
+});
+</script>
 
 </body>
 </html>

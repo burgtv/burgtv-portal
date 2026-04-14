@@ -123,6 +123,17 @@
     const current = getCurrentLang(found.buttons);
     const dropdown = buildDropdown(current);
 
+    // Copy positioning from original container if it's fixed/absolute
+    const cs = window.getComputedStyle(found.container);
+    if (cs.position === 'fixed' || cs.position === 'absolute') {
+      dropdown.style.position = cs.position;
+      dropdown.style.zIndex = cs.zIndex && cs.zIndex !== 'auto' ? cs.zIndex : '1000';
+      ['top', 'right', 'bottom', 'left'].forEach(side => {
+        const v = cs[side];
+        if (v && v !== 'auto') dropdown.style[side] = v;
+      });
+    }
+
     // Insert dropdown right after the container of old buttons
     found.container.parentElement.insertBefore(dropdown, found.container.nextSibling);
 
