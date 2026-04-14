@@ -104,14 +104,12 @@
             .lang-switch{top:1rem;right:1rem;padding:0.4rem}
             .lang-btn{padding:0.4rem 0.8rem;font-size:0.8rem}
         }
-    </style>
+    .burgtv-back-btn{position:fixed;top:1.5rem;left:1.5rem;display:flex;align-items:center;justify-content:center;width:42px;height:42px;padding:0;background:rgba(20,20,30,0.85);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;text-decoration:none;z-index:1000;transition:all .2s}.burgtv-back-btn:hover{background:rgba(185,74,142,.15);border-color:#B94A8E;transform:translateX(-3px)}.burgtv-back-btn svg{width:18px;height:18px}@media(max-width:768px){.burgtv-back-btn{display:none!important}}
+</style>
   <script src="/assets/js/lang-dropdown.js" defer></script>
 </head>
 <body>
-    <a href="https://burgtv.com" class="back-btn">
-        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        <span data-i18n="back">Indietro</span>
-    </a>
+    <a href="https://burgtv.com/" class="burgtv-back-btn" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>
     
     <div class="lang-switch">
         <button class="lang-btn active" data-lang="it">IT</button>
