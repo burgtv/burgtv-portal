@@ -1,0 +1,17 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="bbb" tvg-name="Big Buck Bunny" group-title="Demo Movies (Creative Commons)",Big Buck Bunny
+https://download.blender.org/peach/bigbuckbunny_movies/BigBuckBunny_320x180.mp4
+#EXTINF:-1 tvg-id="sintel" tvg-name="Sintel Trailer" group-title="Demo Movies (Creative Commons)",Sintel Trailer
+https://download.blender.org/durian/trailer/sintel_trailer-1080p.mp4
+#EXTINF:-1 tvg-id="elephants" tvg-name="Elephants Dream" group-title="Demo Movies (Creative Commons)",Elephants Dream
+https://download.blender.org/ED/ED_1024.avi
+#EXTINF:-1 tvg-id="tears" tvg-name="Tears of Steel" group-title="Demo Movies (Creative Commons)",Tears of Steel
+https://mirror.clarkson.edu/blender/demo/movies/ToS/tears_of_steel_720p.mov
+#EXTINF:-1 tvg-id="caminandes1" tvg-name="Caminandes Episode 1" group-title="Demo Movies (Creative Commons)",Caminandes - Llama Drama
+https://download.blender.org/demo/movies/caminandes/caminandes_1_llama_drama_1080p.mp4
+#EXTINF:-1 tvg-id="caminandes2" tvg-name="Caminandes Episode 2" group-title="Demo Movies (Creative Commons)",Caminandes - Gran Dillama
+https://download.blender.org/demo/movies/caminandes/caminandes_2_gran_dillama_1080p.mp4
+#EXTINF:-1 tvg-id="hlsdemo" tvg-name="HLS Demo Stream" group-title="Demo Streams (HLS)",HLS Test Stream (Apple)
+https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8
+#EXTINF:-1 tvg-id="muxdemo" tvg-name="Mux Test Stream" group-title="Demo Streams (HLS)",Mux Test HLS
+https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8
