@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="it">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,15 +7,19 @@
   <meta name="description" content="BurgTV Legal Hub: Terms, Privacy, Acceptable Use, DMCA, Cookies, Transparency Report, and FAQ. GDPR, CCPA, LGPD, nFADP compliant.">
   <link rel="icon" href="/favicon.ico">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="/assets/js/lang-dropdown.js" defer></script>
   <style>
     :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.7}
     .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:1120px;margin:0 auto;gap:12px}
     .brand{display:flex;align-items:center;text-decoration:none;color:#fff;gap:10px}
     .brand img{height:40px;width:auto}
     .brand strong{font-size:1.1rem}
+    .lang-switch{display:flex;gap:8px}
+    .lang-switch button{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:12px;padding:6px 12px;cursor:pointer;font-size:14px;transition:all .3s}
+    .lang-switch button.active{background:rgba(255,255,255,.1);border-color:#fff}
     .wrap{max-width:1100px;margin:0 auto;padding:60px 20px}
     h1{font-size:2.4rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .subtitle{color:var(--muted);margin-bottom:40px;font-size:1.1rem;max-width:720px}
@@ -24,147 +28,173 @@
     .card:hover{border-color:var(--accent);transform:translateY(-3px);background:rgba(185,74,142,0.08)}
     .card .icon{font-size:2.2rem;margin-bottom:10px;display:block}
     .card h2{font-size:1.15rem;margin-bottom:8px;color:#fff}
-    .card p{color:var(--muted);font-size:0.93rem;line-height:1.5}
+    .card p{color:var(--muted);font-size:.93rem;line-height:1.5}
     .section-title{font-size:1.5rem;margin-bottom:20px;color:#fff;padding-bottom:8px;border-bottom:1px solid var(--border)}
-    .pill{display:inline-block;background:rgba(185,74,142,0.15);color:var(--accent);font-size:0.75rem;padding:4px 10px;border-radius:999px;margin-right:6px;margin-top:6px;border:1px solid rgba(185,74,142,0.3)}
-    footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:0.9rem}
+    .pill{display:inline-block;background:rgba(185,74,142,0.15);color:var(--accent);font-size:.75rem;padding:4px 10px;border-radius:999px;margin-right:6px;margin-top:6px;border:1px solid rgba(185,74,142,0.3)}
+    footer{margin-top:60px;padding:30px 0;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:.9rem}
     footer a{color:var(--accent);text-decoration:none}
     footer a:hover{text-decoration:underline}
-    @media(max-width:640px){
-      .nav{padding:0 16px}
-      .nav-inner{height:60px}
-      .brand img{height:32px}
-      .brand strong{font-size:0.95rem}
-      .wrap{padding:36px 16px}
-      h1{font-size:1.7rem}
-      .subtitle{font-size:0.98rem;margin-bottom:30px}
-      .grid{grid-template-columns:1fr;gap:14px}
-      .card{padding:20px}
-      .card .icon{font-size:1.8rem}
-      .card h2{font-size:1.05rem}
-      .card p{font-size:0.88rem}
-      .section-title{font-size:1.25rem;margin-top:40px}
-      .pill{font-size:0.7rem;padding:3px 8px}
-    }
+    .lang-block{display:none}
+    .lang-block.active{display:block}
+    @media(max-width:640px){.nav{padding:0 16px}.nav-inner{height:60px}.brand img{height:32px}.brand strong{font-size:.95rem}.wrap{padding:36px 16px}h1{font-size:1.7rem}.subtitle{font-size:.98rem;margin-bottom:30px}.grid{grid-template-columns:1fr;gap:14px}.card{padding:20px}.card .icon{font-size:1.8rem}.card h2{font-size:1.05rem}.card p{font-size:.88rem}.section-title{font-size:1.25rem;margin-top:40px}.pill{font-size:.7rem;padding:3px 8px}}
   </style>
-  <script src="/assets/js/lang-dropdown.js" defer></script>
 </head>
 <body>
 
 <div class="nav">
   <div class="nav-inner">
     <a class="brand" href="https://burgtv.com/"><img src="/logo.png" alt="BurgTV"><strong>BurgTV Legal Hub</strong></a>
+    <div class="lang-switch">
+      <button id="btn-it" class="active">IT</button>
+      <button id="btn-en">EN</button>
+      <button id="btn-de">DE</button>
+      <button id="btn-es">ES</button>
+      <button id="btn-fr">FR</button>
+    </div>
   </div>
 </div>
 
 <div class="wrap">
 
+<div class="lang-block active" id="content-it">
+  <h1>Hub Legale</h1>
+  <p class="subtitle">Piena trasparenza. Tutte le nostre policy, documenti di conformità e report pubblici in un unico posto.</p>
+  <div><span class="pill">🇪🇺 GDPR</span><span class="pill">🇺🇸 CCPA</span><span class="pill">🇧🇷 LGPD</span><span class="pill">🇨🇭 nFADP</span><span class="pill">🇬🇧 UK GDPR</span><span class="pill">🇨🇦 PIPEDA</span><span class="pill">© DMCA</span><span class="pill">🛡️ ePrivacy</span></div>
+  <h2 class="section-title" style="margin-top:50px">📋 Policy Principali</h2>
+  <div class="grid">
+    <a href="/legal/terms.html" class="card"><span class="icon">📜</span><h2>Termini di Servizio</h2><p>Il tuo accordo legale con BurgTV. Regole d'uso, garanzie, responsabilità e legge applicabile.</p></a>
+    <a href="/legal/privacy.html" class="card"><span class="icon">🔒</span><h2>Informativa Privacy</h2><p>Quali dati raccogliamo (minimi), perché e come li proteggiamo. Conforme GDPR / CCPA / LGPD / nFADP.</p></a>
+    <a href="/legal/aup.html" class="card"><span class="icon">⚖️</span><h2>Uso Accettabile</h2><p>Cosa puoi e non puoi fare con BurgTV. Usi vietati, applicazione e conseguenze.</p></a>
+    <a href="/legal/cookies.html" class="card"><span class="icon">🍪</span><h2>Cookie Policy</h2><p>Cookie e tecnologie di tracciamento sul nostro sito. Conforme Direttiva ePrivacy.</p></a>
+    <a href="/legal/dmca.html" class="card"><span class="icon">🚨</span><h2>Policy DMCA</h2><p>Procedure di rimozione per copyright. Come inviare una notifica DMCA e policy sui recidivi.</p></a>
+    <a href="/legal/delete-account.html" class="card"><span class="icon">🗑️</span><h2>Cancellazione Account</h2><p>Diritto all'oblio (GDPR Art. 17). Come richiedere la cancellazione completa dei dati.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">📚 Trasparenza e Dichiarazioni Pubbliche</h2>
+  <div class="grid">
+    <a href="/legal/faq.html" class="card"><span class="icon">❓</span><h2>FAQ Legali</h2><p>Risposte chiare a domande legali comuni: BurgTV è legale, posizione di player neutro, responsabilità utente.</p></a>
+    <a href="/legal/transparency.html" class="card"><span class="icon">📊</span><h2>Report di Trasparenza</h2><p>Report pubblico su notifiche DMCA, takedown, richieste governative e metriche di conformità.</p></a>
+    <a href="/legal/good-faith.html" class="card"><span class="icon">🤝</span><h2>Dichiarazione di Buona Fede</h2><p>Posizione pubblica sulla pirateria, conformità al copyright, impegno per l'uso legittimo.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">✉️ Contatti per Questioni Legali</h2>
+  <div class="grid">
+    <a href="mailto:legal@burgtv.com" class="card"><span class="icon">⚖️</span><h2>Legale Generale</h2><p><strong>legal@burgtv.com</strong><br>Contratti, partnership, conformità.</p></a>
+    <a href="mailto:dmca@burgtv.com" class="card"><span class="icon">©</span><h2>Notifiche DMCA</h2><p><strong>dmca@burgtv.com</strong><br>Rimozioni copyright (vedi policy DMCA).</p></a>
+    <a href="mailto:privacy@burgtv.com" class="card"><span class="icon">🔐</span><h2>Privacy / GDPR</h2><p><strong>privacy@burgtv.com</strong><br>Richieste dati, accesso, cancellazione.</p></a>
+    <a href="mailto:abuse@burgtv.com" class="card"><span class="icon">🚨</span><h2>Segnalazioni Abusi</h2><p><strong>abuse@burgtv.com</strong><br>Segnala uso improprio per scopi illegali.</p></a>
+  </div>
+</div>
+
+<div class="lang-block" id="content-en">
   <h1>Legal Hub</h1>
   <p class="subtitle">Full transparency. All our policies, compliance documents, and public reports in one place.</p>
-
-  <div>
-    <span class="pill">🇪🇺 GDPR</span>
-    <span class="pill">🇺🇸 CCPA</span>
-    <span class="pill">🇧🇷 LGPD</span>
-    <span class="pill">🇨🇭 nFADP</span>
-    <span class="pill">🇬🇧 UK GDPR</span>
-    <span class="pill">🇨🇦 PIPEDA</span>
-    <span class="pill">© DMCA</span>
-    <span class="pill">🛡️ ePrivacy</span>
-  </div>
-
+  <div><span class="pill">🇪🇺 GDPR</span><span class="pill">🇺🇸 CCPA</span><span class="pill">🇧🇷 LGPD</span><span class="pill">🇨🇭 nFADP</span><span class="pill">🇬🇧 UK GDPR</span><span class="pill">🇨🇦 PIPEDA</span><span class="pill">© DMCA</span><span class="pill">🛡️ ePrivacy</span></div>
   <h2 class="section-title" style="margin-top:50px">📋 Core Policies</h2>
   <div class="grid">
-
-    <a href="/legal/terms.html" class="card">
-      <span class="icon">📜</span>
-      <h2>Terms of Service</h2>
-      <p>Your legal agreement with BurgTV. Rules of use, disclaimers, liability, and governing law.</p>
-    </a>
-
-    <a href="/legal/privacy.html" class="card">
-      <span class="icon">🔒</span>
-      <h2>Privacy Policy</h2>
-      <p>What data we collect (minimal), why, and how we protect it. GDPR / CCPA / LGPD / nFADP compliant.</p>
-    </a>
-
-    <a href="/legal/aup.html" class="card">
-      <span class="icon">⚖️</span>
-      <h2>Acceptable Use Policy</h2>
-      <p>What you can and cannot do with BurgTV. Prohibited uses, enforcement, and consequences.</p>
-    </a>
-
-    <a href="/legal/cookies.html" class="card">
-      <span class="icon">🍪</span>
-      <h2>Cookie Policy</h2>
-      <p>Cookies and tracking technologies used on our website. ePrivacy Directive compliance.</p>
-    </a>
-
-    <a href="/legal/dmca.html" class="card">
-      <span class="icon">🚨</span>
-      <h2>DMCA Policy</h2>
-      <p>Copyright takedown procedures. How to submit a DMCA notice and our repeat-infringer policy.</p>
-    </a>
-
-    <a href="/legal/delete-account.html" class="card">
-      <span class="icon">🗑️</span>
-      <h2>Account Deletion</h2>
-      <p>Right to erasure (GDPR Article 17). How to request full data deletion from BurgTV systems.</p>
-    </a>
-
+    <a href="/legal/terms.html" class="card"><span class="icon">📜</span><h2>Terms of Service</h2><p>Your legal agreement with BurgTV. Rules of use, disclaimers, liability, and governing law.</p></a>
+    <a href="/legal/privacy.html" class="card"><span class="icon">🔒</span><h2>Privacy Policy</h2><p>What data we collect (minimal), why, and how we protect it. GDPR / CCPA / LGPD / nFADP compliant.</p></a>
+    <a href="/legal/aup.html" class="card"><span class="icon">⚖️</span><h2>Acceptable Use</h2><p>What you can and cannot do with BurgTV. Prohibited uses, enforcement, and consequences.</p></a>
+    <a href="/legal/cookies.html" class="card"><span class="icon">🍪</span><h2>Cookie Policy</h2><p>Cookies and tracking technologies on our website. ePrivacy Directive compliance.</p></a>
+    <a href="/legal/dmca.html" class="card"><span class="icon">🚨</span><h2>DMCA Policy</h2><p>Copyright takedown procedures. How to submit a DMCA notice and our repeat-infringer policy.</p></a>
+    <a href="/legal/delete-account.html" class="card"><span class="icon">🗑️</span><h2>Account Deletion</h2><p>Right to erasure (GDPR Article 17). How to request full data deletion.</p></a>
   </div>
-
   <h2 class="section-title" style="margin-top:50px">📚 Transparency &amp; Public Statements</h2>
   <div class="grid">
-
-    <a href="/legal/faq.html" class="card">
-      <span class="icon">❓</span>
-      <h2>Legal FAQ</h2>
-      <p>Clear answers to common legal questions: is BurgTV legal, our neutral-player stance, user responsibilities.</p>
-    </a>
-
-    <a href="/legal/transparency.html" class="card">
-      <span class="icon">📊</span>
-      <h2>Transparency Report</h2>
-      <p>Public report on DMCA notices received, takedown actions, government requests, and compliance metrics.</p>
-    </a>
-
-    <a href="/legal/good-faith.html" class="card">
-      <span class="icon">🤝</span>
-      <h2>Good Faith Statement</h2>
-      <p>Our public position on piracy, compliance with copyright law, and commitment to legitimate use.</p>
-    </a>
-
+    <a href="/legal/faq.html" class="card"><span class="icon">❓</span><h2>Legal FAQ</h2><p>Clear answers to common legal questions: is BurgTV legal, our neutral-player stance, user responsibilities.</p></a>
+    <a href="/legal/transparency.html" class="card"><span class="icon">📊</span><h2>Transparency Report</h2><p>Public report on DMCA notices received, takedown actions, government requests, and compliance metrics.</p></a>
+    <a href="/legal/good-faith.html" class="card"><span class="icon">🤝</span><h2>Good Faith Statement</h2><p>Our public position on piracy, compliance with copyright law, and commitment to legitimate use.</p></a>
   </div>
-
   <h2 class="section-title" style="margin-top:50px">✉️ Contact for Legal Matters</h2>
   <div class="grid">
-
-    <a href="mailto:legal@burgtv.com" class="card">
-      <span class="icon">⚖️</span>
-      <h2>General Legal</h2>
-      <p><strong>legal@burgtv.com</strong><br>Contracts, partnerships, compliance inquiries.</p>
-    </a>
-
-    <a href="mailto:dmca@burgtv.com" class="card">
-      <span class="icon">©</span>
-      <h2>DMCA Notices</h2>
-      <p><strong>dmca@burgtv.com</strong><br>Copyright takedown requests (see DMCA policy for required info).</p>
-    </a>
-
-    <a href="mailto:privacy@burgtv.com" class="card">
-      <span class="icon">🔐</span>
-      <h2>Privacy / GDPR</h2>
-      <p><strong>privacy@burgtv.com</strong><br>Data requests, access rights, deletion, GDPR / CCPA inquiries.</p>
-    </a>
-
-    <a href="mailto:abuse@burgtv.com" class="card">
-      <span class="icon">🚨</span>
-      <h2>Abuse Reports</h2>
-      <p><strong>abuse@burgtv.com</strong><br>Report misuse of the app or service for illegal purposes.</p>
-    </a>
-
+    <a href="mailto:legal@burgtv.com" class="card"><span class="icon">⚖️</span><h2>General Legal</h2><p><strong>legal@burgtv.com</strong><br>Contracts, partnerships, compliance inquiries.</p></a>
+    <a href="mailto:dmca@burgtv.com" class="card"><span class="icon">©</span><h2>DMCA Notices</h2><p><strong>dmca@burgtv.com</strong><br>Copyright takedown requests.</p></a>
+    <a href="mailto:privacy@burgtv.com" class="card"><span class="icon">🔐</span><h2>Privacy / GDPR</h2><p><strong>privacy@burgtv.com</strong><br>Data requests, access rights, deletion.</p></a>
+    <a href="mailto:abuse@burgtv.com" class="card"><span class="icon">🚨</span><h2>Abuse Reports</h2><p><strong>abuse@burgtv.com</strong><br>Report misuse for illegal purposes.</p></a>
   </div>
+</div>
+
+<div class="lang-block" id="content-de">
+  <h1>Rechtliches Hub</h1>
+  <p class="subtitle">Volle Transparenz. Alle unsere Richtlinien, Compliance-Dokumente und öffentlichen Berichte an einem Ort.</p>
+  <div><span class="pill">🇪🇺 DSGVO</span><span class="pill">🇺🇸 CCPA</span><span class="pill">🇧🇷 LGPD</span><span class="pill">🇨🇭 nFADP</span><span class="pill">🇬🇧 UK GDPR</span><span class="pill">🇨🇦 PIPEDA</span><span class="pill">© DMCA</span><span class="pill">🛡️ ePrivacy</span></div>
+  <h2 class="section-title" style="margin-top:50px">📋 Hauptrichtlinien</h2>
+  <div class="grid">
+    <a href="/legal/terms.html" class="card"><span class="icon">📜</span><h2>Nutzungsbedingungen</h2><p>Ihre rechtliche Vereinbarung mit BurgTV. Nutzungsregeln, Haftungsausschlüsse und anwendbares Recht.</p></a>
+    <a href="/legal/privacy.html" class="card"><span class="icon">🔒</span><h2>Datenschutzerklärung</h2><p>Welche Daten wir erheben (minimal), warum und wie wir sie schützen. DSGVO/CCPA/LGPD/nFADP konform.</p></a>
+    <a href="/legal/aup.html" class="card"><span class="icon">⚖️</span><h2>Nutzungsrichtlinie</h2><p>Was Sie mit BurgTV tun und nicht tun dürfen. Verbotene Nutzungen und Konsequenzen.</p></a>
+    <a href="/legal/cookies.html" class="card"><span class="icon">🍪</span><h2>Cookie-Richtlinie</h2><p>Cookies und Tracking-Technologien auf unserer Website. ePrivacy-Richtlinien-konform.</p></a>
+    <a href="/legal/dmca.html" class="card"><span class="icon">🚨</span><h2>DMCA-Richtlinie</h2><p>Urheberrechts-Takedown-Verfahren. Wie Sie eine DMCA-Meldung einreichen.</p></a>
+    <a href="/legal/delete-account.html" class="card"><span class="icon">🗑️</span><h2>Kontolöschung</h2><p>Recht auf Löschung (DSGVO Art. 17). Wie Sie die vollständige Datenlöschung beantragen.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">📚 Transparenz &amp; Öffentliche Erklärungen</h2>
+  <div class="grid">
+    <a href="/legal/faq.html" class="card"><span class="icon">❓</span><h2>Rechtliche FAQ</h2><p>Klare Antworten auf häufige Rechtsfragen: Ist BurgTV legal, neutraler Player, Nutzerverantwortung.</p></a>
+    <a href="/legal/transparency.html" class="card"><span class="icon">📊</span><h2>Transparenzbericht</h2><p>Öffentlicher Bericht über DMCA-Meldungen, Takedowns, behördliche Anfragen und Compliance-Kennzahlen.</p></a>
+    <a href="/legal/good-faith.html" class="card"><span class="icon">🤝</span><h2>Good-Faith-Erklärung</h2><p>Öffentliche Position zu Piraterie, Einhaltung des Urheberrechts und legitimer Nutzung.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">✉️ Kontakt für rechtliche Angelegenheiten</h2>
+  <div class="grid">
+    <a href="mailto:legal@burgtv.com" class="card"><span class="icon">⚖️</span><h2>Allgemeines Recht</h2><p><strong>legal@burgtv.com</strong><br>Verträge, Partnerschaften, Compliance-Anfragen.</p></a>
+    <a href="mailto:dmca@burgtv.com" class="card"><span class="icon">©</span><h2>DMCA-Meldungen</h2><p><strong>dmca@burgtv.com</strong><br>Urheberrechts-Takedown-Anfragen.</p></a>
+    <a href="mailto:privacy@burgtv.com" class="card"><span class="icon">🔐</span><h2>Datenschutz / DSGVO</h2><p><strong>privacy@burgtv.com</strong><br>Datenanfragen, Auskunft, Löschung.</p></a>
+    <a href="mailto:abuse@burgtv.com" class="card"><span class="icon">🚨</span><h2>Missbrauchsmeldungen</h2><p><strong>abuse@burgtv.com</strong><br>Missbrauch für illegale Zwecke melden.</p></a>
+  </div>
+</div>
+
+<div class="lang-block" id="content-es">
+  <h1>Centro Legal</h1>
+  <p class="subtitle">Transparencia total. Todas nuestras políticas, documentos de cumplimiento e informes públicos en un solo lugar.</p>
+  <div><span class="pill">🇪🇺 GDPR</span><span class="pill">🇺🇸 CCPA</span><span class="pill">🇧🇷 LGPD</span><span class="pill">🇨🇭 nFADP</span><span class="pill">🇬🇧 UK GDPR</span><span class="pill">🇨🇦 PIPEDA</span><span class="pill">© DMCA</span><span class="pill">🛡️ ePrivacy</span></div>
+  <h2 class="section-title" style="margin-top:50px">📋 Políticas Principales</h2>
+  <div class="grid">
+    <a href="/legal/terms.html" class="card"><span class="icon">📜</span><h2>Términos del Servicio</h2><p>Tu acuerdo legal con BurgTV. Reglas de uso, descargos de responsabilidad y ley aplicable.</p></a>
+    <a href="/legal/privacy.html" class="card"><span class="icon">🔒</span><h2>Política de Privacidad</h2><p>Qué datos recopilamos (mínimos), por qué y cómo los protegemos. Cumple GDPR / CCPA / LGPD / nFADP.</p></a>
+    <a href="/legal/aup.html" class="card"><span class="icon">⚖️</span><h2>Uso Aceptable</h2><p>Qué puedes y no puedes hacer con BurgTV. Usos prohibidos, aplicación y consecuencias.</p></a>
+    <a href="/legal/cookies.html" class="card"><span class="icon">🍪</span><h2>Política de Cookies</h2><p>Cookies y tecnologías de seguimiento. Cumple Directiva ePrivacy.</p></a>
+    <a href="/legal/dmca.html" class="card"><span class="icon">🚨</span><h2>Política DMCA</h2><p>Procedimientos de retirada por derechos de autor. Cómo enviar un aviso DMCA.</p></a>
+    <a href="/legal/delete-account.html" class="card"><span class="icon">🗑️</span><h2>Eliminación de Cuenta</h2><p>Derecho al olvido (GDPR Art. 17). Cómo solicitar la eliminación completa de datos.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">📚 Transparencia y Declaraciones Públicas</h2>
+  <div class="grid">
+    <a href="/legal/faq.html" class="card"><span class="icon">❓</span><h2>FAQ Legales</h2><p>Respuestas a preguntas legales comunes: ¿es legal BurgTV?, reproductor neutral, responsabilidades.</p></a>
+    <a href="/legal/transparency.html" class="card"><span class="icon">📊</span><h2>Informe de Transparencia</h2><p>Informe público sobre avisos DMCA, retiradas, solicitudes gubernamentales y métricas de cumplimiento.</p></a>
+    <a href="/legal/good-faith.html" class="card"><span class="icon">🤝</span><h2>Declaración de Buena Fe</h2><p>Posición pública sobre piratería, cumplimiento del copyright, compromiso con el uso legítimo.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">✉️ Contacto para Asuntos Legales</h2>
+  <div class="grid">
+    <a href="mailto:legal@burgtv.com" class="card"><span class="icon">⚖️</span><h2>Legal General</h2><p><strong>legal@burgtv.com</strong><br>Contratos, asociaciones, consultas de cumplimiento.</p></a>
+    <a href="mailto:dmca@burgtv.com" class="card"><span class="icon">©</span><h2>Avisos DMCA</h2><p><strong>dmca@burgtv.com</strong><br>Solicitudes de retirada por copyright.</p></a>
+    <a href="mailto:privacy@burgtv.com" class="card"><span class="icon">🔐</span><h2>Privacidad / GDPR</h2><p><strong>privacy@burgtv.com</strong><br>Solicitudes de datos, acceso, eliminación.</p></a>
+    <a href="mailto:abuse@burgtv.com" class="card"><span class="icon">🚨</span><h2>Denuncias de Abuso</h2><p><strong>abuse@burgtv.com</strong><br>Denuncia el uso indebido con fines ilegales.</p></a>
+  </div>
+</div>
+
+<div class="lang-block" id="content-fr">
+  <h1>Hub Juridique</h1>
+  <p class="subtitle">Transparence totale. Toutes nos politiques, documents de conformité et rapports publics au même endroit.</p>
+  <div><span class="pill">🇪🇺 RGPD</span><span class="pill">🇺🇸 CCPA</span><span class="pill">🇧🇷 LGPD</span><span class="pill">🇨🇭 nFADP</span><span class="pill">🇬🇧 UK GDPR</span><span class="pill">🇨🇦 PIPEDA</span><span class="pill">© DMCA</span><span class="pill">🛡️ ePrivacy</span></div>
+  <h2 class="section-title" style="margin-top:50px">📋 Politiques Principales</h2>
+  <div class="grid">
+    <a href="/legal/terms.html" class="card"><span class="icon">📜</span><h2>Conditions d'Utilisation</h2><p>Votre accord juridique avec BurgTV. Règles d'utilisation, avertissements et droit applicable.</p></a>
+    <a href="/legal/privacy.html" class="card"><span class="icon">🔒</span><h2>Politique de Confidentialité</h2><p>Quelles données nous collectons (minimum), pourquoi et comment. Conforme RGPD / CCPA / LGPD / nFADP.</p></a>
+    <a href="/legal/aup.html" class="card"><span class="icon">⚖️</span><h2>Usage Acceptable</h2><p>Ce que vous pouvez et ne pouvez pas faire avec BurgTV. Usages interdits et conséquences.</p></a>
+    <a href="/legal/cookies.html" class="card"><span class="icon">🍪</span><h2>Politique de Cookies</h2><p>Cookies et technologies de suivi. Conforme à la Directive ePrivacy.</p></a>
+    <a href="/legal/dmca.html" class="card"><span class="icon">🚨</span><h2>Politique DMCA</h2><p>Procédures de retrait pour droits d'auteur. Comment soumettre une notification DMCA.</p></a>
+    <a href="/legal/delete-account.html" class="card"><span class="icon">🗑️</span><h2>Suppression de Compte</h2><p>Droit à l'effacement (RGPD Art. 17). Comment demander la suppression complète des données.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">📚 Transparence et Déclarations Publiques</h2>
+  <div class="grid">
+    <a href="/legal/faq.html" class="card"><span class="icon">❓</span><h2>FAQ Juridique</h2><p>Réponses aux questions juridiques courantes: BurgTV est-il légal, lecteur neutre, responsabilités.</p></a>
+    <a href="/legal/transparency.html" class="card"><span class="icon">📊</span><h2>Rapport de Transparence</h2><p>Rapport public sur les notifications DMCA, retraits, demandes gouvernementales et indicateurs de conformité.</p></a>
+    <a href="/legal/good-faith.html" class="card"><span class="icon">🤝</span><h2>Déclaration de Bonne Foi</h2><p>Position publique sur le piratage, conformité au droit d'auteur et engagement envers un usage légitime.</p></a>
+  </div>
+  <h2 class="section-title" style="margin-top:50px">✉️ Contact pour Affaires Juridiques</h2>
+  <div class="grid">
+    <a href="mailto:legal@burgtv.com" class="card"><span class="icon">⚖️</span><h2>Juridique Général</h2><p><strong>legal@burgtv.com</strong><br>Contrats, partenariats, questions de conformité.</p></a>
+    <a href="mailto:dmca@burgtv.com" class="card"><span class="icon">©</span><h2>Notifications DMCA</h2><p><strong>dmca@burgtv.com</strong><br>Demandes de retrait pour copyright.</p></a>
+    <a href="mailto:privacy@burgtv.com" class="card"><span class="icon">🔐</span><h2>Confidentialité / RGPD</h2><p><strong>privacy@burgtv.com</strong><br>Demandes de données, accès, suppression.</p></a>
+    <a href="mailto:abuse@burgtv.com" class="card"><span class="icon">🚨</span><h2>Signalements d'Abus</h2><p><strong>abuse@burgtv.com</strong><br>Signalez un usage abusif à des fins illégales.</p></a>
+  </div>
+</div>
 
 </div>
 
@@ -172,6 +202,14 @@
   <p>© 2026 BurgTV — Developed in Switzerland 🇨🇭</p>
   <p style="margin-top:10px"><a href="https://burgtv.com/">Back to BurgTV</a> · <a href="https://download.burgtv.com">Download</a> · <a href="mailto:support@burgtv.com">support@burgtv.com</a></p>
 </footer>
+
+<script>
+function setLang(l){document.querySelectorAll('.lang-block').forEach(b=>b.classList.toggle('active',b.id==='content-'+l));document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));const btn=document.getElementById('btn-'+l);if(btn)btn.classList.add('active');document.documentElement.lang=l;localStorage.setItem('preferredLang',l)}
+document.addEventListener('DOMContentLoaded',function(){
+  ['it','en','de','es','fr'].forEach(l=>{const b=document.getElementById('btn-'+l);if(b)b.addEventListener('click',()=>setLang(l))});
+  setLang(localStorage.getItem('preferredLang')||'it');
+});
+</script>
 
 </body>
 </html>
