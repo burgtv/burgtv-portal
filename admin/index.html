@@ -740,18 +740,32 @@ async function doResetAdminTotp(adminId, email) {
 
 // ===== log =====
 async function loadLog() {
-    document.getElementById('log-tbody').innerHTML = '<tr><td colspan="5">…</td></tr>';
-    const { ok, data } = await api('admin/log', { session_token: session, limit: 100 });
-    if (!ok) return;
-    document.getElementById('log-tbody').innerHTML = (data.rows||[]).map(r=>`
-      <tr>
-        <td style="font-family:monospace;font-size:12px">${(r.created_at||'').slice(0,19).replace('T',' ')}</td>
-        <td>${r.admin_email||''}</td>
-        <td><span class="tag">${r.action}</span></td>
-        <td>${r.target_email||''}</td>
-        <td style="font-family:monospace;font-size:12px">${r.ip||''}</td>
-      </tr>
-    `).join('') || '<tr><td colspan="5">Nessuna azione</td></tr>';
+    const tbody = document.getElementById('log-tbody');
+    tbody.innerHTML = '<tr><td colspan="5">Caricamento…</td></tr>';
+    try {
+        const { ok, data, status } = await api('admin/log', { session_token: session, limit: 100 });
+        if (!ok) {
+            tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error);padding:20px;text-align:center">⚠ ${data.error || 'Errore caricamento log'} (HTTP ${status||'?'})${status===401?' — sessione scaduta, fai logout e rientra.':''}</td></tr>`;
+            return;
+        }
+        const rows = data.rows || [];
+        if (rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted)">Nessuna azione registrata</td></tr>';
+            return;
+        }
+        tbody.innerHTML = rows.map(r=>`
+          <tr>
+            <td style="font-family:monospace;font-size:12px;white-space:nowrap">${(r.created_at||'').slice(0,19).replace('T',' ')}</td>
+            <td>${r.admin_email||'<span style="color:var(--muted)">(none)</span>'}</td>
+            <td><span class="tag">${r.action}</span></td>
+            <td>${r.target_email||'<span style="color:var(--muted)">—</span>'}</td>
+            <td style="font-family:monospace;font-size:12px">${r.ip||''}</td>
+          </tr>
+        `).join('');
+    } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error);padding:20px;text-align:center">❌ Errore JS: ${e.message}</td></tr>`;
+        console.error('loadLog error:', e);
+    }
 }
 
 // ===== boot =====
