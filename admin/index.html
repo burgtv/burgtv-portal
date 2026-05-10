@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <title>BurgTV Admin</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#0a0a0b;--bg2:#111113;--bg3:#1a1a1d;--text:#fff;--muted:#a0a0a8;--accent:#B94A8E;--accent2:#7B4397;--success:#10b981;--warn:#fbbf24;--error:#ef4444;--border:rgba(255,255,255,.12);--card:rgba(255,255,255,.03);--card-hover:rgba(255,255,255,.06)}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        .center{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:440px;width:100%}
+        .card.wide{max-width:1100px}
+        h1{font-size:26px;font-weight:700;margin-bottom:6px}
+        h2{font-size:18px;font-weight:600;margin-bottom:12px}
+        h3{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+        p{color:var(--muted);font-size:14px;line-height:1.5}
+        a{color:var(--accent);text-decoration:none}
+        a:hover{text-decoration:underline}
+        input,select{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;outline:none;margin-bottom:10px}
+        input:focus,select:focus{border-color:var(--accent)}
+        input.code{text-align:center;letter-spacing:6px;font-size:22px;font-weight:600}
+        button{padding:12px 20px;background:var(--accent);color:white;border:none;border-radius:8px;font:inherit;font-weight:600;cursor:pointer;transition:.2s;width:100%;margin-bottom:8px}
+        button:hover{background:#c95a9e}
+        button:disabled{opacity:.5;cursor:not-allowed}
+        button.secondary{background:var(--card-hover);border:1px solid var(--border);color:var(--text)}
+        button.secondary:hover{background:rgba(185,74,142,.1);border-color:var(--accent)}
+        button.danger{background:transparent;color:var(--error);border:1px solid rgba(239,68,68,.4)}
+        button.danger:hover{background:rgba(239,68,68,.1)}
+        button.small{padding:6px 12px;font-size:12px;width:auto;margin:0}
+        .err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;display:none}
+        .err.show{display:block}
+        .ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:#6ee7b7;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:12px;display:none}
+        .ok.show{display:block}
+        .logo{text-align:center;margin-bottom:20px}
+        .logo img{height:60px}
+        .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--bg2)}
+        .topbar .me{font-size:14px;color:var(--muted)}
+        .topbar .nav{display:flex;gap:16px;align-items:center}
+        .topbar .nav a{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
+        .topbar .nav a.active{background:rgba(185,74,142,.15);color:var(--accent)}
+        .topbar .nav a:hover{color:var(--text);text-decoration:none}
+        .container{max-width:1200px;margin:0 auto;padding:24px}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+        .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+        .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+        .stat .val{font-size:24px;font-weight:700}
+        .stat .sub{font-size:12px;color:var(--muted);margin-top:4px}
+        table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+        th,td{padding:10px 12px;text-align:left;font-size:13px;border-bottom:1px solid var(--border)}
+        th{background:var(--bg3);font-weight:600;color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+        tr:last-child td{border-bottom:none}
+        tr:hover{background:var(--card-hover);cursor:pointer}
+        .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(185,74,142,.2);color:var(--accent)}
+        .tag.success{background:rgba(16,185,129,.2);color:var(--success)}
+        .tag.warn{background:rgba(251,191,36,.2);color:var(--warn)}
+        .tag.err{background:rgba(239,68,68,.2);color:var(--error)}
+        .controls{display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+        .controls input{flex:1;min-width:200px;margin:0}
+        .controls button{width:auto;margin:0}
+        .qr-box{display:flex;flex-direction:column;align-items:center;gap:12px;margin:16px 0;padding:16px;background:white;border-radius:12px}
+        .qr-box img{display:block}
+        .secret-row{display:flex;align-items:center;gap:8px;background:var(--bg3);padding:10px 14px;border-radius:8px;font-family:monospace;font-size:13px;color:var(--text);margin-bottom:12px;word-break:break-all}
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:2000;align-items:center;justify-content:center;padding:16px}
+        .modal-overlay.show{display:flex}
+        .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+        .row{display:grid;grid-template-columns:140px 1fr;gap:12px;margin-bottom:10px;font-size:14px}
+        .row .k{color:var(--muted)}
+        .device{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+        .device .info{flex:1;min-width:200px}
+        .device .name{font-weight:600;font-size:14px}
+        .device .code{font-size:11px;color:var(--muted);font-family:monospace}
+        .device .actions{display:flex;gap:6px}
+        .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+        @media(max-width:600px){.actions-grid{grid-template-columns:1fr}.topbar{padding:10px 12px}.topbar .nav a{padding:6px 8px;font-size:13px}}
+    </style>
+</head>
+<body>
+
+<!-- ==================== LOGIN ==================== -->
+<div class="center" id="screen-login">
+    <div class="card">
+        <div class="logo">
+            <img src="/logo.png" alt="BurgTV">
+            <h1 style="margin-top:8px">BurgTV Admin</h1>
+            <p>Accesso riservato</p>
+        </div>
+        <div class="err" id="login-err"></div>
+        <form onsubmit="return doLogin(event)">
+            <input type="email" id="li-email" placeholder="Email" required autocomplete="email">
+            <input type="password" id="li-password" placeholder="Password" required autocomplete="current-password">
+            <button type="submit" id="li-btn">Accedi</button>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== SETUP TOTP (first login) ==================== -->
+<div class="center" id="screen-setup" style="display:none">
+    <div class="card">
+        <h1>Attiva 2FA</h1>
+        <p>Scansiona questo QR code con <strong>Google Authenticator</strong>, Authy, 1Password, Bitwarden o qualsiasi app TOTP.</p>
+        <div class="qr-box"><img id="setup-qr" alt="TOTP QR" width="200" height="200"></div>
+        <p style="font-size:12px">Se non riesci a scansionare, inserisci manualmente questa chiave nell'app:</p>
+        <div class="secret-row"><span id="setup-secret"></span></div>
+        <p style="margin-bottom:12px">Quando l'app mostra le 6 cifre, inseriscile qui per confermare:</p>
+        <div class="err" id="setup-err"></div>
+        <form onsubmit="return doSetup(event)">
+            <input type="text" id="setup-code" class="code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required autocomplete="off" inputmode="numeric">
+            <button type="submit" id="setup-btn">Conferma e attiva</button>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== TOTP (subsequent logins) ==================== -->
+<div class="center" id="screen-totp" style="display:none">
+    <div class="card">
+        <div class="logo"><img src="/logo.png" alt="BurgTV"></div>
+        <h1>Codice 2FA</h1>
+        <p>Apri l'app Authenticator e inserisci le 6 cifre per <strong id="totp-email"></strong></p>
+        <div class="err" id="totp-err" style="margin-top:14px"></div>
+        <form onsubmit="return doTotp(event)" style="margin-top:14px">
+            <input type="text" id="totp-code" class="code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required autocomplete="one-time-code" inputmode="numeric">
+            <button type="submit" id="totp-btn">Verifica</button>
+            <button type="button" class="secondary" onclick="resetSession();showLogin()">Annulla</button>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== PANEL ==================== -->
+<div id="screen-panel" style="display:none">
+    <div class="topbar">
+        <div style="display:flex;gap:12px;align-items:center">
+            <img src="/logo.png" style="height:32px"><strong>Admin</strong>
+        </div>
+        <div class="nav">
+            <a id="tab-dashboard" onclick="showTab('dashboard')">Dashboard</a>
+            <a id="tab-users" onclick="showTab('users')">Utenti</a>
+            <a id="tab-activate" onclick="showTab('activate')">Attivazione</a>
+            <a id="tab-log" onclick="showTab('log')">Log</a>
+        </div>
+        <div class="me">
+            <span id="me-email"></span> · <a onclick="doLogout()">Esci</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard -->
+        <div id="panel-dashboard">
+            <h2 style="margin-bottom:16px">Panoramica</h2>
+            <div class="stats" id="stats-grid">…</div>
+            <h3>Distribuzione licenze</h3>
+            <div id="licenses-breakdown"></div>
+        </div>
+
+        <!-- Users -->
+        <div id="panel-users" style="display:none">
+            <h2 style="margin-bottom:16px">Utenti</h2>
+            <div class="controls">
+                <input id="users-search" placeholder="Cerca per email…" oninput="searchUsers()">
+                <span id="users-count" class="me"></span>
+            </div>
+            <table>
+                <thead><tr><th>Email</th><th>Piano</th><th>Licenze</th><th>Device</th><th>Registrato</th></tr></thead>
+                <tbody id="users-tbody"></tbody>
+            </table>
+        </div>
+
+        <!-- Activate -->
+        <div id="panel-activate" style="display:none">
+            <h2 style="margin-bottom:16px">Attivazione manuale</h2>
+            <div class="card" style="max-width:480px">
+                <p style="margin-bottom:14px">Inserisci il codice TV mostrato dall'app del cliente + email + piano. Lo script crea licenza, device, user (se manca) e ti dà la password temporanea da inviare al cliente.</p>
+                <div class="err" id="act-err"></div>
+                <div class="ok" id="act-ok"></div>
+                <form onsubmit="return doActivate(event)">
+                    <input id="act-code" placeholder="TV-XXXX" required style="text-transform:uppercase">
+                    <input id="act-email" type="email" placeholder="email@cliente.com" required>
+                    <select id="act-plan">
+                        <option value="permanent">Permanente (CHF 25.90 una tantum)</option>
+                        <option value="annual">Annuale (CHF 8.90/anno)</option>
+                    </select>
+                    <input id="act-password" type="text" placeholder="Password (opzionale — vuoto = random)" minlength="6" autocomplete="off">
+                    <label style="display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px">
+                        <input type="checkbox" id="act-reset" style="width:auto;margin:0">
+                        Reset password anche se l'utente esiste già
+                    </label>
+                    <button type="submit" id="act-btn">Attiva</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Log -->
+        <div id="panel-log" style="display:none">
+            <h2 style="margin-bottom:16px">Audit log (ultime 100 azioni)</h2>
+            <table>
+                <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>IP</th></tr></thead>
+                <tbody id="log-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== USER DETAIL MODAL ==================== -->
+<div class="modal-overlay" id="user-modal">
+    <div class="modal">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h2 id="ud-email" style="margin:0"></h2>
+            <button class="secondary small" onclick="closeUserModal()">✕</button>
+        </div>
+        <div class="err" id="ud-err"></div>
+        <div class="ok" id="ud-ok"></div>
+
+        <h3>Info</h3>
+        <div id="ud-info"></div>
+
+        <h3 style="margin-top:16px">Licenze</h3>
+        <div id="ud-licenses"></div>
+
+        <h3 style="margin-top:16px">Dispositivi</h3>
+        <div id="ud-devices"></div>
+
+        <h3 style="margin-top:16px">Azioni</h3>
+        <div class="actions-grid">
+            <button class="secondary" onclick="udResetPassword()">🔑 Reset password</button>
+            <button class="secondary" onclick="udCancelSub()">💳 Cancel Stripe sub</button>
+            <button class="danger" onclick="udCleanup()" style="grid-column:1/-1">🗑 Elimina account (irreversibile)</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== RENAME MODAL ==================== -->
+<div class="modal-overlay" id="rn-modal">
+    <div class="modal">
+        <h2 id="rn-title">Rinomina dispositivo</h2>
+        <p style="margin:8px 0">Nome attuale: <strong id="rn-current"></strong></p>
+        <div class="err" id="rn-err"></div>
+        <input id="rn-name" placeholder="Nuovo nome (es. Salotto)" maxlength="40">
+        <div class="actions-grid">
+            <button class="secondary" onclick="closeRn()">Annulla</button>
+            <button onclick="doRename()">Salva</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const API = 'https://api.burgtv.com';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
+
+let session = sessionStorage.getItem('admin_session');
+let myEmail = sessionStorage.getItem('admin_email');
+let pendingLogin = null;
+let currentUserEmail = null;
+let currentUserDetail = null;
+let renameDeviceId = null;
+
+// ===== fetch helper =====
+async function api(path, body) {
+    const r = await fetch(`${API}/${path}`, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${ANON}`},
+        body: JSON.stringify(body || {})
+    });
+    const data = await r.json().catch(() => ({}));
+    if (r.status === 401 && path !== 'admin/login' && path !== 'admin/login-totp' && path !== 'admin/setup-totp') {
+        // session expired → back to login
+        resetSession();
+        showLogin();
+    }
+    return { ok: r.ok, status: r.status, data };
+}
+
+// ===== screen routing =====
+function show(id) {
+    ['screen-login','screen-setup','screen-totp','screen-panel'].forEach(s=>{
+        document.getElementById(s).style.display = (s===id) ? '' : 'none';
+    });
+}
+function showLogin(){ show('screen-login'); }
+function showSetup(){ show('screen-setup'); }
+function showTotp(){ show('screen-totp'); document.getElementById('totp-code').focus(); }
+function showPanel(){ show('screen-panel'); document.getElementById('me-email').textContent = myEmail; showTab('dashboard'); }
+
+function showTab(name) {
+    ['dashboard','users','activate','log'].forEach(t=>{
+        document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
+        document.getElementById('tab-'+t).classList.toggle('active', t===name);
+    });
+    if (name==='dashboard') loadStats();
+    if (name==='users') loadUsers('');
+    if (name==='log') loadLog();
+}
+
+// ===== auth =====
+function resetSession() {
+    session = null; myEmail = null; pendingLogin = null;
+    sessionStorage.removeItem('admin_session');
+    sessionStorage.removeItem('admin_email');
+}
+function err(id, msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
+function clearErr(id){ document.getElementById(id).classList.remove('show'); }
+
+async function doLogin(ev) {
+    ev.preventDefault();
+    clearErr('login-err');
+    const email = document.getElementById('li-email').value.trim();
+    const password = document.getElementById('li-password').value;
+    const btn = document.getElementById('li-btn'); btn.disabled = true; btn.textContent = '…';
+    const { ok, data } = await api('admin/login', { email, password });
+    btn.disabled = false; btn.textContent = 'Accedi';
+    if (!ok) { err('login-err', data.error || 'Errore'); return false; }
+    pendingLogin = data.login_token;
+    myEmail = email;
+    if (data.needs_setup) {
+        document.getElementById('setup-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(data.totp_uri)}`;
+        document.getElementById('setup-secret').textContent = data.totp_secret.match(/.{1,4}/g).join(' ');
+        showSetup();
+    } else {
+        document.getElementById('totp-email').textContent = email;
+        showTotp();
+    }
+    return false;
+}
+async function doSetup(ev) {
+    ev.preventDefault();
+    clearErr('setup-err');
+    const code = document.getElementById('setup-code').value.trim();
+    const btn = document.getElementById('setup-btn'); btn.disabled = true; btn.textContent = '…';
+    const { ok, data } = await api('admin/setup-totp', { login_token: pendingLogin, code });
+    btn.disabled = false; btn.textContent = 'Conferma e attiva';
+    if (!ok) { err('setup-err', data.error || 'Codice non valido'); return false; }
+    session = data.session_token; myEmail = data.email;
+    sessionStorage.setItem('admin_session', session);
+    sessionStorage.setItem('admin_email', myEmail);
+    showPanel();
+    return false;
+}
+async function doTotp(ev) {
+    ev.preventDefault();
+    clearErr('totp-err');
+    const code = document.getElementById('totp-code').value.trim();
+    const btn = document.getElementById('totp-btn'); btn.disabled = true; btn.textContent = '…';
+    const { ok, data } = await api('admin/login-totp', { login_token: pendingLogin, code });
+    btn.disabled = false; btn.textContent = 'Verifica';
+    if (!ok) { err('totp-err', data.error || 'Codice non valido'); return false; }
+    session = data.session_token; myEmail = data.email;
+    sessionStorage.setItem('admin_session', session);
+    sessionStorage.setItem('admin_email', myEmail);
+    showPanel();
+    return false;
+}
+async function doLogout() {
+    await api('admin/logout', { session_token: session });
+    resetSession();
+    showLogin();
+}
+
+// ===== dashboard =====
+async function loadStats() {
+    document.getElementById('stats-grid').innerHTML = '<div class="stat">…</div>';
+    const { ok, data } = await api('admin/stats', { session_token: session });
+    if (!ok) return;
+    const u = data.users || {};
+    document.getElementById('stats-grid').innerHTML = `
+      <div class="stat"><div class="lbl">Utenti</div><div class="val">${u.n||0}</div><div class="sub">${u.with_pwd||0} con password</div></div>
+      <div class="stat"><div class="lbl">Sessioni attive</div><div class="val">${data.active_sessions||0}</div><div class="sub">scadenza 30 giorni</div></div>
+      <div class="stat"><div class="lbl">Dispositivi</div><div class="val">${data.devices?.total||0}</div><div class="sub">${data.devices?.unique_id||0} univoci</div></div>
+      <div class="stat"><div class="lbl">Attivazioni 24h</div><div class="val">${(data.activations_last_24h||[]).reduce((s,r)=>s+r.n,0)}</div><div class="sub">${(data.activations_last_24h||[]).map(r=>r.status+':'+r.n).join(', ')||'-'}</div></div>
+    `;
+    document.getElementById('licenses-breakdown').innerHTML = `<table><thead><tr><th>Status</th><th>Tipo</th><th>Quantità</th></tr></thead><tbody>${
+      (data.licenses_breakdown||[]).map(r=>`<tr><td><span class="tag ${r.status==='active'?'success':r.status==='cancelled'?'err':'warn'}">${r.status}</span></td><td>${r.license_type||'-'}</td><td>${r.n}</td></tr>`).join('')
+    }</tbody></table>`;
+}
+
+// ===== users list =====
+let searchTimer = null;
+function searchUsers() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => loadUsers(document.getElementById('users-search').value), 250);
+}
+async function loadUsers(q) {
+    document.getElementById('users-tbody').innerHTML = '<tr><td colspan="5">…</td></tr>';
+    const { ok, data } = await api('admin/users-list', { session_token: session, search: q, page: 0 });
+    if (!ok) return;
+    document.getElementById('users-count').textContent = `${data.total} utenti`;
+    if (!data.rows || data.rows.length === 0) {
+        document.getElementById('users-tbody').innerHTML = '<tr><td colspan="5">Nessun risultato</td></tr>';
+        return;
+    }
+    document.getElementById('users-tbody').innerHTML = data.rows.map(r=>{
+        const plan = r.plan === 'permanent' ? '<span class="tag">Permanente</span>'
+                   : r.plan === 'annual'    ? '<span class="tag success">Annuale</span>'
+                   : r.plan === 'lifetime'  ? '<span class="tag">Lifetime</span>'
+                   : '<span class="tag err">Nessuna</span>';
+        return `<tr onclick='openUser(${JSON.stringify(r.email)})'><td>${r.email}</td><td>${plan}</td><td>${r.licenses_active}/${r.licenses}</td><td>${r.devices}</td><td>${(r.created_at||'').slice(0,10)}</td></tr>`;
+    }).join('');
+}
+
+// ===== user detail =====
+async function openUser(email) {
+    currentUserEmail = email;
+    document.getElementById('ud-email').textContent = email;
+    document.getElementById('ud-info').innerHTML = '<p>…</p>';
+    document.getElementById('ud-licenses').innerHTML = '';
+    document.getElementById('ud-devices').innerHTML = '';
+    clearErr('ud-err'); document.getElementById('ud-ok').classList.remove('show');
+    document.getElementById('user-modal').classList.add('show');
+    const { ok, data } = await api('admin/user-detail', { session_token: session, email });
+    if (!ok) { err('ud-err', data.error || 'Errore'); return; }
+    currentUserDetail = data;
+    const u = data.user || {};
+    document.getElementById('ud-info').innerHTML = `
+      <div class="row"><div class="k">ID</div><div>${u.id || '-'}</div></div>
+      <div class="row"><div class="k">Password</div><div>${u.has_password ? '✓ impostata' : '✗ non impostata'}</div></div>
+      <div class="row"><div class="k">Creato</div><div>${(u.created_at||'').slice(0,19).replace('T',' ')}</div></div>
+    `;
+    document.getElementById('ud-licenses').innerHTML = (data.licenses||[]).map(l=>`
+      <div class="row"><div class="k">${l.license_type}</div><div><span class="tag ${l.status==='active'?'success':'err'}">${l.status}</span> · attivata ${(l.activated_at||'').slice(0,10)} ${l.expires_at?'· scade '+l.expires_at.slice(0,10):''} ${l.stripe_subscription_id?' · stripe sub':''}</div></div>
+    `).join('') || '<p>Nessuna licenza</p>';
+    document.getElementById('ud-devices').innerHTML = (data.devices||[]).map(d=>`
+      <div class="device">
+        <div class="info"><div class="name">${(d.device_name||'').replace(/</g,'&lt;')}</div><div class="code">${d.device_code||''} · ${d.device_model||''} · ${(d.last_active||'').slice(0,10)}</div></div>
+        <div class="actions">
+          <button class="secondary small" onclick='openRn(${JSON.stringify(d.device_id)}, ${JSON.stringify(d.device_name||"")})'>Rinomina</button>
+          <button class="danger small" onclick='udRemoveDevice(${JSON.stringify(d.device_id)}, ${JSON.stringify(d.device_name||"")})'>Rimuovi</button>
+        </div>
+      </div>
+    `).join('') || '<p>Nessun dispositivo</p>';
+}
+function closeUserModal(){ document.getElementById('user-modal').classList.remove('show'); }
+
+async function udRemoveDevice(deviceId, name) {
+    if (!confirm(`Rimuovere "${name}" dall'account di ${currentUserEmail}?`)) return;
+    const { ok, data } = await api('admin/remove-device', { session_token: session, target_email: currentUserEmail, device_id: deviceId });
+    if (!ok) { err('ud-err', data.error || 'Errore'); return; }
+    openUser(currentUserEmail);
+}
+async function udResetPassword() {
+    const pwd = prompt(`Nuova password per ${currentUserEmail} (min 6 caratteri):`);
+    if (!pwd) return;
+    if (pwd.length < 6) return alert('Min 6 caratteri');
+    const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd });
+    if (!ok) { err('ud-err', data.error || 'Errore'); return; }
+    const o = document.getElementById('ud-ok'); o.textContent = '✓ Password aggiornata. Comunicala al cliente: ' + pwd; o.classList.add('show');
+}
+async function udCancelSub() {
+    if (!confirm(`Cancellare la subscription Stripe per ${currentUserEmail}? (nessun rimborso)`)) return;
+    const { ok, data } = await api('admin/cancel-sub', { session_token: session, target_email: currentUserEmail });
+    if (!ok) { err('ud-err', data.error || 'Errore'); return; }
+    const o = document.getElementById('ud-ok'); o.textContent = '✓ Subscription cancellata su Stripe'; o.classList.add('show');
+    openUser(currentUserEmail);
+}
+async function udCleanup() {
+    const conf = prompt(`PERMANENTE: scrivi "DELETE ${currentUserEmail}" per confermare cancellazione totale.`);
+    if (conf !== `DELETE ${currentUserEmail}`) return;
+    const { ok, data } = await api('admin/cleanup-account', { session_token: session, target_email: currentUserEmail });
+    if (!ok) { err('ud-err', data.error || 'Errore'); return; }
+    closeUserModal();
+    loadUsers(document.getElementById('users-search').value);
+}
+
+// ===== rename modal =====
+function openRn(deviceId, currentName) {
+    renameDeviceId = deviceId;
+    document.getElementById('rn-current').textContent = currentName || '(senza nome)';
+    document.getElementById('rn-name').value = currentName || '';
+    clearErr('rn-err');
+    document.getElementById('rn-modal').classList.add('show');
+    setTimeout(()=>document.getElementById('rn-name').focus(),50);
+}
+function closeRn(){ document.getElementById('rn-modal').classList.remove('show'); }
+async function doRename() {
+    const newName = document.getElementById('rn-name').value.trim();
+    if (newName.length < 2) { err('rn-err','Min 2 caratteri'); return; }
+    const { ok, data } = await api('admin/rename-device', { session_token: session, target_email: currentUserEmail, device_id: renameDeviceId, new_name: newName });
+    if (!ok) { err('rn-err', data.error || 'Errore'); return; }
+    closeRn();
+    openUser(currentUserEmail);
+}
+
+// ===== activate =====
+async function doActivate(ev) {
+    ev.preventDefault();
+    clearErr('act-err'); document.getElementById('act-ok').classList.remove('show');
+    const code = document.getElementById('act-code').value.trim().toUpperCase();
+    const email = document.getElementById('act-email').value.trim().toLowerCase();
+    const plan = document.getElementById('act-plan').value;
+    const reset = document.getElementById('act-reset').checked;
+    const customPwd = document.getElementById('act-password').value;
+    if (customPwd && customPwd.length < 6) { err('act-err','Password min 6 caratteri'); return false; }
+    const btn = document.getElementById('act-btn'); btn.disabled = true; btn.textContent = '…';
+    const body = { session_token: session, code, email, plan, reset_password: reset };
+    if (customPwd) body.password = customPwd;
+    const { ok, data } = await api('admin/activate', body);
+    btn.disabled = false; btn.textContent = 'Attiva';
+    if (!ok) { err('act-err', data.error || 'Errore'); return false; }
+    const o = document.getElementById('act-ok');
+    o.innerHTML = `✓ Attivato!<br>Email: <strong>${email}</strong>${data.password?`<br>Password temporanea: <strong style="font-family:monospace">${data.password}</strong>`:''}<br><span style="font-size:12px">L'app TV si attiva da sola entro pochi secondi (polling).</span>`;
+    o.classList.add('show');
+    document.getElementById('act-code').value = '';
+    document.getElementById('act-email').value = '';
+    return false;
+}
+
+// ===== log =====
+async function loadLog() {
+    document.getElementById('log-tbody').innerHTML = '<tr><td colspan="5">…</td></tr>';
+    const { ok, data } = await api('admin/log', { session_token: session, limit: 100 });
+    if (!ok) return;
+    document.getElementById('log-tbody').innerHTML = (data.rows||[]).map(r=>`
+      <tr>
+        <td style="font-family:monospace;font-size:12px">${(r.created_at||'').slice(0,19).replace('T',' ')}</td>
+        <td>${r.admin_email||''}</td>
+        <td><span class="tag">${r.action}</span></td>
+        <td>${r.target_email||''}</td>
+        <td style="font-family:monospace;font-size:12px">${r.ip||''}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="5">Nessuna azione</td></tr>';
+}
+
+// ===== boot =====
+(function () {
+    if (session && myEmail) {
+        // Validate session is still alive; otherwise back to login.
+        api('admin/me', { session_token: session }).then(({ok}) => {
+            if (ok) showPanel();
+            else { resetSession(); showLogin(); }
+        });
+    } else {
+        showLogin();
+    }
+})();
+</script>
+</body>
+</html>
