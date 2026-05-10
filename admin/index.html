@@ -616,8 +616,8 @@ async function doRename() {
 }
 
 // ===== activate =====
-async function doActivate(ev) {
-    ev.preventDefault();
+async function doActivate(ev, force) {
+    if (ev && ev.preventDefault) ev.preventDefault();
     clearErr('act-err'); document.getElementById('act-ok').classList.remove('show');
     const code = document.getElementById('act-code').value.trim().toUpperCase();
     const email = document.getElementById('act-email').value.trim().toLowerCase();
@@ -628,9 +628,17 @@ async function doActivate(ev) {
     const btn = document.getElementById('act-btn'); btn.disabled = true; btn.textContent = '…';
     const body = { session_token: session, code, email, plan, reset_password: reset };
     if (customPwd) body.password = customPwd;
+    if (force) body.confirm = true;
     const { ok, data } = await api('admin/activate', body);
     btn.disabled = false; btn.textContent = 'Attiva';
     if (!ok) { err('act-err', data.error || 'Errore'); return false; }
+    // Backend ritorna require_confirm: true quando l'utente è già a 5/5 device
+    // — chiediamo conferma esplicita prima di forzare l'attivazione del 6°.
+    if (data.require_confirm) {
+        const okOverride = confirm(data.message + '\n\nVuoi forzare comunque?');
+        if (!okOverride) return false;
+        return doActivate(null, true);
+    }
     const o = document.getElementById('act-ok');
     o.innerHTML = `✓ Attivato!<br>Email: <strong>${email}</strong>${data.password?`<br>Password temporanea: <strong style="font-family:monospace">${data.password}</strong>`:''}<br><span style="font-size:12px">L'app TV si attiva da sola entro pochi secondi (polling).</span>`;
     o.classList.add('show');
