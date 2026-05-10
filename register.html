@@ -155,6 +155,29 @@
             es:{back:"Volver",title:"Crea tu cuenta",subtitle:"Desbloquea Premium",tvCodeLabel:"Dispositivo conectado",choosePlan:"Elige tu plan",planAnnual:"Anual",planAnnualPeriod:"/año",planAnnualDesc:"Acceso por 12 meses",trialInfo:"7 días gratis",planPermanent:"Permanente",planPermanentPeriod:"pago único",planPermanentDesc:"Licencia permanente",included:"Incluido",feature1:"5 dispositivos",feature2:"Listas ilimitadas",feature3:"EPG y Catch-up TV",email:"Correo",password:"Contraseña",confirmPassword:"Confirmar",payBtn:"Continuar al pago",secure:"Pago seguro con Stripe",hasAccount:"¿Ya tienes cuenta?",loginLink:"Inicia sesión",privacy:"Privacidad",terms:"Términos",errors:{email:"Ingresa un correo válido",password:"Contraseña mínimo 8 caracteres",passwordMatch:"Las contraseñas no coinciden",generic:"Ocurrió un error."}},
             fr:{back:"Retour",title:"Créez votre compte",subtitle:"Débloquez Premium",tvCodeLabel:"Appareil connecté",choosePlan:"Choisissez votre plan",planAnnual:"Annuel",planAnnualPeriod:"/an",planAnnualDesc:"Accès pour 12 mois",trialInfo:"7 jours gratuits",planPermanent:"Permanent",planPermanentPeriod:"paiement unique",planPermanentDesc:"Licence permanente",included:"Inclus",feature1:"5 appareils",feature2:"Playlists illimitées",feature3:"EPG et Catch-up TV",email:"Email",password:"Mot de passe",confirmPassword:"Confirmer",payBtn:"Continuer vers le paiement",secure:"Paiement sécurisé avec Stripe",hasAccount:"Déjà un compte?",loginLink:"Connexion",privacy:"Confidentialité",terms:"Conditions",errors:{email:"Entrez un email valide",password:"Mot de passe min 8 caractères",passwordMatch:"Les mots de passe ne correspondent pas",generic:"Une erreur s'est produite."}}
         };
+        // 🔧 v1.1.12: device-limit (HTTP 409) localized prompt — same text as login flow.
+        const DEVICE_LIMIT_I18N={
+            it:{title:"Limite raggiunto: 5 dispositivi",body:"Questo abbonamento è già attivo su 5 dispositivi. Per attivare questo TV devi prima rimuovere un dispositivo dal tuo account.",manage:"Gestisci i tuoi dispositivi",deviceLabel:"Dispositivo",lastSeen:"ultimo utilizzo"},
+            en:{title:"Limit reached: 5 devices",body:"This license is already active on 5 devices. To activate this TV, please remove one device from your account first.",manage:"Manage your devices",deviceLabel:"Device",lastSeen:"last seen"},
+            de:{title:"Limit erreicht: 5 Geräte",body:"Dieses Abonnement ist bereits auf 5 Geräten aktiv. Um diesen TV zu aktivieren, entfernen Sie zuerst ein Gerät von Ihrem Konto.",manage:"Geräte verwalten",deviceLabel:"Gerät",lastSeen:"zuletzt aktiv"},
+            es:{title:"Límite alcanzado: 5 dispositivos",body:"Esta licencia ya está activa en 5 dispositivos. Para activar este TV, primero elimina un dispositivo de tu cuenta.",manage:"Administrar dispositivos",deviceLabel:"Dispositivo",lastSeen:"última actividad"},
+            fr:{title:"Limite atteinte : 5 appareils",body:"Cet abonnement est déjà actif sur 5 appareils. Pour activer cette TV, supprimez d'abord un appareil de votre compte.",manage:"Gérer vos appareils",deviceLabel:"Appareil",lastSeen:"dernière activité"}
+        };
+        function showDeviceLimitError(data){
+            const t=DEVICE_LIMIT_I18N[currentLang]||DEVICE_LIMIT_I18N.it;
+            const el=document.getElementById('errorMessage');
+            const devs=Array.isArray(data&&data.devices)?data.devices:[];
+            const list=devs.map((d,i)=>{
+                const name=d.device_name||(t.deviceLabel+' '+(i+1));
+                const date=d.last_active?new Date(d.last_active).toLocaleDateString():'';
+                const safeName=name.replace(/[<>]/g,'');
+                return `<li>${safeName}${date?` <span style="opacity:0.6">— ${t.lastSeen} ${date}</span>`:''}</li>`;
+            }).join('');
+            el.innerHTML=`<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div><strong>${t.title}</strong><br><span>${t.body}</span>${list?`<ul style="margin-top:10px;padding-left:20px;font-size:14px;">${list}</ul>`:''}<a href="/login.html" style="display:inline-block;margin-top:12px;color:#d85aa3;text-decoration:underline;">${t.manage} →</a></div>`;
+            el.classList.add('show');
+            el.style.alignItems='flex-start';
+        }
+
         let currentLang='it',selectedPlan='annual',turnstileToken=null;
         const urlParams=new URLSearchParams(window.location.search),tvCode=urlParams.get('code'),planParam=urlParams.get('plan');
         function changeLanguage(l){currentLang=l;localStorage.setItem('preferredLanguage',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+l).classList.add('active');updateTexts()}
@@ -211,6 +234,19 @@
                 });
                 const d=await r.json();
 
+                // 🔧 v1.1.12: 5-device limit (HTTP 409) — render the multilingual prompt
+                // with the device list so the user can act on it (remove one + retry).
+                if(r.status===409 && d && d.error_code==='device_limit_exceeded'){
+                    showDeviceLimitError(d);
+                    setLoading(false);
+                    return;
+                }
+                if(d.already_licensed){
+                    const slotParam=d.slot?`&slot=${encodeURIComponent(d.slot)}`:'';
+                    const statusParam=d.status?`&s=${encodeURIComponent(d.status)}`:'';
+                    window.location.href=`attiva/success.html?already=true${slotParam}${statusParam}`;
+                    return;
+                }
                 if(!r.ok)throw new Error(d.error||'Error');
                 if(d.checkout_url)window.location.href=d.checkout_url;
                 else throw new Error('No checkout URL');

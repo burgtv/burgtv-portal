@@ -94,11 +94,22 @@
             <p style="font-size:13px;color:var(--text-secondary);margin-top:12px;text-align:center;" id="devicesHint">Puoi usare fino a 5 dispositivi</p>
         </div>
         <div class="section">
-            <div class="section-title">Sicurezza</div>
-            <button class="btn btn-primary" onclick="resetPassword()">
-                <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                <span>Reimposta password</span>
-            </button>
+            <div class="section-title">Cambia password</div>
+            <form onsubmit="submitChangePassword(event)" class="info-card" style="display:flex;flex-direction:column;gap:12px;">
+                <input type="password" id="cpOld" placeholder="Password attuale" required minlength="6"
+                       style="padding:14px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;outline:none;">
+                <input type="password" id="cpNew" placeholder="Nuova password (min 6 caratteri)" required minlength="6"
+                       style="padding:14px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;outline:none;">
+                <input type="password" id="cpConfirm" placeholder="Conferma nuova password" required minlength="6"
+                       style="padding:14px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;outline:none;">
+                <div id="cpMsg" style="font-size:13px;min-height:18px;"></div>
+                <button type="submit" id="cpBtn" class="btn btn-primary" style="margin:0;">
+                    <span>Aggiorna password</span>
+                </button>
+            </form>
+            <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;text-align:center;">
+                Hai dimenticato la password? <a href="forgot-password.html" style="color:var(--accent);">Reimpostala via email</a>
+            </p>
         </div>
         <div class="section">
             <div class="section-title">Sessione</div>
@@ -158,17 +169,23 @@
         function resetPassword(){window.location.href='forgot-password.html'}
         function logout(){localStorage.removeItem('session_token');localStorage.removeItem('user_email');localStorage.removeItem('user_id');localStorage.removeItem('license_type');localStorage.removeItem('license_status');window.location.href='login.html'}
 
+        const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
+        function requireSession(){
+            const t=localStorage.getItem('session_token'),e=localStorage.getItem('user_email');
+            if(!t||!e){window.location.href='login.html';return null;}
+            return {token:t,email:e};
+        }
         async function loadDevices(){
-            const email=localStorage.getItem('user_email');
-            if(!email)return;
+            const s=requireSession(); if(!s)return;
             const list=document.getElementById('devicesList');
             list.innerHTML='<div style="text-align:center;padding:20px;"><span class="spinner"></span></div>';
             try{
                 const res=await fetch(`${SUPABASE_URL}/functions/v1/get-devices`,{
                     method:'POST',
-                    headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I'},
-                    body:JSON.stringify({email})
+                    headers:{'Content-Type':'application/json','Authorization':`Bearer ${ANON_KEY}`},
+                    body:JSON.stringify({email:s.email,session_token:s.token})
                 });
+                if(res.status===401){localStorage.removeItem('session_token');window.location.href='login.html';return;}
                 const data=await res.json();
                 document.getElementById('deviceCount').textContent=data.slot||'0/5';
                 if(data.devices && data.devices.length>0){
@@ -181,7 +198,7 @@
                                     <div class="device-code">${d.device_code||''}</div>
                                 </div>
                             </div>
-                            <button class="device-remove" onclick="removeDevice('${d.device_id}','${d.device_name||'Dispositivo'}')">
+                            <button class="device-remove" onclick="removeDevice('${d.device_id}','${(d.device_name||'Dispositivo').replace(/'/g,'&#39;')}')">
                                 <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                 Rimuovi
                             </button>
@@ -198,12 +215,12 @@
 
         async function removeDevice(deviceId,deviceName){
             if(!confirm(`Vuoi rimuovere "${deviceName}"?`))return;
-            const email=localStorage.getItem('user_email');
+            const s=requireSession(); if(!s)return;
             try{
                 const res=await fetch(`${SUPABASE_URL}/functions/v1/remove-device`,{
                     method:'POST',
-                    headers:{'Content-Type':'application/json','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I'},
-                    body:JSON.stringify({email, device_id:deviceId})
+                    headers:{'Content-Type':'application/json','Authorization':`Bearer ${ANON_KEY}`},
+                    body:JSON.stringify({email:s.email,session_token:s.token,device_id:deviceId})
                 });
                 const data=await res.json();
                 if(data.success){
@@ -214,6 +231,41 @@
             }catch(e){
                 alert('Errore di connessione');
             }
+        }
+
+        // 🔧 v1.1.12: change password without OTP (saves Resend free-tier quota).
+        async function submitChangePassword(ev){
+            ev.preventDefault();
+            const s=requireSession(); if(!s)return;
+            const oldP=document.getElementById('cpOld').value;
+            const newP=document.getElementById('cpNew').value;
+            const confP=document.getElementById('cpConfirm').value;
+            const msg=document.getElementById('cpMsg');
+            msg.style.color='#fca5a5';
+            if(newP.length<6){msg.textContent='La nuova password deve avere almeno 6 caratteri';return;}
+            if(newP!==confP){msg.textContent='Le due password non corrispondono';return;}
+            if(newP===oldP){msg.textContent='La nuova password deve essere diversa dalla precedente';return;}
+            const btn=document.getElementById('cpBtn'); btn.disabled=true; const orig=btn.textContent; btn.textContent='Aggiornamento...';
+            try{
+                const res=await fetch(`${SUPABASE_URL}/functions/v1/change-password`,{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json','Authorization':`Bearer ${ANON_KEY}`},
+                    body:JSON.stringify({session_token:s.token,old_password:oldP,new_password:newP})
+                });
+                const data=await res.json();
+                if(data.success){
+                    msg.style.color='#6ee7b7';
+                    msg.textContent='✓ Password aggiornata';
+                    document.getElementById('cpOld').value='';
+                    document.getElementById('cpNew').value='';
+                    document.getElementById('cpConfirm').value='';
+                }else{
+                    msg.textContent=data.error||'Errore';
+                }
+            }catch(e){
+                msg.textContent='Errore di connessione';
+            }
+            btn.disabled=false; btn.textContent=orig;
         }
         async function manageSubscription(){
             const email=localStorage.getItem('user_email');
@@ -253,8 +305,8 @@
         async function deleteAccount(){
             if(!confirm(T[lang].confirm1))return;
             if(!confirm(T[lang].confirm2))return;
-            const token=localStorage.getItem('access_token');
-            try{await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'}});localStorage.clear();alert(T[lang].deleted);window.location.href='https://burgtv.com'}catch(e){alert(T[lang].error)}
+            const s=requireSession(); if(!s)return;
+            try{await fetch(`${SUPABASE_URL}/functions/v1/delete-account`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${ANON_KEY}`},body:JSON.stringify({email:s.email,session_token:s.token})});localStorage.clear();alert(T[lang].deleted);window.location.href='https://burgtv.com'}catch(e){alert(T[lang].error)}
         }
     </script>
 </body>
