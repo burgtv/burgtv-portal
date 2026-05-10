@@ -1,9 +1,9 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "has": [{ "type": "host", "value": "admin.burgtv.com" }],
-      "destination": "/admin/$1"
+      "destination": "/admin/:path*"
     }
   ],
   "headers": [
