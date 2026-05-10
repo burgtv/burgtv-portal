@@ -144,6 +144,7 @@
             <a id="tab-dashboard" onclick="showTab('dashboard')">Dashboard</a>
             <a id="tab-users" onclick="showTab('users')">Utenti</a>
             <a id="tab-activate" onclick="showTab('activate')">Attivazione</a>
+            <a id="tab-admins" onclick="showTab('admins')">Admin</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
         </div>
         <div class="me">
@@ -181,6 +182,7 @@
                     <option value="expired">Expired</option>
                 </select>
                 <button type="button" onclick="clearUserFilters()" style="width:auto;margin:0;padding:10px 14px;background:var(--bg3)">Reset</button>
+                <button type="button" onclick="exportUsersCSV()" style="width:auto;margin:0;padding:10px 14px" title="Scarica CSV con i filtri correnti">Esporta CSV</button>
                 <span id="users-count" class="me"></span>
             </div>
             <table>
@@ -211,6 +213,26 @@
                     <button type="submit" id="act-btn">Attiva</button>
                 </form>
             </div>
+        </div>
+
+        <!-- Admins -->
+        <div id="panel-admins" style="display:none">
+            <h2 style="margin-bottom:16px">Gestione admin</h2>
+            <div class="card" style="max-width:520px;margin-bottom:20px">
+                <h3 style="margin-bottom:10px;font-size:15px">Aggiungi nuovo admin</h3>
+                <div class="err" id="adm-err"></div>
+                <div class="ok" id="adm-ok"></div>
+                <form onsubmit="return doCreateAdmin(event)">
+                    <input type="email" id="adm-email" placeholder="Email del nuovo admin" required>
+                    <input type="password" id="adm-password" placeholder="Password iniziale (min 8 caratteri)" required minlength="8">
+                    <button type="submit" id="adm-btn">Crea admin</button>
+                </form>
+                <p style="margin-top:8px;color:var(--muted);font-size:12px">Comunica la password al nuovo admin: dovrà configurare il 2FA al primo accesso.</p>
+            </div>
+            <table>
+                <thead><tr><th>Email</th><th>Creato</th><th>Ultimo login</th><th>2FA</th><th>Sessioni</th><th>Azioni</th></tr></thead>
+                <tbody id="admins-tbody"></tbody>
+            </table>
         </div>
 
         <!-- Log -->
@@ -325,12 +347,13 @@ function showTotp(){ show('screen-totp'); document.getElementById('totp-code').f
 function showPanel(){ show('screen-panel'); document.getElementById('me-email').textContent = myEmail; showTab('dashboard'); }
 
 function showTab(name) {
-    ['dashboard','users','activate','log'].forEach(t=>{
+    ['dashboard','users','activate','admins','log'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
     if (name==='dashboard') loadStats();
     if (name==='users') loadUsers('');
+    if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
 }
 
@@ -476,9 +499,28 @@ async function openUser(email) {
       <div class="row"><div class="k">Password</div><div>${u.has_password ? '✓ impostata' : '✗ non impostata'}</div></div>
       <div class="row"><div class="k">Creato</div><div>${(u.created_at||'').slice(0,19).replace('T',' ')}</div></div>
     `;
-    document.getElementById('ud-licenses').innerHTML = (data.licenses||[]).map(l=>`
-      <div class="row"><div class="k">${l.license_type}</div><div><span class="tag ${l.status==='active'?'success':'err'}">${l.status}</span> · attivata ${(l.activated_at||'').slice(0,10)} ${l.expires_at?'· scade '+l.expires_at.slice(0,10):''} ${l.stripe_subscription_id?' · stripe sub':''}</div></div>
-    `).join('') || '<p>Nessuna licenza</p>';
+    document.getElementById('ud-licenses').innerHTML = (data.licenses||[]).map(l=>{
+      const s = l.stripe;
+      let stripeBlock = '';
+      if (s) {
+          const amt = (s.amount!=null && s.currency) ? `${s.amount.toFixed(2)} ${s.currency.toUpperCase()}/${s.interval||'?'}` : '';
+          const renewal = s.current_period_end ? new Date(s.current_period_end).toLocaleDateString('it-IT') : '—';
+          const cancelTag = s.cancel_at_period_end ? '<span class="tag warn">Si cancella a fine periodo</span>' : '';
+          const dashLink = s.customer_dashboard_url ? `<a href="${s.customer_dashboard_url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">↗ Apri in Stripe</a>` : '';
+          stripeBlock = `<div style="margin-top:4px;padding:8px 10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--muted);line-height:1.6">
+              <strong style="color:var(--text)">Stripe</strong> · ${amt} · prossimo rinnovo ${renewal} · status <code>${s.status}</code> ${cancelTag} ${dashLink?' · '+dashLink:''}
+          </div>`;
+      } else if (l.stripe_subscription_id) {
+          stripeBlock = '<div style="margin-top:4px;font-size:11px;color:var(--muted)">Sub Stripe presente ma non leggibile (chiave o sub non valida)</div>';
+      }
+      return `<div class="row">
+        <div class="k">${l.license_type}</div>
+        <div>
+            <span class="tag ${l.status==='active'?'success':'err'}">${l.status}</span> · attivata ${(l.activated_at||'').slice(0,10)} ${l.expires_at?'· scade '+l.expires_at.slice(0,10):''}
+            ${stripeBlock}
+        </div>
+      </div>`;
+    }).join('') || '<p>Nessuna licenza</p>';
     document.getElementById('ud-devices').innerHTML = (data.devices||[]).map(d=>`
       <div class="device">
         <div class="info"><div class="name">${(d.device_name||'').replace(/</g,'&lt;')}</div><div class="code">${d.device_code||''} · ${d.device_model||''} · ${(d.last_active||'').slice(0,10)}</div></div>
@@ -595,6 +637,97 @@ async function doActivate(ev) {
     document.getElementById('act-code').value = '';
     document.getElementById('act-email').value = '';
     return false;
+}
+
+// ===== users CSV export =====
+async function exportUsersCSV() {
+    const search = document.getElementById('users-search').value || '';
+    const planF = document.getElementById('users-plan-filter').value || null;
+    const statF = document.getElementById('users-status-filter').value || null;
+    try {
+        const res = await fetch(API + '/admin/users-export', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_token: session, search, plan_filter: planF, status_filter: statF }),
+        });
+        if (!res.ok) {
+            const t = await res.text().catch(()=>'');
+            alert('Export fallito: ' + (t || res.status));
+            return;
+        }
+        const blob = await res.blob();
+        const cd = res.headers.get('content-disposition') || '';
+        const m = cd.match(/filename="?([^"]+)"?/);
+        const filename = m ? m[1] : `burgtv-users-${new Date().toISOString().slice(0,10)}.csv`;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    } catch (e) {
+        alert('Errore export: ' + e.message);
+    }
+}
+
+// ===== admin management =====
+let adminsCache = [];
+let myAdminId = null;
+async function loadAdmins() {
+    document.getElementById('admins-tbody').innerHTML = '<tr><td colspan="6">…</td></tr>';
+    clearErr('adm-err'); document.getElementById('adm-ok').classList.remove('show');
+    const { ok, data } = await api('admin/admins-list', { session_token: session });
+    if (!ok) return;
+    adminsCache = data.rows || [];
+    myAdminId = data.me?.admin_id;
+    if (adminsCache.length === 0) {
+        document.getElementById('admins-tbody').innerHTML = '<tr><td colspan="6">Nessun admin</td></tr>';
+        return;
+    }
+    document.getElementById('admins-tbody').innerHTML = adminsCache.map(a => {
+        const isMe = a.id === myAdminId;
+        const totp = a.totp_enabled ? '<span class="tag success">attivo</span>' : '<span class="tag warn">non config.</span>';
+        const last = a.last_login ? a.last_login.slice(0,19).replace('T',' ') : '—';
+        const actions = isMe
+            ? '<span style="color:var(--muted);font-size:12px">(tu)</span>'
+            : `<button class="secondary small" onclick='doResetAdminTotp(${JSON.stringify(a.id)}, ${JSON.stringify(a.email)})'>Reset 2FA</button>
+               <button class="danger small" onclick='doDeleteAdmin(${JSON.stringify(a.id)}, ${JSON.stringify(a.email)})'>Rimuovi</button>`;
+        return `<tr>
+            <td>${a.email}${isMe?' <span class="tag" style="font-size:10px">tu</span>':''}</td>
+            <td style="font-size:12px">${(a.created_at||'').slice(0,10)}</td>
+            <td style="font-size:12px">${last}</td>
+            <td>${totp}</td>
+            <td>${a.active_sessions||0}</td>
+            <td style="display:flex;gap:6px;flex-wrap:wrap">${actions}</td>
+        </tr>`;
+    }).join('');
+}
+async function doCreateAdmin(ev) {
+    ev.preventDefault();
+    clearErr('adm-err'); document.getElementById('adm-ok').classList.remove('show');
+    const email = document.getElementById('adm-email').value.trim().toLowerCase();
+    const password = document.getElementById('adm-password').value;
+    if (password.length < 8) { err('adm-err','Min 8 caratteri'); return false; }
+    const btn = document.getElementById('adm-btn'); btn.disabled = true; btn.textContent = '…';
+    const { ok, data } = await api('admin/admin-create', { session_token: session, email, password });
+    btn.disabled = false; btn.textContent = 'Crea admin';
+    if (!ok) { err('adm-err', data.error || 'Errore'); return false; }
+    const o = document.getElementById('adm-ok'); o.textContent = `✓ Admin ${email} creato. Comunica la password: ${password}`; o.classList.add('show');
+    document.getElementById('adm-email').value = '';
+    document.getElementById('adm-password').value = '';
+    loadAdmins();
+    return false;
+}
+async function doDeleteAdmin(adminId, email) {
+    if (!confirm(`Rimuovere definitivamente l'admin ${email}? Le sue sessioni saranno terminate.`)) return;
+    const { ok, data } = await api('admin/admin-delete', { session_token: session, admin_id: adminId });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    loadAdmins();
+}
+async function doResetAdminTotp(adminId, email) {
+    if (!confirm(`Reset 2FA per ${email}? Dovrà ri-configurare l'authenticator al prossimo accesso e le sue sessioni verranno terminate.`)) return;
+    const { ok, data } = await api('admin/admin-reset-totp', { session_token: session, admin_id: adminId });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    loadAdmins();
 }
 
 // ===== log =====
