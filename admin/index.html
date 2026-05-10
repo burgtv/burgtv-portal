@@ -38,7 +38,11 @@
         .logo{text-align:center;margin-bottom:20px}
         .logo img{height:60px}
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--bg2)}
-        .topbar .me{font-size:14px;color:var(--muted)}
+        .topbar .me{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px}
+        .topbar .me a{cursor:pointer;color:var(--muted)}
+        .topbar .me a:hover{color:var(--text)}
+        .icon-btn{background:transparent;border:1px solid var(--border);width:34px;height:34px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:16px;padding:0;margin:0;transition:.15s}
+        .icon-btn:hover{background:var(--card-hover);color:var(--text);border-color:var(--accent)}
         .topbar .nav{display:flex;gap:16px;align-items:center}
         .topbar .nav a{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
         .topbar .nav a.active{background:rgba(185,74,142,.15);color:var(--accent)}
@@ -143,7 +147,9 @@
             <a id="tab-log" onclick="showTab('log')">Log</a>
         </div>
         <div class="me">
-            <span id="me-email"></span> · <a onclick="openChangePassword()">Cambia password</a> · <a onclick="doLogout()">Esci</a>
+            <span id="me-email"></span>
+            <button type="button" class="icon-btn" onclick="openChangePassword()" title="Impostazioni / cambia password" aria-label="Impostazioni">⚙</button>
+            <a onclick="doLogout()">Esci</a>
         </div>
     </div>
 
@@ -513,6 +519,39 @@ async function udCleanup() {
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     closeUserModal();
     loadUsers(document.getElementById('users-search').value);
+}
+
+// ===== change password modal =====
+function openChangePassword() {
+    document.getElementById('cp-current').value = '';
+    document.getElementById('cp-new').value = '';
+    document.getElementById('cp-new2').value = '';
+    document.getElementById('cp-totp').value = '';
+    clearErr('cp-err'); document.getElementById('cp-ok').classList.remove('show');
+    document.getElementById('cp-modal').classList.add('show');
+    setTimeout(()=>document.getElementById('cp-current').focus(), 50);
+}
+function closeChangePassword(){ document.getElementById('cp-modal').classList.remove('show'); }
+async function doChangePassword(ev) {
+    ev.preventDefault();
+    clearErr('cp-err'); document.getElementById('cp-ok').classList.remove('show');
+    const cur = document.getElementById('cp-current').value;
+    const n1  = document.getElementById('cp-new').value;
+    const n2  = document.getElementById('cp-new2').value;
+    const totp = document.getElementById('cp-totp').value.trim();
+    if (n1.length < 8) { err('cp-err', 'La nuova password deve avere almeno 8 caratteri'); return false; }
+    if (n1 !== n2)     { err('cp-err', 'Le due nuove password non coincidono'); return false; }
+    if (cur === n1)    { err('cp-err', 'La nuova password deve essere diversa dall\'attuale'); return false; }
+    if (!/^\d{6}$/.test(totp)) { err('cp-err', 'Inserisci il codice 2FA a 6 cifre'); return false; }
+    const btn = document.getElementById('cp-btn'); btn.disabled = true; btn.textContent = '…';
+    const { ok, data } = await api('admin/change-password', {
+        session_token: session, current_password: cur, new_password: n1, totp_code: totp,
+    });
+    btn.disabled = false; btn.textContent = 'Aggiorna';
+    if (!ok) { err('cp-err', data.error || 'Errore'); return false; }
+    const o = document.getElementById('cp-ok'); o.textContent = '✓ Password aggiornata. Le altre sessioni admin sono state terminate.'; o.classList.add('show');
+    setTimeout(closeChangePassword, 2500);
+    return false;
 }
 
 // ===== rename modal =====
