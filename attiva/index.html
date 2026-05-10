@@ -140,6 +140,71 @@
             el.style.display = 'block';
         }
 
+        // 🔧 v1.1.11: Multi-device 5-limit handling.
+        // The VPS replies HTTP 409 with { error_code:"device_limit_exceeded", devices:[...] }
+        // when the email already has 5 active devices. We render a localized message
+        // (5 languages, matches the rest of the portal: it/en/de/es/fr) and list the
+        // currently registered devices so the user knows they need to remove one.
+        const DEVICE_LIMIT_I18N = {
+            it: {
+                title: "Limite raggiunto: 5 dispositivi",
+                body: "Questo abbonamento è già attivo su 5 dispositivi. Per attivare questo TV devi prima rimuovere un dispositivo dal tuo account.",
+                manage: "Gestisci i tuoi dispositivi",
+                deviceLabel: "Dispositivo",
+                lastSeen: "ultimo utilizzo"
+            },
+            en: {
+                title: "Limit reached: 5 devices",
+                body: "This license is already active on 5 devices. To activate this TV, please remove one device from your account first.",
+                manage: "Manage your devices",
+                deviceLabel: "Device",
+                lastSeen: "last seen"
+            },
+            de: {
+                title: "Limit erreicht: 5 Geräte",
+                body: "Dieses Abonnement ist bereits auf 5 Geräten aktiv. Um diesen TV zu aktivieren, entfernen Sie zuerst ein Gerät von Ihrem Konto.",
+                manage: "Geräte verwalten",
+                deviceLabel: "Gerät",
+                lastSeen: "zuletzt aktiv"
+            },
+            es: {
+                title: "Límite alcanzado: 5 dispositivos",
+                body: "Esta licencia ya está activa en 5 dispositivos. Para activar este TV, primero elimina un dispositivo de tu cuenta.",
+                manage: "Administrar dispositivos",
+                deviceLabel: "Dispositivo",
+                lastSeen: "última actividad"
+            },
+            fr: {
+                title: "Limite atteinte : 5 appareils",
+                body: "Cet abonnement est déjà actif sur 5 appareils. Pour activer cette TV, supprimez d'abord un appareil de votre compte.",
+                manage: "Gérer vos appareils",
+                deviceLabel: "Appareil",
+                lastSeen: "dernière activité"
+            }
+        };
+        function getLang() {
+            const stored = (localStorage.getItem('lang') || localStorage.getItem('burgtv_lang') || '').toLowerCase();
+            return DEVICE_LIMIT_I18N[stored] ? stored : 'it';
+        }
+        function showDeviceLimitError(data) {
+            const t = DEVICE_LIMIT_I18N[getLang()];
+            const el = document.getElementById('errorMessage');
+            const devs = Array.isArray(data && data.devices) ? data.devices : [];
+            const list = devs.map((d, i) => {
+                const name = d.device_name || (t.deviceLabel + ' ' + (i + 1));
+                const date = d.last_active ? new Date(d.last_active).toLocaleDateString() : '';
+                const safeName = name.replace(/[<>]/g, '');
+                return `<li>${safeName}${date ? ` <span style="opacity:0.6">— ${t.lastSeen} ${date}</span>` : ''}</li>`;
+            }).join('');
+            el.innerHTML = `
+              <strong>${t.title}</strong><br>
+              <span>${t.body}</span>
+              ${list ? `<ul style="margin-top:10px;padding-left:20px;font-size:14px;">${list}</ul>` : ''}
+              <a href="/login.html" style="display:inline-block;margin-top:12px;color:#d85aa3;text-decoration:underline;">${t.manage} →</a>
+            `;
+            el.style.display = 'block';
+        }
+
         function setLoading(loading) {
             const btn = document.getElementById('submitBtn');
             const text = document.getElementById('btnText');
@@ -181,6 +246,14 @@
 
                 const data = await response.json();
 
+                // 🔧 v1.1.11: 5-device limit (HTTP 409) — render the multilingual prompt
+                // with the device list so the user can act on it (remove one + retry).
+                if (response.status === 409 && data && data.error_code === 'device_limit_exceeded') {
+                    showDeviceLimitError(data);
+                    setLoading(false);
+                    return;
+                }
+
                 if (data.error) {
                     showError(data.error);
                     setLoading(false);
@@ -188,8 +261,11 @@
                 }
 
                 if (data.already_licensed) {
-                    // User already has a license - redirect to success
-                    window.location.href = 'success.html?already=true';
+                    // User already has a license — pass slot info to success page so it
+                    // can show "Attivato (3/5 dispositivi)" instead of just "Attivato".
+                    const slotParam = data.slot ? `&slot=${encodeURIComponent(data.slot)}` : '';
+                    const statusParam = data.status ? `&s=${encodeURIComponent(data.status)}` : '';
+                    window.location.href = `success.html?already=true${slotParam}${statusParam}`;
                     return;
                 }
 
