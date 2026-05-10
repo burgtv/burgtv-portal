@@ -53,7 +53,8 @@
         th,td{padding:10px 12px;text-align:left;font-size:13px;border-bottom:1px solid var(--border)}
         th{background:var(--bg3);font-weight:600;color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.5px}
         tr:last-child td{border-bottom:none}
-        tr:hover{background:var(--card-hover);cursor:pointer}
+        tbody tr.clickable{cursor:pointer}
+        tbody tr.clickable:hover{background:var(--card-hover)}
         .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;background:rgba(185,74,142,.2);color:var(--accent)}
         .tag.success{background:rgba(16,185,129,.2);color:var(--success)}
         .tag.warn{background:rgba(251,191,36,.2);color:var(--warn)}
@@ -142,7 +143,7 @@
             <a id="tab-log" onclick="showTab('log')">Log</a>
         </div>
         <div class="me">
-            <span id="me-email"></span> · <a onclick="doLogout()">Esci</a>
+            <span id="me-email"></span> · <a onclick="openChangePassword()">Cambia password</a> · <a onclick="doLogout()">Esci</a>
         </div>
     </div>
 
@@ -160,6 +161,20 @@
             <h2 style="margin-bottom:16px">Utenti</h2>
             <div class="controls">
                 <input id="users-search" placeholder="Cerca per email…" oninput="searchUsers()">
+                <select id="users-plan-filter" onchange="loadUsers(document.getElementById('users-search').value)" style="width:auto;margin:0;padding:10px 12px">
+                    <option value="">Tutti i piani</option>
+                    <option value="permanent">Permanent</option>
+                    <option value="lifetime">Lifetime</option>
+                    <option value="annual">Annual</option>
+                    <option value="subscription">Subscription</option>
+                </select>
+                <select id="users-status-filter" onchange="loadUsers(document.getElementById('users-search').value)" style="width:auto;margin:0;padding:10px 12px">
+                    <option value="">Tutti gli stati</option>
+                    <option value="active">Active</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="expired">Expired</option>
+                </select>
+                <button type="button" onclick="clearUserFilters()" style="width:auto;margin:0;padding:10px 14px;background:var(--bg3)">Reset</button>
                 <span id="users-count" class="me"></span>
             </div>
             <table>
@@ -242,6 +257,26 @@
             <button class="secondary" onclick="closeRn()">Annulla</button>
             <button onclick="doRename()">Salva</button>
         </div>
+    </div>
+</div>
+
+<!-- ==================== CHANGE PASSWORD MODAL ==================== -->
+<div class="modal-overlay" id="cp-modal">
+    <div class="modal">
+        <h2>Cambia password admin</h2>
+        <p style="margin:8px 0;color:var(--muted);font-size:13px">Min. 8 caratteri. Le altre sessioni admin verranno terminate.</p>
+        <div class="err" id="cp-err"></div>
+        <div class="ok" id="cp-ok"></div>
+        <form onsubmit="return doChangePassword(event)">
+            <input type="password" id="cp-current" placeholder="Password attuale" required autocomplete="current-password">
+            <input type="password" id="cp-new" placeholder="Nuova password" required minlength="8" autocomplete="new-password">
+            <input type="password" id="cp-new2" placeholder="Ripeti nuova password" required minlength="8" autocomplete="new-password">
+            <input type="text" id="cp-totp" placeholder="Codice 2FA (6 cifre)" required maxlength="6" pattern="\d{6}" inputmode="numeric" autocomplete="one-time-code">
+            <div class="actions-grid">
+                <button type="button" class="secondary" onclick="closeChangePassword()">Annulla</button>
+                <button type="submit" id="cp-btn">Aggiorna</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -370,8 +405,19 @@ async function loadStats() {
       <div class="stat"><div class="lbl">Attivazioni 24h</div><div class="val">${(data.activations_last_24h||[]).reduce((s,r)=>s+r.n,0)}</div><div class="sub">${(data.activations_last_24h||[]).map(r=>r.status+':'+r.n).join(', ')||'-'}</div></div>
     `;
     document.getElementById('licenses-breakdown').innerHTML = `<table><thead><tr><th>Status</th><th>Tipo</th><th>Quantità</th></tr></thead><tbody>${
-      (data.licenses_breakdown||[]).map(r=>`<tr><td><span class="tag ${r.status==='active'?'success':r.status==='cancelled'?'err':'warn'}">${r.status}</span></td><td>${r.license_type||'-'}</td><td>${r.n}</td></tr>`).join('')
+      (data.licenses_breakdown||[]).map(r=>`<tr class="clickable" onclick='goUsersFiltered(${JSON.stringify(r.license_type||"")}, ${JSON.stringify(r.status||"")})' title="Filtra utenti per questo tipo"><td><span class="tag ${r.status==='active'?'success':r.status==='cancelled'?'err':'warn'}">${r.status}</span></td><td>${r.license_type||'-'}</td><td>${r.n}</td></tr>`).join('')
     }</tbody></table>`;
+}
+
+// Click su riga della breakdown → switch a tab Utenti con i filtri pre-impostati.
+function goUsersFiltered(planType, status) {
+    showTab('users');
+    const planSel = document.getElementById('users-plan-filter');
+    const statSel = document.getElementById('users-status-filter');
+    if (planSel) planSel.value = planType || '';
+    if (statSel) statSel.value = status || '';
+    document.getElementById('users-search').value = '';
+    loadUsers('');
 }
 
 // ===== users list =====
@@ -380,9 +426,17 @@ function searchUsers() {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => loadUsers(document.getElementById('users-search').value), 250);
 }
+function clearUserFilters() {
+    document.getElementById('users-plan-filter').value = '';
+    document.getElementById('users-status-filter').value = '';
+    document.getElementById('users-search').value = '';
+    loadUsers('');
+}
 async function loadUsers(q) {
     document.getElementById('users-tbody').innerHTML = '<tr><td colspan="5">…</td></tr>';
-    const { ok, data } = await api('admin/users-list', { session_token: session, search: q, page: 0 });
+    const planF = (document.getElementById('users-plan-filter')||{}).value || null;
+    const statF = (document.getElementById('users-status-filter')||{}).value || null;
+    const { ok, data } = await api('admin/users-list', { session_token: session, search: q, page: 0, plan_filter: planF, status_filter: statF });
     if (!ok) return;
     document.getElementById('users-count').textContent = `${data.total} utenti`;
     if (!data.rows || data.rows.length === 0) {
@@ -394,7 +448,7 @@ async function loadUsers(q) {
                    : r.plan === 'annual'    ? '<span class="tag success">Annuale</span>'
                    : r.plan === 'lifetime'  ? '<span class="tag">Lifetime</span>'
                    : '<span class="tag err">Nessuna</span>';
-        return `<tr onclick='openUser(${JSON.stringify(r.email)})'><td>${r.email}</td><td>${plan}</td><td>${r.licenses_active}/${r.licenses}</td><td>${r.devices}</td><td>${(r.created_at||'').slice(0,10)}</td></tr>`;
+        return `<tr class="clickable" onclick='openUser(${JSON.stringify(r.email)})'><td>${r.email}</td><td>${plan}</td><td>${r.licenses_active}/${r.licenses}</td><td>${r.devices}</td><td>${(r.created_at||'').slice(0,10)}</td></tr>`;
     }).join('');
 }
 
