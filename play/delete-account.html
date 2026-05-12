@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BurgTV – Richiesta cancellazione dati</title>
+<link rel="icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8;min-height:100vh}
+.nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto}
+.brand{font-weight:800;font-size:1.2rem;color:#fff;text-decoration:none;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lang-switch{display:flex;gap:6px}
+.lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;transition:all .2s}
+.lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.15);color:#fff}
+.wrap{max-width:900px;margin:0 auto;padding:48px 20px 64px}
+h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h2{font-size:1.3rem;margin:32px 0 12px;color:#fff}
+p,li{color:var(--muted)}
+ul{margin:0 0 18px 22px}
+.update-date{margin:8px 0 18px;color:var(--muted);font-size:.95rem}
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+a.link:hover{color:#fff;border-bottom-color:#fff}
+.cta{display:inline-block;margin-top:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600}
+.footer{text-align:center;padding:24px;border-top:1px solid var(--border);margin-top:40px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-inner">
+    <a href="https://burgtv.com/" class="brand">BurgTV</a>
+    <div class="lang-switch">
+      <button data-lang="it" class="active">IT</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="fr">FR</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1 data-i18n="title">Richiesta cancellazione dati</h1>
+  <p class="update-date" data-i18n="updated">Ultimo aggiornamento: maggio 2026</p>
+
+  <div class="card">
+    <p data-i18n="intro">In conformità al Regolamento Generale sulla Protezione dei Dati (GDPR) e alla legge svizzera sulla protezione dei dati (nFADP), puoi richiedere la cancellazione dei tuoi dati personali in qualsiasi momento.</p>
+
+    <h2 data-i18n="h_what">1. Quali dati possono essere cancellati</h2>
+    <ul>
+      <li data-i18n="d1">Indirizzo email associato all'account</li>
+      <li data-i18n="d2">Password (in forma criptata)</li>
+      <li data-i18n="d3">Identificatori univoci dei dispositivi (device ID)</li>
+      <li data-i18n="d4">Cronologia degli accessi e log tecnici</li>
+      <li data-i18n="d5">Preferenze, impostazioni e configurazioni dell'account</li>
+    </ul>
+
+    <h2 data-i18n="h_how">2. Come richiedere la cancellazione</h2>
+    <p data-i18n="how_intro">Per richiedere la cancellazione dei tuoi dati senza eliminare l'account, invia una email a:</p>
+    <p style="text-align:center;margin:16px 0"><a class="link" href="mailto:info@burgtv.com?subject=Richiesta cancellazione dati">info@burgtv.com</a></p>
+    <p data-i18n="how_note">Nel messaggio specifica l'indirizzo email associato al tuo account e quali dati desideri cancellare.</p>
+
+    <h2 data-i18n="h_full">3. Cancellazione completa dell'account</h2>
+    <p data-i18n="full_intro">Se desideri eliminare completamente il tuo account e tutti i dati associati, puoi farlo direttamente dall'app:</p>
+    <ul>
+      <li data-i18n="f1">Apri l'app BurgTV</li>
+      <li data-i18n="f2">Vai su Impostazioni → Account</li>
+      <li data-i18n="f3">Seleziona "Elimina account"</li>
+      <li data-i18n="f4">Conferma la richiesta</li>
+    </ul>
+    <p data-i18n="full_alt">In alternativa, puoi farlo dalla dashboard web all'indirizzo:</p>
+    <p style="text-align:center;margin:8px 0"><a class="link" href="https://app.burgtv.com/account.html">app.burgtv.com/account.html</a></p>
+
+    <h2 data-i18n="h_time">4. Tempi di elaborazione</h2>
+    <ul>
+      <li data-i18n="t1">Le richieste sono elaborate entro 30 giorni dalla ricezione.</li>
+      <li data-i18n="t2">Riceverai una conferma via email al completamento dell'operazione.</li>
+      <li data-i18n="t3">I log tecnici sono conservati per un massimo di 90 giorni dalla cancellazione e poi rimossi automaticamente.</li>
+    </ul>
+
+    <h2 data-i18n="h_rights">5. Altri diritti GDPR</h2>
+    <p data-i18n="rights">Oltre alla cancellazione, hai diritto a richiedere accesso, rettifica, portabilità e opposizione al trattamento dei tuoi dati. Per qualsiasi richiesta GDPR contatta <a class="link" href="mailto:info@burgtv.com">info@burgtv.com</a>.</p>
+
+    <h2 data-i18n="h_contact">6. Contatti</h2>
+    <p data-i18n="contact">Per domande o assistenza: <a class="link" href="mailto:info@burgtv.com">info@burgtv.com</a></p>
+  </div>
+</div>
+
+<div class="footer">© BurgTV — info@burgtv.com</div>
+
+<script>
+const TR = {
+it:{title:"Richiesta cancellazione dati",updated:"Ultimo aggiornamento: maggio 2026",intro:"In conformità al Regolamento Generale sulla Protezione dei Dati (GDPR) e alla legge svizzera sulla protezione dei dati (nFADP), puoi richiedere la cancellazione dei tuoi dati personali in qualsiasi momento.",h_what:"1. Quali dati possono essere cancellati",d1:"Indirizzo email associato all\\'account",d2:"Password (in forma criptata)",d3:"Identificatori univoci dei dispositivi (device ID)",d4:"Cronologia degli accessi e log tecnici",d5:"Preferenze, impostazioni e configurazioni dell\\'account",h_how:"2. Come richiedere la cancellazione",how_intro:"Per richiedere la cancellazione dei tuoi dati senza eliminare l\\'account, invia una email a:",how_note:"Nel messaggio specifica l\\'indirizzo email associato al tuo account e quali dati desideri cancellare.",h_full:"3. Cancellazione completa dell\\'account",full_intro:"Se desideri eliminare completamente il tuo account e tutti i dati associati, puoi farlo direttamente dall\\'app:",f1:"Apri l\\'app BurgTV",f2:"Vai su Impostazioni → Account",f3:"Seleziona \"Elimina account\"",f4:"Conferma la richiesta",full_alt:"In alternativa, puoi farlo dalla dashboard web all\\'indirizzo:",h_time:"4. Tempi di elaborazione",t1:"Le richieste sono elaborate entro 30 giorni dalla ricezione.",t2:"Riceverai una conferma via email al completamento dell\\'operazione.",t3:"I log tecnici sono conservati per un massimo di 90 giorni dalla cancellazione e poi rimossi automaticamente.",h_rights:"5. Altri diritti GDPR",rights:"Oltre alla cancellazione, hai diritto a richiedere accesso, rettifica, portabilità e opposizione al trattamento dei tuoi dati. Per qualsiasi richiesta GDPR contatta info@burgtv.com.",h_contact:"6. Contatti",contact:"Per domande o assistenza: info@burgtv.com"},
+en:{title:"Data deletion request",updated:"Last updated: May 2026",intro:"In accordance with the General Data Protection Regulation (GDPR) and the Swiss Federal Act on Data Protection (nFADP), you can request the deletion of your personal data at any time.",h_what:"1. What data can be deleted",d1:"Email address associated with the account",d2:"Password (in encrypted form)",d3:"Unique device identifiers (device ID)",d4:"Access history and technical logs",d5:"Account preferences, settings and configurations",h_how:"2. How to request deletion",how_intro:"To request deletion of your data without deleting the account, send an email to:",how_note:"In the message, specify the email address associated with your account and which data you want deleted.",h_full:"3. Full account deletion",full_intro:"If you wish to fully delete your account and all associated data, you can do it directly from the app:",f1:"Open the BurgTV app",f2:"Go to Settings → Account",f3:"Select \"Delete account\"",f4:"Confirm the request",full_alt:"Alternatively, you can do it from the web dashboard at:",h_time:"4. Processing times",t1:"Requests are processed within 30 days from receipt.",t2:"You will receive an email confirmation when the operation is complete.",t3:"Technical logs are retained for a maximum of 90 days from deletion, then automatically removed.",h_rights:"5. Other GDPR rights",rights:"In addition to deletion, you have the right to request access, rectification, portability and objection to data processing. For any GDPR request, contact info@burgtv.com.",h_contact:"6. Contact",contact:"For questions or support: info@burgtv.com"},
+de:{title:"Antrag auf Datenlöschung",updated:"Zuletzt aktualisiert: Mai 2026",intro:"Gemäß der Datenschutz-Grundverordnung (DSGVO) und dem Schweizer Datenschutzgesetz (nFADP) können Sie jederzeit die Löschung Ihrer personenbezogenen Daten beantragen.",h_what:"1. Welche Daten gelöscht werden können",d1:"E-Mail-Adresse des Kontos",d2:"Passwort (verschlüsselt)",d3:"Eindeutige Gerätekennungen (Geräte-ID)",d4:"Zugriffshistorie und technische Protokolle",d5:"Kontopräferenzen, Einstellungen und Konfigurationen",h_how:"2. So beantragen Sie die Löschung",how_intro:"Um die Löschung Ihrer Daten ohne Löschung des Kontos zu beantragen, senden Sie eine E-Mail an:",how_note:"Geben Sie in der Nachricht die mit Ihrem Konto verknüpfte E-Mail-Adresse und die zu löschenden Daten an.",h_full:"3. Vollständige Kontolöschung",full_intro:"Wenn Sie Ihr Konto und alle zugehörigen Daten vollständig löschen möchten, können Sie dies direkt in der App tun:",f1:"Öffnen Sie die BurgTV-App",f2:"Gehen Sie zu Einstellungen → Konto",f3:"Wählen Sie \"Konto löschen\"",f4:"Bestätigen Sie die Anfrage",full_alt:"Alternativ können Sie dies vom Web-Dashboard aus tun unter:",h_time:"4. Bearbeitungszeit",t1:"Anfragen werden innerhalb von 30 Tagen nach Eingang bearbeitet.",t2:"Sie erhalten eine E-Mail-Bestätigung nach Abschluss des Vorgangs.",t3:"Technische Protokolle werden maximal 90 Tage nach Löschung aufbewahrt und dann automatisch entfernt.",h_rights:"5. Andere DSGVO-Rechte",rights:"Zusätzlich zur Löschung haben Sie das Recht, Zugang, Berichtigung, Übertragbarkeit und Widerspruch gegen die Datenverarbeitung zu beantragen. Für DSGVO-Anfragen kontaktieren Sie info@burgtv.com.",h_contact:"6. Kontakt",contact:"Für Fragen oder Support: info@burgtv.com"},
+es:{title:"Solicitud de eliminación de datos",updated:"Última actualización: mayo 2026",intro:"De conformidad con el Reglamento General de Protección de Datos (RGPD) y la ley suiza de protección de datos (nFADP), puedes solicitar la eliminación de tus datos personales en cualquier momento.",h_what:"1. Qué datos se pueden eliminar",d1:"Dirección de correo electrónico de la cuenta",d2:"Contraseña (en forma cifrada)",d3:"Identificadores únicos de dispositivos (device ID)",d4:"Historial de acceso y registros técnicos",d5:"Preferencias, configuraciones y ajustes de la cuenta",h_how:"2. Cómo solicitar la eliminación",how_intro:"Para solicitar la eliminación de tus datos sin eliminar la cuenta, envía un correo a:",how_note:"En el mensaje, especifica la dirección de correo asociada a tu cuenta y qué datos deseas eliminar.",h_full:"3. Eliminación completa de la cuenta",full_intro:"Si deseas eliminar completamente tu cuenta y todos los datos asociados, puedes hacerlo directamente desde la app:",f1:"Abre la app BurgTV",f2:"Ve a Ajustes → Cuenta",f3:"Selecciona \"Eliminar cuenta\"",f4:"Confirma la solicitud",full_alt:"Alternativamente, puedes hacerlo desde el panel web en:",h_time:"4. Tiempos de procesamiento",t1:"Las solicitudes se procesan en 30 días desde la recepción.",t2:"Recibirás una confirmación por correo al completarse la operación.",t3:"Los registros técnicos se conservan un máximo de 90 días tras la eliminación y luego se eliminan automáticamente.",h_rights:"5. Otros derechos RGPD",rights:"Además de la eliminación, tienes derecho a solicitar acceso, rectificación, portabilidad y oposición al tratamiento de tus datos. Para cualquier solicitud RGPD, contacta info@burgtv.com.",h_contact:"6. Contacto",contact:"Para preguntas o soporte: info@burgtv.com"},
+fr:{title:"Demande de suppression des données",updated:"Dernière mise à jour : mai 2026",intro:"Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi suisse sur la protection des données (nFADP), vous pouvez demander la suppression de vos données personnelles à tout moment.",h_what:"1. Quelles données peuvent être supprimées",d1:"Adresse e-mail associée au compte",d2:"Mot de passe (sous forme chiffrée)",d3:"Identifiants uniques des appareils (device ID)",d4:"Historique des accès et journaux techniques",d5:"Préférences, paramètres et configurations du compte",h_how:"2. Comment demander la suppression",how_intro:"Pour demander la suppression de vos données sans supprimer le compte, envoyez un e-mail à :",how_note:"Dans le message, précisez l\\'adresse e-mail associée à votre compte et quelles données vous souhaitez supprimer.",h_full:"3. Suppression complète du compte",full_intro:"Si vous souhaitez supprimer complètement votre compte et toutes les données associées, vous pouvez le faire directement depuis l\\'app :",f1:"Ouvrez l\\'app BurgTV",f2:"Allez dans Paramètres → Compte",f3:"Sélectionnez \"Supprimer le compte\"",f4:"Confirmez la demande",full_alt:"Alternativement, vous pouvez le faire depuis le tableau de bord web à l\\'adresse :",h_time:"4. Délais de traitement",t1:"Les demandes sont traitées dans les 30 jours suivant la réception.",t2:"Vous recevrez une confirmation par e-mail à l\\'issue de l\\'opération.",t3:"Les journaux techniques sont conservés maximum 90 jours après la suppression, puis supprimés automatiquement.",h_rights:"5. Autres droits RGPD",rights:"En plus de la suppression, vous avez le droit de demander l\\'accès, la rectification, la portabilité et l\\'opposition au traitement de vos données. Pour toute demande RGPD, contactez info@burgtv.com.",h_contact:"6. Contact",contact:"Pour toute question ou assistance : info@burgtv.com"}
+};
+const buttons = document.querySelectorAll('.lang-switch button');
+function setLang(lang){
+  document.documentElement.lang = lang;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  const t = TR[lang] || TR.it;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  try { localStorage.setItem('burgtv-lang', lang); } catch (e) {}
+}
+buttons.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+const initial = (localStorage.getItem('burgtv-lang') || (navigator.language || 'it').slice(0,2));
+setLang(['it','en','de','es','fr'].includes(initial) ? initial : 'it');
+</script>
+</body>
+</html>
