@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BurgTV – Termini di Servizio</title>
+<link rel="icon" href="/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8;min-height:100vh}
+.nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto}
+.brand{font-weight:800;font-size:1.2rem;color:#fff;text-decoration:none;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lang-switch{display:flex;gap:6px}
+.lang-switch button{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:13px;transition:all .2s}
+.lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.15);color:#fff}
+.wrap{max-width:900px;margin:0 auto;padding:48px 20px 64px}
+h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+h2{font-size:1.3rem;margin:32px 0 12px;color:#fff}
+p,li{color:var(--muted)}
+ul{margin:0 0 18px 22px}
+.update-date{margin:8px 0 18px;color:var(--muted);font-size:.95rem}
+.card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:28px;margin-top:20px}
+a.link{color:#B94A8E;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.25)}
+a.link:hover{color:#fff;border-bottom-color:#fff}
+.footer{text-align:center;padding:24px;border-top:1px solid var(--border);margin-top:40px;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-inner">
+    <a href="https://burgtv.com/" class="brand">BurgTV</a>
+    <div class="lang-switch">
+      <button data-lang="it" class="active">IT</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="fr">FR</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <h1 data-i18n="title">Termini di Servizio</h1>
+  <p class="update-date" data-i18n="updated">Ultimo aggiornamento: maggio 2026</p>
+
+  <div class="card">
+    <h2 data-i18n="h_nature">1. Natura del servizio</h2>
+    <p data-i18n="nature">BurgTV è un'applicazione software che funziona come media player per la riproduzione di contenuti multimediali.</p>
+    <ul>
+      <li data-i18n="nat1">BurgTV NON fornisce, ospita né distribuisce alcun contenuto audiovisivo.</li>
+      <li data-i18n="nat2">L'utente utilizza esclusivamente contenuti propri o di terze parti di cui possiede i diritti.</li>
+      <li data-i18n="nat3">BurgTV non è responsabile per i contenuti riprodotti dall'utente tramite l'applicazione.</li>
+    </ul>
+
+    <h2 data-i18n="h_account">2. Account e dispositivi</h2>
+    <ul>
+      <li data-i18n="acc1">Ogni account può essere utilizzato su un massimo di 5 dispositivi.</li>
+      <li data-i18n="acc2">L'utente può gestire i propri dispositivi dalla dashboard del proprio account.</li>
+      <li data-i18n="acc3">La condivisione delle credenziali con terzi non è consentita.</li>
+      <li data-i18n="acc4">Un solo account per persona fisica o giuridica.</li>
+    </ul>
+
+    <h2 data-i18n="h_use">3. Uso consentito</h2>
+    <ul>
+      <li data-i18n="u1">L'utente deve avere i diritti legali per visualizzare i contenuti riprodotti tramite l'app.</li>
+      <li data-i18n="u2">È vietato utilizzare il servizio per attività illegali o per violare diritti d'autore di terzi.</li>
+      <li data-i18n="u3">L'utente è l'unico responsabile per i contenuti che visualizza tramite l'applicazione.</li>
+    </ul>
+
+    <h2 data-i18n="h_suspension">4. Sospensione e revoca</h2>
+    <p data-i18n="susp_intro">BurgTV si riserva il diritto di sospendere o revocare l'accesso all'account in caso di:</p>
+    <ul>
+      <li data-i18n="s1">Violazione dei presenti Termini.</li>
+      <li data-i18n="s2">Utilizzo abusivo o fraudolento del servizio.</li>
+      <li data-i18n="s3">Condivisione non autorizzata delle credenziali.</li>
+      <li data-i18n="s4">Attività illegali o dannose.</li>
+    </ul>
+
+    <h2 data-i18n="h_liability">5. Limitazioni di responsabilità</h2>
+    <ul>
+      <li data-i18n="l1">Il servizio è fornito "così com'è" senza garanzie di disponibilità continua o ininterrotta.</li>
+      <li data-i18n="l2">BurgTV non è responsabile per contenuti di terze parti visualizzati tramite l'app.</li>
+      <li data-i18n="l3">BurgTV non è responsabile per perdita di dati, playlist o impostazioni dell'utente.</li>
+      <li data-i18n="l4">BurgTV si riserva il diritto di modificare, sospendere o interrompere il servizio in qualsiasi momento.</li>
+    </ul>
+
+    <h2 data-i18n="h_changes">6. Modifiche ai termini</h2>
+    <p data-i18n="changes">BurgTV può aggiornare questi Termini in qualsiasi momento. Le modifiche significative saranno comunicate tramite email o nell'applicazione. L'uso continuato del servizio dopo le modifiche costituisce accettazione dei nuovi termini.</p>
+
+    <h2 data-i18n="h_law">7. Legge applicabile</h2>
+    <p data-i18n="law">I presenti Termini sono regolati dalla legge applicabile in base alla giurisdizione dell'utente.</p>
+
+    <h2 data-i18n="h_contact">8. Contatti</h2>
+    <p data-i18n="contact">Per domande, assistenza o segnalazioni: <a class="link" href="mailto:info@burgtv.com">info@burgtv.com</a></p>
+  </div>
+</div>
+
+<div class="footer">© BurgTV — info@burgtv.com</div>
+
+<script>
+const TR = {
+it:{title:"Termini di Servizio",updated:"Ultimo aggiornamento: maggio 2026",h_nature:"1. Natura del servizio",nature:"BurgTV è un\\'applicazione software che funziona come media player per la riproduzione di contenuti multimediali.",nat1:"BurgTV NON fornisce, ospita né distribuisce alcun contenuto audiovisivo.",nat2:"L\\'utente utilizza esclusivamente contenuti propri o di terze parti di cui possiede i diritti.",nat3:"BurgTV non è responsabile per i contenuti riprodotti dall\\'utente tramite l\\'applicazione.",h_account:"2. Account e dispositivi",acc1:"Ogni account può essere utilizzato su un massimo di 5 dispositivi.",acc2:"L\\'utente può gestire i propri dispositivi dalla dashboard del proprio account.",acc3:"La condivisione delle credenziali con terzi non è consentita.",acc4:"Un solo account per persona fisica o giuridica.",h_use:"3. Uso consentito",u1:"L\\'utente deve avere i diritti legali per visualizzare i contenuti riprodotti tramite l\\'app.",u2:"È vietato utilizzare il servizio per attività illegali o per violare diritti d\\'autore di terzi.",u3:"L\\'utente è l\\'unico responsabile per i contenuti che visualizza tramite l\\'applicazione.",h_suspension:"4. Sospensione e revoca",susp_intro:"BurgTV si riserva il diritto di sospendere o revocare l\\'accesso all\\'account in caso di:",s1:"Violazione dei presenti Termini.",s2:"Utilizzo abusivo o fraudolento del servizio.",s3:"Condivisione non autorizzata delle credenziali.",s4:"Attività illegali o dannose.",h_liability:"5. Limitazioni di responsabilità",l1:'Il servizio è fornito "così com\\'è" senza garanzie di disponibilità continua o ininterrotta.',l2:"BurgTV non è responsabile per contenuti di terze parti visualizzati tramite l\\'app.",l3:"BurgTV non è responsabile per perdita di dati, playlist o impostazioni dell\\'utente.",l4:"BurgTV si riserva il diritto di modificare, sospendere o interrompere il servizio in qualsiasi momento.",h_changes:"6. Modifiche ai termini",changes:"BurgTV può aggiornare questi Termini in qualsiasi momento. Le modifiche significative saranno comunicate tramite email o nell\\'applicazione. L\\'uso continuato del servizio dopo le modifiche costituisce accettazione dei nuovi termini.",h_law:"7. Legge applicabile",law:"I presenti Termini sono regolati dalla legge applicabile in base alla giurisdizione dell\\'utente.",h_contact:"8. Contatti",contact:"Per domande, assistenza o segnalazioni: info@burgtv.com"},
+en:{title:"Terms of Service",updated:"Last updated: May 2026",h_nature:"1. Nature of the service",nature:"BurgTV is a software application that works as a media player for playing back multimedia content.",nat1:"BurgTV does NOT provide, host or distribute any audiovisual content.",nat2:"The user uses exclusively their own content or third-party content for which they hold the rights.",nat3:"BurgTV is not responsible for content played by the user through the application.",h_account:"2. Account and devices",acc1:"Each account can be used on a maximum of 5 devices.",acc2:"The user can manage their devices from their account dashboard.",acc3:"Sharing credentials with third parties is not allowed.",acc4:"One account per natural or legal person.",h_use:"3. Permitted use",u1:"The user must hold the legal rights to view the content played through the app.",u2:"It is forbidden to use the service for illegal activities or to violate third-party copyrights.",u3:"The user is solely responsible for the content they view through the application.",h_suspension:"4. Suspension and revocation",susp_intro:"BurgTV reserves the right to suspend or revoke account access in case of:",s1:"Violation of these Terms.",s2:"Abusive or fraudulent use of the service.",s3:"Unauthorized sharing of credentials.",s4:"Illegal or harmful activities.",h_liability:"5. Limitations of liability",l1:'The service is provided "as is" without guarantees of continuous or uninterrupted availability.',l2:"BurgTV is not responsible for third-party content viewed through the app.",l3:"BurgTV is not responsible for loss of user data, playlists or settings.",l4:"BurgTV reserves the right to modify, suspend or terminate the service at any time.",h_changes:"6. Changes to terms",changes:"BurgTV may update these Terms at any time. Significant changes will be communicated via email or in the app. Continued use of the service after changes constitutes acceptance of the new terms.",h_law:"7. Applicable law",law:"These Terms are governed by the applicable law based on the user's jurisdiction.",h_contact:"8. Contact",contact:"For questions, support or reports: info@burgtv.com"},
+de:{title:"Nutzungsbedingungen",updated:"Zuletzt aktualisiert: Mai 2026",h_nature:"1. Art des Dienstes",nature:"BurgTV ist eine Software-Anwendung, die als Media-Player für die Wiedergabe von Multimedia-Inhalten dient.",nat1:"BurgTV bietet, hostet oder verteilt KEINE audiovisuellen Inhalte.",nat2:"Der Nutzer verwendet ausschließlich eigene Inhalte oder Inhalte Dritter, an denen er die Rechte besitzt.",nat3:"BurgTV ist nicht verantwortlich für Inhalte, die der Nutzer über die Anwendung wiedergibt.",h_account:"2. Konto und Geräte",acc1:"Jedes Konto kann auf maximal 5 Geräten verwendet werden.",acc2:"Der Nutzer kann seine Geräte über das Konto-Dashboard verwalten.",acc3:"Die Weitergabe von Zugangsdaten an Dritte ist nicht gestattet.",acc4:"Nur ein Konto pro natürlicher oder juristischer Person.",h_use:"3. Zulässige Nutzung",u1:"Der Nutzer muss die rechtlichen Rechte besitzen, um die über die App wiedergegebenen Inhalte anzusehen.",u2:"Die Nutzung des Dienstes für illegale Aktivitäten oder zur Verletzung von Urheberrechten Dritter ist verboten.",u3:"Der Nutzer ist allein verantwortlich für die Inhalte, die er über die Anwendung ansieht.",h_suspension:"4. Sperrung und Entzug",susp_intro:"BurgTV behält sich das Recht vor, den Kontozugang zu sperren oder zu entziehen, wenn:",s1:"Verstoß gegen diese Bedingungen.",s2:"Missbräuchliche oder betrügerische Nutzung.",s3:"Unbefugte Weitergabe von Zugangsdaten.",s4:"Illegale oder schädliche Aktivitäten.",h_liability:"5. Haftungsbeschränkungen",l1:'Der Dienst wird "wie besehen" ohne Garantie kontinuierlicher Verfügbarkeit bereitgestellt.',l2:"BurgTV ist nicht verantwortlich für Inhalte Dritter, die über die App angesehen werden.",l3:"BurgTV ist nicht verantwortlich für den Verlust von Nutzerdaten, Playlisten oder Einstellungen.",l4:"BurgTV behält sich das Recht vor, den Dienst jederzeit zu ändern, auszusetzen oder einzustellen.",h_changes:"6. Änderungen der Bedingungen",changes:"BurgTV kann diese Bedingungen jederzeit aktualisieren. Wesentliche Änderungen werden per E-Mail oder in der App mitgeteilt. Die fortgesetzte Nutzung des Dienstes nach Änderungen stellt die Annahme der neuen Bedingungen dar.",h_law:"7. Anwendbares Recht",law:"Diese Bedingungen unterliegen dem anwendbaren Recht der Gerichtsbarkeit des Nutzers.",h_contact:"8. Kontakt",contact:"Für Fragen, Support oder Meldungen: info@burgtv.com"},
+es:{title:"Términos de Servicio",updated:"Última actualización: mayo 2026",h_nature:"1. Naturaleza del servicio",nature:"BurgTV es una aplicación de software que funciona como reproductor multimedia.",nat1:"BurgTV NO proporciona, aloja ni distribuye ningún contenido audiovisual.",nat2:"El usuario utiliza exclusivamente contenidos propios o de terceros sobre los que posee derechos.",nat3:"BurgTV no es responsable de los contenidos reproducidos por el usuario.",h_account:"2. Cuenta y dispositivos",acc1:"Cada cuenta puede usarse en un máximo de 5 dispositivos.",acc2:"El usuario puede gestionar sus dispositivos desde el panel de su cuenta.",acc3:"No se permite compartir credenciales con terceros.",acc4:"Una sola cuenta por persona física o jurídica.",h_use:"3. Uso permitido",u1:"El usuario debe tener los derechos legales para visualizar los contenidos reproducidos a través de la app.",u2:"Está prohibido usar el servicio para actividades ilegales o violar derechos de autor.",u3:"El usuario es el único responsable de los contenidos que visualiza a través de la aplicación.",h_suspension:"4. Suspensión y revocación",susp_intro:"BurgTV se reserva el derecho de suspender o revocar el acceso a la cuenta en caso de:",s1:"Incumplimiento de estos Términos.",s2:"Uso abusivo o fraudulento del servicio.",s3:"Compartir credenciales sin autorización.",s4:"Actividades ilegales o dañinas.",h_liability:"5. Limitaciones de responsabilidad",l1:'El servicio se proporciona "tal cual" sin garantías de disponibilidad continua.',l2:"BurgTV no es responsable de contenidos de terceros visualizados a través de la app.",l3:"BurgTV no es responsable de la pérdida de datos, listas o configuraciones del usuario.",l4:"BurgTV se reserva el derecho de modificar, suspender o terminar el servicio en cualquier momento.",h_changes:"6. Cambios en los términos",changes:"BurgTV puede actualizar estos Términos en cualquier momento. Los cambios significativos se comunicarán por correo o en la aplicación. El uso continuado tras los cambios constituye aceptación.",h_law:"7. Ley aplicable",law:"Estos Términos se rigen por la ley aplicable según la jurisdicción del usuario.",h_contact:"8. Contacto",contact:"Para preguntas, soporte o denuncias: info@burgtv.com"},
+fr:{title:"Conditions d\\'Utilisation",updated:"Dernière mise à jour : mai 2026",h_nature:"1. Nature du service",nature:"BurgTV est une application logicielle qui fonctionne comme un lecteur multimédia.",nat1:"BurgTV NE fournit, n\\'héberge ni ne distribue aucun contenu audiovisuel.",nat2:"L\\'utilisateur utilise exclusivement ses propres contenus ou ceux de tiers dont il détient les droits.",nat3:"BurgTV n\\'est pas responsable des contenus lus par l\\'utilisateur via l\\'application.",h_account:"2. Compte et appareils",acc1:"Chaque compte peut être utilisé sur un maximum de 5 appareils.",acc2:"L\\'utilisateur peut gérer ses appareils depuis le tableau de bord de son compte.",acc3:"Le partage des identifiants avec des tiers n\\'est pas autorisé.",acc4:"Un seul compte par personne physique ou morale.",h_use:"3. Utilisation autorisée",u1:"L\\'utilisateur doit détenir les droits légaux pour visionner les contenus lus via l\\'app.",u2:"Il est interdit d\\'utiliser le service pour des activités illégales ou pour violer les droits d\\'auteur de tiers.",u3:"L\\'utilisateur est seul responsable des contenus qu\\'il visionne via l\\'application.",h_suspension:"4. Suspension et révocation",susp_intro:"BurgTV se réserve le droit de suspendre ou révoquer l\\'accès au compte en cas de :",s1:"Violation des présentes Conditions.",s2:"Utilisation abusive ou frauduleuse du service.",s3:"Partage non autorisé des identifiants.",s4:"Activités illégales ou nuisibles.",h_liability:"5. Limitations de responsabilité",l1:'Le service est fourni "en l\\'état" sans garantie de disponibilité continue.',l2:"BurgTV n\\'est pas responsable des contenus tiers visionnés via l\\'app.",l3:"BurgTV n\\'est pas responsable de la perte de données, playlists ou paramètres.",l4:"BurgTV se réserve le droit de modifier, suspendre ou terminer le service à tout moment.",h_changes:"6. Modifications des conditions",changes:"BurgTV peut mettre à jour ces Conditions à tout moment. Les modifications importantes seront communiquées par e-mail ou dans l\\'application. L\\'utilisation continue du service après modifications vaut acceptation.",h_law:"7. Loi applicable",law:"Ces Conditions sont régies par la loi applicable selon la juridiction de l\\'utilisateur.",h_contact:"8. Contact",contact:"Pour toute question, support ou signalement : info@burgtv.com"}
+};
+const buttons = document.querySelectorAll('.lang-switch button');
+function setLang(lang){
+  document.documentElement.lang = lang;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  const t = TR[lang] || TR.it;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  try { localStorage.setItem('burgtv-lang', lang); } catch (e) {}
+}
+buttons.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
+const initial = (localStorage.getItem('burgtv-lang') || (navigator.language || 'it').slice(0,2));
+setLang(['it','en','de','es','fr'].includes(initial) ? initial : 'it');
+</script>
+</body>
+</html>
