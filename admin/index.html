@@ -506,7 +506,7 @@ function show(id) {
         document.getElementById(s).style.display = (s===id) ? '' : 'none';
     });
 }
-function showLogin(){ show('screen-login'); }
+function showLogin(){ show('screen-login'); maybeShowPasskeyRow(); }
 function showSetup(){ show('screen-setup'); }
 function showTotp(){ show('screen-totp'); document.getElementById('totp-code').focus(); }
 function showPanel(){ show('screen-panel'); document.getElementById('me-email').textContent = myEmail; showTab('dashboard'); }
