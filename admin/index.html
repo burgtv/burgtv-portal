@@ -1212,7 +1212,7 @@ const COUNTRY_NAMES = {
 function countryName(code) { return COUNTRY_NAMES[(code||'').toUpperCase()] || code || '?'; }
 
 // Money formatter (CHF for now; switch on currency from server when needed).
-function fmtMoney(cents, currency='EUR') {
+function fmtMoney(cents, currency='CHF') {
     const v = (Number(cents) || 0) / 100;
     try { return v.toLocaleString('it-CH', { style:'currency', currency: currency.toUpperCase() }); }
     catch { return v.toFixed(2) + ' ' + currency.toUpperCase(); }
