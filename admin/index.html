@@ -1180,6 +1180,9 @@ async function renderBioSettings(extraMsg) {
 }
 
 
+// ===== analytics =====
+let anCache = null;
+const anCharts = {};
 
 // ISO-3166-1 alpha-2 → emoji flag. Falls back to '🌐' for unknown.
 function flagFor(code) {
