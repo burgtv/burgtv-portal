@@ -1127,6 +1127,17 @@ async function deletePasskey(id, label) {
     renderBioSettings('✓ Passkey rimossa');
 }
 
+function deviceIcon(name) {
+    const n = (name || '').toLowerCase();
+    if (n.includes('iphone'))  return '📱';
+    if (n.includes('ipad'))    return '📱';
+    if (n.includes('android')) return '📱';
+    if (n.includes('mac'))     return '🖥️';
+    if (n.includes('windows')) return '💻';
+    if (n.includes('linux'))   return '💻';
+    return '🔑';
+}
+
 async function renderBioSettings(extraMsg) {
     const el = document.getElementById('bio-settings');
     if (!isBioSupported()) {
@@ -1149,10 +1160,15 @@ async function renderBioSettings(extraMsg) {
         html += creds.map(c => {
             const created = c.created_at ? new Date(c.created_at).toLocaleDateString('it-CH') : '';
             const lastUsed = c.last_used_at ? new Date(c.last_used_at).toLocaleDateString('it-CH') : 'mai usata';
+            const name = (c.device_name || 'Dispositivo').replace(/</g, '&lt;');
+            const icon = deviceIcon(c.device_name);
             return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:6px;margin-bottom:6px;flex-wrap:wrap">
-                <div style="flex:1;min-width:140px">
-                    <div style="font-size:13px;font-weight:600">${(c.device_name || 'Dispositivo').replace(/</g, '&lt;')}</div>
-                    <div style="font-size:11px;color:var(--muted)">Aggiunta ${created} · Ultimo accesso: ${lastUsed}</div>
+                <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:140px">
+                    <div style="font-size:24px;line-height:1">${icon}</div>
+                    <div style="flex:1;min-width:0">
+                        <div style="font-size:13px;font-weight:600">${name}</div>
+                        <div style="font-size:11px;color:var(--muted)">Aggiunta ${created} · Ultimo accesso: ${lastUsed}</div>
+                    </div>
                 </div>
                 <button class="danger small" onclick='deletePasskey(${JSON.stringify(c.id)}, ${JSON.stringify(c.device_name || "Dispositivo")})' style="width:auto">Rimuovi</button>
             </div>`;
