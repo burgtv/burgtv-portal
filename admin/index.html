@@ -510,13 +510,23 @@ function show(id) {
 function showLogin(){ show('screen-login'); maybeShowPasskeyRow(); }
 function showSetup(){ show('screen-setup'); }
 function showTotp(){ show('screen-totp'); document.getElementById('totp-code').focus(); }
-function showPanel(){ show('screen-panel'); document.getElementById('me-email').textContent = myEmail; showTab('dashboard'); }
+function showPanel(){
+    show('screen-panel');
+    document.getElementById('me-email').textContent = myEmail;
+    // Restore last-viewed tab so a page reload doesn't bounce the admin back
+    // to Dashboard. sessionStorage clears on logout, so a fresh login still
+    // starts at Dashboard naturally.
+    const validTabs = ['dashboard','users','activate','admins','log','analytics'];
+    const saved = sessionStorage.getItem('admin_tab');
+    showTab(validTabs.includes(saved) ? saved : 'dashboard');
+}
 
 function showTab(name) {
     ['dashboard','users','activate','admins','log','analytics'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
+    sessionStorage.setItem('admin_tab', name);
     if (name==='dashboard') loadStats();
     if (name==='users') loadUsers('');
     if (name==='admins') loadAdmins();
