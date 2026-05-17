@@ -7,6 +7,7 @@
     <title>BurgTV Admin</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0a0a0b;--bg2:#111113;--bg3:#1a1a1d;--text:#fff;--muted:#a0a0a8;--accent:#B94A8E;--accent2:#7B4397;--success:#10b981;--warn:#fbbf24;--error:#ef4444;--border:rgba(255,255,255,.12);--card:rgba(255,255,255,.03);--card-hover:rgba(255,255,255,.06)}
@@ -80,7 +81,65 @@
         .device .code{font-size:11px;color:var(--muted);font-family:monospace}
         .device .actions{display:flex;gap:6px}
         .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-        @media(max-width:600px){.actions-grid{grid-template-columns:1fr}.topbar{padding:10px 12px}.topbar .nav a{padding:6px 8px;font-size:13px}}
+        .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+        /* === Analytics tab === */
+        .analytics-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+        .analytics-section > h3{font-size:16px;color:var(--text);text-transform:none;letter-spacing:0;margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+        .analytics-section .ico{font-size:18px}
+        .analytics-section h3 .pill{margin-left:auto;text-transform:none;letter-spacing:0}
+        .chart-box{position:relative;height:240px;margin:14px 0 6px;background:var(--bg3);border-radius:8px;padding:8px}
+        .country-row{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-radius:6px;font-size:13px;cursor:default}
+        .country-row:hover{background:var(--card-hover)}
+        .country-row .flag{margin-right:8px;font-size:16px}
+        .country-row .bar{flex:1;height:6px;background:var(--bg3);border-radius:3px;margin:0 10px;overflow:hidden}
+        .country-row .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px}
+        .country-row .num{font-variant-numeric:tabular-nums;color:var(--muted);min-width:60px;text-align:right}
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .funnel-step{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:14px}
+        .funnel-step .label{min-width:170px;display:flex;align-items:center;gap:8px}
+        .funnel-step .bar{flex:1;height:28px;background:var(--bg3);border-radius:6px;overflow:hidden;position:relative}
+        .funnel-step .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:600;white-space:nowrap}
+        .pill{display:inline-block;padding:2px 10px;background:var(--bg3);border-radius:999px;font-size:11px;color:var(--muted)}
+        .period-select{padding:6px 10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:13px;width:auto;margin:0}
+        .analytics-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+        .analytics-toolbar .grow{flex:1}
+        .analytics-toolbar button,.analytics-toolbar select{min-height:38px}
+        @media(max-width:600px){
+          .analytics-toolbar{gap:8px}
+          .analytics-toolbar h2{flex-basis:100%}
+          .analytics-toolbar button,.analytics-toolbar select{min-height:42px;padding:10px 14px!important;font-size:14px!important;flex:1}
+        }
+        @media(max-width:780px){
+          .two-col{grid-template-columns:1fr}
+          .chart-box{height:200px}
+          .funnel-step .label{min-width:130px;font-size:12px}
+        }
+        @media(max-width:600px){
+          .actions-grid{grid-template-columns:1fr}
+          .topbar{padding:10px 12px;flex-wrap:wrap;gap:8px}
+          .topbar .nav{order:3;width:100%;overflow-x:auto;gap:4px;padding-bottom:2px;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+          .topbar .nav::-webkit-scrollbar{height:3px}
+          .topbar .nav a{padding:6px 10px;font-size:13px;white-space:nowrap;flex-shrink:0}
+          .topbar .me{font-size:13px;gap:8px}
+          .topbar .me span#me-email{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+          .container{padding:14px 12px}
+          h2{font-size:16px}
+          .stat .val{font-size:20px}
+          .controls{gap:8px}
+          .controls input,.controls select,.controls button{font-size:13px;padding:8px 10px}
+          .modal{padding:18px;border-radius:12px}
+          .row{grid-template-columns:1fr;gap:2px}
+          .row .k{font-size:12px}
+          .device{padding:10px;flex-direction:column;align-items:stretch}
+          .device .actions{justify-content:flex-end}
+          table{font-size:12px}
+          th,td{padding:8px 8px}
+          .analytics-section{padding:14px}
+          .funnel-step{flex-direction:column;align-items:stretch;gap:4px}
+          .funnel-step .label{min-width:auto;font-size:13px}
+          .funnel-step .bar{height:24px}
+          .country-row{font-size:12px}
+        }
     </style>
 </head>
 <body>
@@ -144,6 +203,7 @@
             <a id="tab-dashboard" onclick="showTab('dashboard')">Dashboard</a>
             <a id="tab-users" onclick="showTab('users')">Utenti</a>
             <a id="tab-activate" onclick="showTab('activate')">Attivazione</a>
+            <a id="tab-analytics" onclick="showTab('analytics')">📊 Analytics</a>
             <a id="tab-admins" onclick="showTab('admins')">Admin</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
         </div>
@@ -185,10 +245,12 @@
                 <button type="button" onclick="exportUsersCSV()" style="width:auto;margin:0;padding:10px 14px" title="Scarica CSV con i filtri correnti">Esporta CSV</button>
                 <span id="users-count" class="me"></span>
             </div>
-            <table>
-                <thead><tr><th>Email</th><th>Piano</th><th>Licenze</th><th>Device</th><th>Registrato</th></tr></thead>
-                <tbody id="users-tbody"></tbody>
-            </table>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Email</th><th>Piano</th><th>Licenze</th><th>Device</th><th>Registrato</th></tr></thead>
+                    <tbody id="users-tbody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Activate -->
@@ -229,19 +291,90 @@
                 </form>
                 <p style="margin-top:8px;color:var(--muted);font-size:12px">Comunica la password al nuovo admin: dovrà configurare il 2FA al primo accesso.</p>
             </div>
-            <table>
-                <thead><tr><th>Email</th><th>Creato</th><th>Ultimo login</th><th>2FA</th><th>Sessioni</th><th>Azioni</th></tr></thead>
-                <tbody id="admins-tbody"></tbody>
-            </table>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Email</th><th>Creato</th><th>Ultimo login</th><th>2FA</th><th>Sessioni</th><th>Azioni</th></tr></thead>
+                    <tbody id="admins-tbody"></tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Log -->
         <div id="panel-log" style="display:none">
             <h2 style="margin-bottom:16px">Audit log (ultime 100 azioni)</h2>
-            <table>
-                <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>IP</th></tr></thead>
-                <tbody id="log-tbody"></tbody>
-            </table>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>IP</th></tr></thead>
+                    <tbody id="log-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div id="panel-analytics" style="display:none">
+            <div class="analytics-toolbar">
+                <h2 style="margin:0" class="grow">📊 Analytics</h2>
+                <select id="an-period" class="period-select" onchange="loadAnalytics()">
+                    <option value="7">Ultimi 7 giorni</option>
+                    <option value="30" selected>Ultimi 30 giorni</option>
+                    <option value="90">Ultimi 90 giorni</option>
+                </select>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="refreshAnalytics()" title="Forza sync da Cloudflare + Stripe">↻ Aggiorna</button>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="exportAnalyticsCSV()" title="Esporta dati periodo in CSV">📥 CSV</button>
+            </div>
+            <div id="an-status" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
+            <div class="err" id="an-err"></div>
+
+            <!-- 1. TRAFFICO SITO -->
+            <div class="analytics-section">
+                <h3><span class="ico">🌐</span> Traffico sito <span class="pill" id="an-traf-host">burgtv.com</span></h3>
+                <div class="stats" id="an-traf-kpi">
+                    <div class="stat"><div class="lbl">Richieste totali</div><div class="val">…</div></div>
+                </div>
+                <div class="chart-box"><canvas id="an-chart-traffic"></canvas></div>
+                <div class="two-col">
+                    <div>
+                        <h3 style="margin-top:14px">🌍 Top paesi (sito)</h3>
+                        <div id="an-traf-countries"></div>
+                    </div>
+                    <div>
+                        <h3 style="margin-top:14px">🔗 Top sorgenti</h3>
+                        <div id="an-traf-referrers"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. DOWNLOAD APK -->
+            <div class="analytics-section">
+                <h3><span class="ico">📥</span> Download APK <span class="pill">download.burgtv.com</span></h3>
+                <div class="stats" id="an-dl-kpi">
+                    <div class="stat"><div class="lbl">Download totali</div><div class="val">…</div></div>
+                </div>
+                <div class="chart-box"><canvas id="an-chart-downloads"></canvas></div>
+                <h3 style="margin-top:14px">🌍 Top paesi (download)</h3>
+                <div id="an-dl-countries"></div>
+            </div>
+
+            <!-- 3. VENDITE STRIPE -->
+            <div class="analytics-section">
+                <h3><span class="ico">💰</span> Vendite Stripe</h3>
+                <div class="stats" id="an-sales-kpi">
+                    <div class="stat"><div class="lbl">MRR</div><div class="val">…</div></div>
+                </div>
+                <div class="chart-box" style="position:relative">
+                    <canvas id="an-chart-sales"></canvas>
+                    <div id="an-chart-sales-empty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:13px;padding:20px">Nessun pagamento Stripe nel periodo selezionato.</div>
+                </div>
+                <h3 style="margin-top:14px">🌍 Paesi paganti</h3>
+                <div id="an-sales-countries"></div>
+            </div>
+
+            <!-- 4. FUNNEL -->
+            <div class="analytics-section">
+                <h3><span class="ico">🎯</span> Funnel di conversione</h3>
+                <div id="an-funnel"></div>
+                <p id="an-funnel-tip" style="margin-top:14px;font-size:12px;color:var(--muted)"></p>
+            </div>
         </div>
     </div>
 </div>
@@ -347,7 +480,7 @@ function showTotp(){ show('screen-totp'); document.getElementById('totp-code').f
 function showPanel(){ show('screen-panel'); document.getElementById('me-email').textContent = myEmail; showTab('dashboard'); }
 
 function showTab(name) {
-    ['dashboard','users','activate','admins','log'].forEach(t=>{
+    ['dashboard','users','activate','admins','log','analytics'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
@@ -355,6 +488,7 @@ function showTab(name) {
     if (name==='users') loadUsers('');
     if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
+    if (name==='analytics') loadAnalytics();
 }
 
 // ===== auth =====
@@ -766,6 +900,277 @@ async function loadLog() {
         tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error);padding:20px;text-align:center">❌ Errore JS: ${e.message}</td></tr>`;
         console.error('loadLog error:', e);
     }
+}
+
+// ===== analytics =====
+let anCache = null;
+const anCharts = {};
+
+// ISO-3166-1 alpha-2 → emoji flag. Falls back to '🌐' for unknown.
+function flagFor(code) {
+    if (!code || code.length !== 2) return '🌐';
+    const cc = code.toUpperCase();
+    return String.fromCodePoint(...[...cc].map(c => 0x1F1E6 - 65 + c.charCodeAt(0)));
+}
+const COUNTRY_NAMES = {
+    IT:'Italia', CH:'Svizzera', DE:'Germania', FR:'Francia', ES:'Spagna', GB:'Regno Unito',
+    US:'Stati Uniti', CA:'Canada', BR:'Brasile', AR:'Argentina', PT:'Portogallo', NL:'Olanda',
+    BE:'Belgio', AT:'Austria', PL:'Polonia', RO:'Romania', GR:'Grecia', TR:'Turchia',
+    RU:'Russia', UA:'Ucraina', CN:'Cina', JP:'Giappone', KR:'Corea del Sud', IN:'India',
+    AU:'Australia', MX:'Messico', ZA:'Sudafrica', SE:'Svezia', NO:'Norvegia', DK:'Danimarca',
+    FI:'Finlandia', IE:'Irlanda', IL:'Israele', AE:'Emirati Arabi', SA:'Arabia Saudita',
+    XX:'Sconosciuto',
+};
+function countryName(code) { return COUNTRY_NAMES[(code||'').toUpperCase()] || code || '?'; }
+
+// Money formatter (CHF for now; switch on currency from server when needed).
+function fmtMoney(cents, currency='EUR') {
+    const v = (Number(cents) || 0) / 100;
+    try { return v.toLocaleString('it-CH', { style:'currency', currency: currency.toUpperCase() }); }
+    catch { return v.toFixed(2) + ' ' + currency.toUpperCase(); }
+}
+function fmtNum(n) { return (Number(n) || 0).toLocaleString('it-CH'); }
+
+// Renders a horizontal country bar list into `el`. `rows` is [{country, requests|count}].
+function renderCountryList(el, rows, valueKey='requests') {
+    if (!rows || rows.length === 0) { el.innerHTML = '<p style="font-size:13px;color:var(--muted)">Nessun dato</p>'; return; }
+    const max = Math.max(...rows.map(r => Number(r[valueKey]) || 0));
+    el.innerHTML = rows.slice(0, 12).map(r => {
+        const n = Number(r[valueKey]) || 0;
+        const pct = max > 0 ? (n/max*100) : 0;
+        return `<div class="country-row">
+            <span class="flag">${flagFor(r.country)}</span>
+            <span style="min-width:110px">${countryName(r.country)}</span>
+            <span class="bar"><span class="bar-fill" style="width:${pct.toFixed(1)}%"></span></span>
+            <span class="num">${fmtNum(n)}</span>
+        </div>`;
+    }).join('');
+}
+
+// Builds/updates a Chart.js line chart; reuses canvas if already created.
+function lineChart(canvasId, labels, datasets) {
+    if (typeof Chart === 'undefined') return; // CDN not loaded yet
+    if (anCharts[canvasId]) { anCharts[canvasId].destroy(); delete anCharts[canvasId]; }
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+    anCharts[canvasId] = new Chart(ctx, {
+        type:'line',
+        data:{ labels, datasets: datasets.map(d => ({ tension:0.3, borderWidth:2, fill:true, pointRadius:2, ...d })) },
+        options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#a0a0a8', font:{size:11} } } },
+            scales:{
+                x:{ ticks:{ color:'#a0a0a8', font:{size:10} }, grid:{ color:'rgba(255,255,255,0.05)' } },
+                y:{ beginAtZero:true, ticks:{ color:'#a0a0a8', font:{size:10} }, grid:{ color:'rgba(255,255,255,0.05)' } },
+            },
+        },
+    });
+}
+
+function getPeriod() { return parseInt(document.getElementById('an-period').value, 10) || 30; }
+
+async function loadAnalytics() {
+    const days = getPeriod();
+    document.getElementById('an-status').textContent = 'Caricamento dati…';
+    clearErr('an-err');
+    try {
+        const [t, s, f] = await Promise.all([
+            api('admin/analytics-traffic', { session_token: session, days }),
+            api('admin/analytics-sales',   { session_token: session, days }),
+            api('admin/analytics-funnel',  { session_token: session, days }),
+        ]);
+        if (!t.ok) { err('an-err', t.data?.error || 'Errore caricamento traffico'); return; }
+        if (!s.ok) { err('an-err', s.data?.error || 'Errore caricamento vendite'); return; }
+        if (!f.ok) { err('an-err', f.data?.error || 'Errore caricamento funnel'); return; }
+        anCache = { traffic: t.data, sales: s.data, funnel: f.data, days };
+        const ts = anCache.traffic.last_update;
+        document.getElementById('an-status').textContent = ts
+            ? `Ultimo sync dati: ${new Date(ts).toLocaleString('it-CH')} · periodo: ${days} giorni`
+            : `Periodo: ${days} giorni`;
+        renderTraffic(anCache.traffic);
+        renderDownloads(anCache.traffic);
+        renderSales(anCache.sales);
+        renderFunnel(anCache.funnel);
+    } catch (e) {
+        err('an-err', 'Errore JS: ' + e.message);
+        console.error('loadAnalytics:', e);
+    }
+}
+
+function renderTraffic(t) {
+    const sito = (t.totals || []).find(r => r.hostname === 'burgtv.com') || { requests:0, bytes:0 };
+    const totReq = (t.totals || []).reduce((a,r) => a + Number(r.requests || 0), 0);
+    document.getElementById('an-traf-kpi').innerHTML = `
+      <div class="stat"><div class="lbl">Visite sito</div><div class="val">${fmtNum(sito.requests)}</div><div class="sub">burgtv.com</div></div>
+      <div class="stat"><div class="lbl">Tutti i domini</div><div class="val">${fmtNum(totReq)}</div><div class="sub">incluso admin/api/download</div></div>
+      <div class="stat"><div class="lbl">Banda servita</div><div class="val">${(Number(sito.bytes)/1024/1024).toFixed(1)} MB</div><div class="sub">burgtv.com</div></div>
+      <div class="stat"><div class="lbl">Domini attivi</div><div class="val">${(t.totals||[]).length}</div><div class="sub">sottodomini distinti</div></div>
+    `;
+
+    // Daily line — site only
+    const days = [...new Set((t.by_day || []).map(d => d.date))].sort();
+    const siteSeries = days.map(d => {
+        const row = (t.by_day || []).find(r => r.date === d && r.hostname === 'burgtv.com');
+        return Number(row?.requests || 0);
+    });
+    lineChart('an-chart-traffic', days.map(d => d.slice(5)), [
+        { label:'Visite burgtv.com', data:siteSeries, borderColor:'#B94A8E', backgroundColor:'rgba(185,74,142,0.15)' },
+    ]);
+
+    // Countries — site only
+    const siteCountries = (t.by_country || []).filter(r => r.hostname === 'burgtv.com').slice(0, 15);
+    renderCountryList(document.getElementById('an-traf-countries'), siteCountries);
+
+    // Referrers — only those for burgtv.com host (rest is admin/api noise)
+    const refs = (t.referrers || []).filter(r => r.hostname === 'burgtv.com');
+    if (refs.length === 0) {
+        document.getElementById('an-traf-referrers').innerHTML = '<p style="font-size:13px;color:var(--muted)">Nessuna sorgente registrata ancora.<br><span style="font-size:11px">Le sorgenti vengono raccolte solo dopo che lo snippet di tracking è installato sul sito (in arrivo nel prossimo deploy).</span></p>';
+    } else {
+        const max = Math.max(...refs.map(r => Number(r.requests) || 0));
+        document.getElementById('an-traf-referrers').innerHTML = refs.slice(0, 12).map(r => {
+            const n = Number(r.requests) || 0;
+            const pct = max > 0 ? (n/max*100) : 0;
+            const label = r.referrer_host === '(direct)' ? '🔗 Diretto / app' : r.referrer_host;
+            return `<div class="country-row">
+                <span style="min-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</span>
+                <span class="bar"><span class="bar-fill" style="width:${pct.toFixed(1)}%"></span></span>
+                <span class="num">${fmtNum(n)}</span>
+            </div>`;
+        }).join('');
+    }
+}
+
+function renderDownloads(t) {
+    const dl = (t.totals || []).find(r => r.hostname === 'download.burgtv.com') || { requests:0, bytes:0 };
+    document.getElementById('an-dl-kpi').innerHTML = `
+      <div class="stat"><div class="lbl">Richieste APK</div><div class="val">${fmtNum(dl.requests)}</div><div class="sub">download.burgtv.com</div></div>
+      <div class="stat"><div class="lbl">Dati serviti</div><div class="val">${(Number(dl.bytes)/1024/1024).toFixed(1)} MB</div><div class="sub">totale periodo</div></div>
+      <div class="stat"><div class="lbl">Media/giorno</div><div class="val">${(Number(dl.requests)/Math.max(1,t.days)).toFixed(0)}</div><div class="sub">${t.days} giorni</div></div>
+      <div class="stat"><div class="lbl">Paesi raggiunti</div><div class="val">${(t.by_country||[]).filter(r=>r.hostname==='download.burgtv.com').length}</div><div class="sub">distinti</div></div>
+    `;
+
+    const days = [...new Set((t.by_day || []).map(d => d.date))].sort();
+    const dlSeries = days.map(d => {
+        const row = (t.by_day || []).find(r => r.date === d && r.hostname === 'download.burgtv.com');
+        return Number(row?.requests || 0);
+    });
+    lineChart('an-chart-downloads', days.map(d => d.slice(5)), [
+        { label:'Download APK', data:dlSeries, borderColor:'#7B4397', backgroundColor:'rgba(123,67,151,0.15)' },
+    ]);
+
+    const dlCountries = (t.by_country || []).filter(r => r.hostname === 'download.burgtv.com').slice(0, 15);
+    renderCountryList(document.getElementById('an-dl-countries'), dlCountries);
+}
+
+function renderSales(s) {
+    const mrr = s.latest?.mrr_cents || 0;
+    const active = s.latest?.active_subs || 0;
+    const newSubs = (s.by_day || []).reduce((a,r) => a + Number(r.new_subscriptions || 0), 0);
+    const canceled = (s.by_day || []).reduce((a,r) => a + Number(r.canceled_subscriptions || 0), 0);
+    const revenue = (s.by_day || []).reduce((a,r) => a + Number(r.revenue_cents || 0), 0);
+
+    document.getElementById('an-sales-kpi').innerHTML = `
+      <div class="stat"><div class="lbl">MRR corrente</div><div class="val">${fmtMoney(mrr)}</div><div class="sub">ricorrente mensile</div></div>
+      <div class="stat"><div class="lbl">Sub attive</div><div class="val">${fmtNum(active)}</div><div class="sub">incl. trial</div></div>
+      <div class="stat"><div class="lbl">Nuove nel periodo</div><div class="val">+${fmtNum(newSubs)}</div><div class="sub">${s.days} giorni</div></div>
+      <div class="stat"><div class="lbl">Cancellate</div><div class="val">-${fmtNum(canceled)}</div><div class="sub">${revenue>0?fmtMoney(revenue)+' incasso':'(periodo)'}</div></div>
+    `;
+
+    const days = (s.by_day || []).map(r => r.date);
+    const newSeries = (s.by_day || []).map(r => Number(r.new_subscriptions || 0));
+    const cancSeries = (s.by_day || []).map(r => Number(r.canceled_subscriptions || 0));
+    const canvasEl = document.getElementById('an-chart-sales');
+    const emptyEl  = document.getElementById('an-chart-sales-empty');
+    if (days.length === 0) {
+        if (anCharts['an-chart-sales']) { anCharts['an-chart-sales'].destroy(); delete anCharts['an-chart-sales']; }
+        canvasEl.style.display = 'none';
+        emptyEl.style.display  = 'flex';
+    } else {
+        canvasEl.style.display = '';
+        emptyEl.style.display  = 'none';
+        lineChart('an-chart-sales', days.map(d => d.slice(5)), [
+            { label:'Nuove', data:newSeries, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.15)' },
+            { label:'Cancellate', data:cancSeries, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.10)' },
+        ]);
+    }
+
+    renderCountryList(document.getElementById('an-sales-countries'), s.countries || [], 'count');
+}
+
+function renderFunnel(f) {
+    const steps = [
+        { label:'👁  Visite sito',       value: f.visits,        color:'#B94A8E' },
+        { label:'📥 Richieste APK',     value: f.downloads,     color:'#7B4397' },
+        { label:'✉️  Registrazioni',    value: f.registrations, color:'#fbbf24' },
+        { label:'📲 Attivazioni',       value: f.activations,   color:'#10b981' },
+        { label:'💰 Paganti',           value: f.paying,        color:'#ef4444' },
+    ];
+    const max = Math.max(1, ...steps.map(s => s.value));
+    document.getElementById('an-funnel').innerHTML = steps.map((s, i) => {
+        const pct = (s.value / max * 100).toFixed(1);
+        const prev = i > 0 ? steps[i-1].value : null;
+        const dropoff = (prev && prev > 0) ? `${((s.value/prev)*100).toFixed(1)}%` : '—';
+        return `<div class="funnel-step">
+            <div class="label">${s.label}</div>
+            <div class="bar"><div class="bar-fill" style="width:${Math.max(2, pct)}%;background:linear-gradient(90deg, ${s.color}, ${s.color}aa)">${fmtNum(s.value)} ${i>0?'· '+dropoff:''}</div></div>
+        </div>`;
+    }).join('');
+
+    // Identify biggest dropoff between consecutive steps
+    let biggestDrop = { from:'', to:'', loss:0 };
+    for (let i = 1; i < steps.length; i++) {
+        const prev = steps[i-1].value, curr = steps[i].value;
+        if (prev > 0) {
+            const lossPct = 100 - (curr/prev*100);
+            if (lossPct > biggestDrop.loss) {
+                biggestDrop = { from: steps[i-1].label, to: steps[i].label, loss: lossPct };
+            }
+        }
+    }
+    document.getElementById('an-funnel-tip').textContent = biggestDrop.loss > 30
+        ? `💡 Dropoff più rilevante: tra "${biggestDrop.from.replace(/[^\w\s]/g,'').trim()}" e "${biggestDrop.to.replace(/[^\w\s]/g,'').trim()}" si perde il ${biggestDrop.loss.toFixed(0)}%`
+        : '';
+}
+
+async function refreshAnalytics() {
+    document.getElementById('an-status').textContent = '🔄 Sincronizzazione in corso da Cloudflare + Stripe…';
+    const { ok, data } = await api('admin/analytics-refresh', { session_token: session, days_back: 7 });
+    if (!ok) { err('an-err', data?.error || 'Errore refresh'); return; }
+    document.getElementById('an-status').textContent = `✓ Sync: ${data.cloudflare?.rows||0} righe Cloudflare, ${data.stripe?.rows||0} righe Stripe`;
+    setTimeout(loadAnalytics, 800);
+}
+
+function exportAnalyticsCSV() {
+    if (!anCache) { alert('Carica prima i dati'); return; }
+    const lines = [];
+    lines.push('Sezione,Chiave,Valore');
+    // Traffic totals
+    (anCache.traffic.totals || []).forEach(r => {
+        lines.push(`Traffico,${r.hostname},${r.requests}`);
+    });
+    // Traffic per day
+    (anCache.traffic.by_day || []).forEach(r => {
+        lines.push(`Traffico-giornaliero,"${r.date} ${r.hostname}",${r.requests}`);
+    });
+    // Countries
+    (anCache.traffic.by_country || []).forEach(r => {
+        lines.push(`Paesi,"${r.hostname} ${r.country}",${r.requests}`);
+    });
+    // Sales
+    (anCache.sales.by_day || []).forEach(r => {
+        lines.push(`Vendite,"${r.date} nuove",${r.new_subscriptions}`);
+        lines.push(`Vendite,"${r.date} cancellate",${r.canceled_subscriptions}`);
+        lines.push(`Vendite,"${r.date} incasso_centesimi",${r.revenue_cents}`);
+    });
+    // Funnel
+    Object.entries(anCache.funnel).forEach(([k, v]) => { if (k !== 'days') lines.push(`Funnel,${k},${v}`); });
+
+    const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `burgtv-analytics-${anCache.days}gg-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 // ===== boot =====
