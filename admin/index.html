@@ -126,15 +126,20 @@
           h2{font-size:16px}
           .stat .val{font-size:20px}
           .controls{gap:8px}
-          .controls input,.controls select,.controls button{font-size:13px;padding:8px 10px}
+          .controls input,.controls select,.controls button{font-size:13px;padding:11px 12px;min-height:42px}
+          .card{padding:18px}
           .modal{padding:18px;border-radius:12px}
-          .row{grid-template-columns:1fr;gap:2px}
+          .row{grid-template-columns:1fr;gap:2px;word-break:break-word}
           .row .k{font-size:12px}
+          .row > div{min-width:0}
           .device{padding:10px;flex-direction:column;align-items:stretch}
           .device .actions{justify-content:flex-end}
           table{font-size:12px}
           th,td{padding:8px 8px}
+          /* Touch-friendly small action buttons across all panels (admins, device rows, modals) */
+          button.small{padding:10px 12px;font-size:13px;min-height:38px}
           .analytics-section{padding:14px}
+          .stats{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px}
           .funnel-step{flex-direction:column;align-items:stretch;gap:4px}
           .funnel-step .label{min-width:auto;font-size:13px}
           .funnel-step .bar{height:24px}
@@ -567,9 +572,9 @@ async function loadStats() {
       <div class="stat"><div class="lbl">Dispositivi</div><div class="val">${data.devices?.total||0}</div><div class="sub">${data.devices?.unique_id||0} univoci</div></div>
       <div class="stat"><div class="lbl">Attivazioni 24h</div><div class="val">${(data.activations_last_24h||[]).reduce((s,r)=>s+r.n,0)}</div><div class="sub">${(data.activations_last_24h||[]).map(r=>r.status+':'+r.n).join(', ')||'-'}</div></div>
     `;
-    document.getElementById('licenses-breakdown').innerHTML = `<table><thead><tr><th>Status</th><th>Tipo</th><th>Quantità</th></tr></thead><tbody>${
+    document.getElementById('licenses-breakdown').innerHTML = `<div class="table-wrap"><table><thead><tr><th>Status</th><th>Tipo</th><th>Quantità</th></tr></thead><tbody>${
       (data.licenses_breakdown||[]).map(r=>`<tr class="clickable" onclick='goUsersFiltered(${JSON.stringify(r.license_type||"")}, ${JSON.stringify(r.status||"")})' title="Filtra utenti per questo tipo"><td><span class="tag ${r.status==='active'?'success':r.status==='cancelled'?'err':'warn'}">${r.status}</span></td><td>${r.license_type||'-'}</td><td>${r.n}</td></tr>`).join('')
-    }</tbody></table>`;
+    }</tbody></table></div>`;
 }
 
 // Click su riga della breakdown → switch a tab Utenti con i filtri pre-impostati.
