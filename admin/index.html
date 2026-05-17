@@ -445,7 +445,10 @@
 <!-- ==================== CHANGE PASSWORD MODAL ==================== -->
 <div class="modal-overlay" id="cp-modal">
     <div class="modal">
-        <h2>Impostazioni admin</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h2 style="margin:0">Impostazioni admin</h2>
+            <button class="secondary small" onclick="closeChangePassword()" aria-label="Chiudi">✕</button>
+        </div>
 
         <h3 style="margin-top:14px">Face ID / Passkey</h3>
         <p style="margin:6px 0 10px;color:var(--muted);font-size:13px">Aggiungi questo dispositivo per accedere senza password con Face ID, Touch ID o Windows Hello. La chiave privata resta nel Secure Enclave del device — niente password da digitare, niente TOTP.</p>
