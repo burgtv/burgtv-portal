@@ -166,6 +166,14 @@
             <p>Accesso riservato</p>
         </div>
         <div class="err" id="login-err"></div>
+        <div id="li-bio-row" style="display:none;margin-bottom:14px">
+            <input type="email" id="li-bio-email" placeholder="Email" autocomplete="email" style="margin-bottom:8px">
+            <button type="button" id="li-bio-btn" onclick="loginWithPasskey()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;width:100%;margin-bottom:6px">
+                <span style="font-size:20px">🔒</span>
+                <span>Accedi con Face ID / Passkey</span>
+            </button>
+            <p style="text-align:center;color:var(--muted);font-size:12px;margin:0">oppure usa email + password</p>
+        </div>
         <form onsubmit="return doLogin(event)">
             <input type="email" id="li-email" placeholder="Email" required autocomplete="email">
             <input type="password" id="li-password" placeholder="Password" required autocomplete="current-password">
@@ -198,13 +206,6 @@
         <h1>Codice 2FA</h1>
         <p>Apri l'app Authenticator e inserisci le 6 cifre per <strong id="totp-email"></strong></p>
         <div class="err" id="totp-err" style="margin-top:14px"></div>
-        <div id="bio-login-row" style="display:none;margin-top:14px;margin-bottom:4px">
-            <button type="button" id="bio-login-btn" onclick="tentaFaceId()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px">
-                <span style="font-size:20px">🔒</span>
-                <span>Accedi con Face ID / Touch ID</span>
-            </button>
-            <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:6px">oppure inserisci il codice 2FA qui sotto</p>
-        </div>
         <form onsubmit="return doTotp(event)" style="margin-top:14px">
             <input type="text" id="totp-code" class="code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required autocomplete="one-time-code" inputmode="numeric">
             <button type="submit" id="totp-btn">Verifica</button>
@@ -446,8 +447,8 @@
     <div class="modal">
         <h2>Impostazioni admin</h2>
 
-        <h3 style="margin-top:14px">Face ID / Touch ID</h3>
-        <p style="margin:6px 0 10px;color:var(--muted);font-size:13px">Login rapido su questo dispositivo usando il biometrico. Password resta sempre necessaria; il TOTP viene sostituito da Face ID.</p>
+        <h3 style="margin-top:14px">Face ID / Passkey</h3>
+        <p style="margin:6px 0 10px;color:var(--muted);font-size:13px">Aggiungi questo dispositivo per accedere senza password con Face ID, Touch ID o Windows Hello. La chiave privata resta nel Secure Enclave del device — niente password da digitare, niente TOTP.</p>
         <div id="bio-settings" style="margin-bottom:18px;padding:12px 14px;background:var(--bg3);border-radius:8px">
             <p style="font-size:13px;color:var(--muted)">Caricamento…</p>
         </div>
@@ -504,18 +505,7 @@ function show(id) {
 }
 function showLogin(){ show('screen-login'); }
 function showSetup(){ show('screen-setup'); }
-function showTotp(){
-    show('screen-totp');
-    // If this device has a Face ID credential enrolled for the email being
-    // logged in, surface a "Use Face ID" button above the TOTP input.
-    const bioRow = document.getElementById('bio-login-row');
-    if (hasBioCredFor(myEmail) && isBioSupported()) {
-        bioRow.style.display = '';
-    } else {
-        bioRow.style.display = 'none';
-        document.getElementById('totp-code').focus();
-    }
-}
+function showTotp(){ show('screen-totp'); document.getElementById('totp-code').focus(); }
 function showPanel(){ show('screen-panel'); document.getElementById('me-email').textContent = myEmail; showTab('dashboard'); }
 
 function showTab(name) {
@@ -942,15 +932,14 @@ async function loadLog() {
     }
 }
 
-// ===== Face ID / Touch ID (WebAuthn used as biometric prompt) =====
-// Pattern adapted from digit-diary: cred_id is stored in browser localStorage
-// AND on the server (admin_users.bio_cred_id). On login the device prompts
-// Face ID locally, then we send the cred_id to /admin/bio-verify which checks
-// it matches the server's record and issues a real admin_session — bypassing
-// the TOTP step. Password + TOTP remain the primary auth method on all
-// devices and as fallback when Face ID enrollment is removed/invalid.
+// ===== Face ID / Passkey (FULL WebAuthn) =====
+// Real WebAuthn flow: device generates a key pair, private key stays in
+// Secure Enclave / TPM, server stores public key and counter. Login is
+// passwordless and cryptographically verified — not a "trust the client"
+// pattern. Falls back gracefully to password+TOTP when bio is not enrolled
+// on the current device.
 
-const BIO_STORE_KEY = 'admin_webauthn_cred';
+const BIO_HINT_KEY = 'admin_passkey_hint';  // tiny hint to know if any passkey has been enrolled from this device (email only)
 
 function isBioSupported() {
     return typeof window !== 'undefined'
@@ -958,164 +947,215 @@ function isBioSupported() {
         && typeof navigator.credentials?.create === 'function';
 }
 
-function readBioStore() {
-    try { return JSON.parse(localStorage.getItem(BIO_STORE_KEY) || 'null'); }
-    catch { return null; }
+// Base64URL <-> Uint8Array helpers (WebAuthn uses URL-safe base64 without padding)
+function b64urlToU8(b64url) {
+    const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - b64url.length % 4) % 4);
+    const bin = atob(b64);
+    const u = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    return u;
+}
+function u8ToB64url(u) {
+    let s = '';
+    for (const b of u) s += String.fromCharCode(b);
+    return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function hasBioCredFor(email) {
-    if (!email) return false;
-    const e = email.toLowerCase().trim();
-    const s = readBioStore();
-    return !!(s && s.id && s.email && s.email.toLowerCase() === e);
+// At boot, show the "Login with Passkey" row if bio is supported AND
+// either: there's a hint of prior enrollment, or we're on iOS/macOS where
+// passkeys may be synced via iCloud Keychain.
+function maybeShowPasskeyRow() {
+    const row = document.getElementById('li-bio-row');
+    if (!isBioSupported()) { row.style.display = 'none'; return; }
+    row.style.display = '';
+    // Pre-fill email from hint if available
+    const hint = localStorage.getItem(BIO_HINT_KEY);
+    if (hint) document.getElementById('li-bio-email').value = hint;
 }
 
-function clearBioStore() { localStorage.removeItem(BIO_STORE_KEY); }
+// Triggers passwordless login. Pre-fills the bio email field, calls server
+// for challenge, prompts platform biometric, submits signed assertion.
+async function loginWithPasskey() {
+    const emailEl = document.getElementById('li-bio-email');
+    const email = emailEl.value.trim().toLowerCase();
+    clearErr('login-err');
+    if (!email) { err('login-err', 'Inserisci la tua email admin'); emailEl.focus(); return; }
+    if (!isBioSupported()) { err('login-err', 'Face ID / Passkey non supportato su questo browser'); return; }
 
-// Initiates platform biometric enrollment (Face ID / Touch ID / Windows Hello).
-// Must be called from an authenticated admin session — server validates session
-// when storing the cred_id.
-async function enrollFaceId() {
-    const elBox = document.getElementById('bio-settings');
-    if (!isBioSupported()) { elBox.innerHTML = '<p style="font-size:13px;color:var(--warn)">Questo browser non supporta Face ID/Touch ID.</p>'; return; }
-    if (!session) { elBox.innerHTML = '<p style="font-size:13px;color:var(--error)">Sessione admin scaduta.</p>'; return; }
+    const btn = document.getElementById('li-bio-btn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span style="font-size:16px">⏳</span><span>Attendere…</span>';
+
     try {
-        elBox.innerHTML = '<p style="font-size:13px;color:var(--muted)">Conferma con Face ID / Touch ID…</p>';
-        const userId = new TextEncoder().encode(myEmail);
-        const cred = await navigator.credentials.create({
-            publicKey: {
-                challenge: crypto.getRandomValues(new Uint8Array(32)),
-                rp:   { name: 'BurgTV Admin', id: location.hostname },
-                user: { id: userId, name: myEmail, displayName: myEmail },
-                pubKeyCredParams: [
-                    { alg: -7,   type: 'public-key' },   // ES256
-                    { alg: -257, type: 'public-key' },   // RS256
-                ],
-                authenticatorSelection: {
-                    authenticatorAttachment: 'platform',
-                    userVerification: 'required',
-                    residentKey: 'preferred',
-                },
-                timeout: 60000,
-            },
-        });
-        const credId = btoa(String.fromCharCode.apply(null, new Uint8Array(cred.rawId)));
-        const { ok, data } = await api('admin/bio-enroll', { session_token: session, cred_id: credId });
-        if (!ok) {
-            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore server: ${data?.error || 'impossibile salvare'}</p>`;
+        const beginResp = await api('admin/webauthn-login-begin', { email });
+        if (!beginResp.ok) {
+            err('login-err', beginResp.data?.error || 'Errore avvio passkey');
             return;
         }
-        localStorage.setItem(BIO_STORE_KEY, JSON.stringify({ id: credId, email: myEmail, v: 1, enrolled_at: new Date().toISOString() }));
-        renderBioSettings();
+        if (!beginResp.data?.enrolled) {
+            err('login-err', 'Nessuna passkey registrata per questa email. Accedi con password + TOTP e attiva Face ID dalle impostazioni.');
+            return;
+        }
+        const opts = beginResp.data.options;
+        // Convert base64url challenge/credIds into ArrayBuffers for navigator API
+        const publicKey = {
+            challenge: b64urlToU8(opts.challenge),
+            rpId: opts.rpId,
+            userVerification: opts.userVerification || 'required',
+            timeout: opts.timeout || 60000,
+            allowCredentials: (opts.allowCredentials || []).map(c => ({
+                id: b64urlToU8(c.id),
+                type: 'public-key',
+                transports: c.transports,
+            })),
+        };
+        const cred = await navigator.credentials.get({ publicKey });
+        const assertion = {
+            id: cred.id,
+            rawId: u8ToB64url(new Uint8Array(cred.rawId)),
+            type: cred.type,
+            response: {
+                clientDataJSON:    u8ToB64url(new Uint8Array(cred.response.clientDataJSON)),
+                authenticatorData: u8ToB64url(new Uint8Array(cred.response.authenticatorData)),
+                signature:         u8ToB64url(new Uint8Array(cred.response.signature)),
+                userHandle:        cred.response.userHandle ? u8ToB64url(new Uint8Array(cred.response.userHandle)) : null,
+            },
+            clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+        };
+        const completeResp = await api('admin/webauthn-login-complete', { email, assertion });
+        if (!completeResp.ok) {
+            err('login-err', completeResp.data?.error || 'Verifica passkey fallita');
+            return;
+        }
+        // Login OK
+        session = completeResp.data.session_token;
+        myEmail = completeResp.data.email;
+        sessionStorage.setItem('admin_session', session);
+        sessionStorage.setItem('admin_email', myEmail);
+        localStorage.setItem(BIO_HINT_KEY, myEmail);
+        showPanel();
+    } catch (e) {
+        if (e?.name === 'NotAllowedError') {
+            // User cancelled biometric — no error toast
+        } else {
+            err('login-err', 'Passkey non disponibile: ' + (e?.message || e?.name || 'errore'));
+        }
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+// Settings — enroll a new passkey on THIS device (must be authenticated)
+async function enrollPasskey() {
+    const elBox = document.getElementById('bio-settings');
+    if (!isBioSupported()) { elBox.innerHTML = '<p style="font-size:13px;color:var(--warn)">Questo browser non supporta Face ID/Passkey.</p>'; return; }
+    if (!session) { elBox.innerHTML = '<p style="font-size:13px;color:var(--error)">Sessione admin scaduta.</p>'; return; }
+
+    try {
+        const beginResp = await api('admin/webauthn-register-begin', { session_token: session });
+        if (!beginResp.ok) {
+            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore: ${beginResp.data?.error || 'impossibile avviare'}</p>`;
+            return;
+        }
+        const opts = beginResp.data.options;
+        const publicKey = {
+            challenge: b64urlToU8(opts.challenge),
+            rp: opts.rp,
+            user: {
+                id: b64urlToU8(opts.user.id),
+                name: opts.user.name,
+                displayName: opts.user.displayName,
+            },
+            pubKeyCredParams: opts.pubKeyCredParams,
+            timeout: opts.timeout || 60000,
+            attestation: opts.attestation || 'none',
+            excludeCredentials: (opts.excludeCredentials || []).map(c => ({
+                id: b64urlToU8(c.id),
+                type: 'public-key',
+                transports: c.transports,
+            })),
+            authenticatorSelection: opts.authenticatorSelection || { residentKey: 'preferred', userVerification: 'required', authenticatorAttachment: 'platform' },
+        };
+        const cred = await navigator.credentials.create({ publicKey });
+        const attestation = {
+            id: cred.id,
+            rawId: u8ToB64url(new Uint8Array(cred.rawId)),
+            type: cred.type,
+            response: {
+                clientDataJSON:    u8ToB64url(new Uint8Array(cred.response.clientDataJSON)),
+                attestationObject: u8ToB64url(new Uint8Array(cred.response.attestationObject)),
+                transports: cred.response.getTransports ? cred.response.getTransports() : [],
+            },
+            clientExtensionResults: cred.getClientExtensionResults ? cred.getClientExtensionResults() : {},
+        };
+        // Try to give the credential a human-readable device name from the UA
+        const ua = navigator.userAgent;
+        let deviceName = 'Browser';
+        if (/iPhone/i.test(ua)) deviceName = 'iPhone';
+        else if (/iPad/i.test(ua)) deviceName = 'iPad';
+        else if (/Mac/i.test(ua)) deviceName = 'Mac';
+        else if (/Android/i.test(ua)) deviceName = 'Android';
+        else if (/Windows/i.test(ua)) deviceName = 'Windows';
+
+        const completeResp = await api('admin/webauthn-register-complete', { session_token: session, attestation, device_name: deviceName });
+        if (!completeResp.ok) {
+            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore registrazione: ${completeResp.data?.error || 'verifica fallita'}</p>`;
+            return;
+        }
+        localStorage.setItem(BIO_HINT_KEY, myEmail);
+        renderBioSettings('✓ Passkey aggiunta');
     } catch (e) {
         if (e?.name === 'NotAllowedError') {
             renderBioSettings('Operazione annullata o tempo scaduto.');
         } else if (e?.name === 'InvalidStateError') {
-            renderBioSettings('Una credenziale è già registrata su questo dispositivo per questo dominio.');
+            renderBioSettings('Una passkey è già registrata su questo dispositivo per questo dominio.');
         } else {
-            renderBioSettings('Face ID non disponibile su questo dispositivo: ' + (e?.message || e?.name || 'errore'));
+            renderBioSettings('Errore: ' + (e?.message || e?.name || 'sconosciuto'));
         }
     }
 }
 
-async function disableFaceId() {
-    if (!confirm('Disattivare Face ID/Touch ID per questo admin? Sarà rimosso anche dal server.')) return;
-    const { ok, data } = await api('admin/bio-disable', { session_token: session });
+async function deletePasskey(id, label) {
+    if (!confirm(`Rimuovere la passkey "${label}"? Da quel dispositivo dovrai accedere con password + TOTP.`)) return;
+    const { ok, data } = await api('admin/webauthn-delete', { session_token: session, id });
     if (!ok) { alert('Errore: ' + (data?.error || 'impossibile rimuovere')); return; }
-    clearBioStore();
-    renderBioSettings();
-}
-
-// Login-time Face ID attempt. Returns true on success (calls showPanel).
-async function tentaFaceId() {
-    if (!isBioSupported()) { err('totp-err', 'Face ID non supportato su questo dispositivo'); return; }
-    const stored = readBioStore();
-    if (!stored || !stored.id) { err('totp-err', 'Nessuna credenziale Face ID registrata'); return; }
-    if (!pendingLogin) { err('totp-err', 'Sessione di login scaduta, reinserisci email e password'); return; }
-    const btn = document.getElementById('bio-login-btn');
-    const orig = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span style="font-size:16px">⏳</span> Attendere…';
-    try {
-        // Prompt platform biometric (Face ID / Touch ID / Windows Hello)
-        await navigator.credentials.get({
-            publicKey: {
-                challenge: crypto.getRandomValues(new Uint8Array(32)),
-                rpId: location.hostname,
-                userVerification: 'required',
-                timeout: 60000,
-            },
-        });
-        // Biometric verified locally → submit cred_id to server to mint session
-        const { ok, data } = await api('admin/bio-verify', {
-            login_token: pendingLogin,
-            cred_id: stored.id,
-        });
-        btn.disabled = false; btn.innerHTML = orig;
-        if (!ok) {
-            err('totp-err', data?.error || 'Face ID non riuscito — inserisci il codice 2FA');
-            if (data?.error?.includes('non configurato')) {
-                clearBioStore();
-                document.getElementById('bio-login-row').style.display = 'none';
-            }
-            return;
-        }
-        session = data.session_token;
-        myEmail = data.email;
-        sessionStorage.setItem('admin_session', session);
-        sessionStorage.setItem('admin_email', myEmail);
-        showPanel();
-    } catch (e) {
-        btn.disabled = false; btn.innerHTML = orig;
-        if (e?.name === 'NotAllowedError') {
-            // User dismissed biometric prompt — no error message needed
-        } else {
-            err('totp-err', 'Face ID non disponibile: ' + (e?.message || e?.name || 'errore'));
-        }
-    }
+    renderBioSettings('✓ Passkey rimossa');
 }
 
 async function renderBioSettings(extraMsg) {
     const el = document.getElementById('bio-settings');
     if (!isBioSupported()) {
-        el.innerHTML = '<p style="font-size:13px;color:var(--muted)">⚠ Questo browser non supporta Face ID/Touch ID. Funzionalità disponibile su Safari iOS 14+, Chrome 67+, Firefox 60+.</p>';
+        el.innerHTML = '<p style="font-size:13px;color:var(--muted)">⚠ Questo browser non supporta Face ID/Passkey. Funzionalità disponibile su Safari iOS 14+, Chrome 67+, Firefox 60+.</p>';
         return;
     }
-    const { ok, data } = await api('admin/bio-status', { session_token: session });
+    const { ok, data } = await api('admin/webauthn-list', { session_token: session });
     if (!ok) {
-        el.innerHTML = '<p style="font-size:13px;color:var(--error)">Errore caricamento stato Face ID</p>';
+        el.innerHTML = '<p style="font-size:13px;color:var(--error)">Errore caricamento passkey</p>';
         return;
     }
-    const localCred = readBioStore();
-    const localMatchesEmail = !!(localCred && localCred.email && localCred.email.toLowerCase() === (myEmail||'').toLowerCase());
-    const serverEnrolled = !!data.enrolled;
-
+    const creds = data.credentials || [];
     let html = '';
-    if (extraMsg) html += `<p style="font-size:12px;color:var(--warn);margin-bottom:8px">${extraMsg}</p>`;
+    if (extraMsg) html += `<p style="font-size:12px;color:var(--success);margin-bottom:10px">${extraMsg}</p>`;
 
-    if (serverEnrolled && localMatchesEmail) {
-        // Active on this device
-        const dt = data.enrolled_at ? new Date(data.enrolled_at).toLocaleDateString('it-CH') : '';
-        html += `
-          <p style="font-size:13px;color:var(--success);margin-bottom:10px">✓ Face ID attivo${dt?' (dal '+dt+')':''} su questo dispositivo</p>
-          <button class="danger small" onclick="disableFaceId()" style="width:auto">Disattiva su questo dispositivo</button>
-        `;
-    } else if (serverEnrolled && !localMatchesEmail) {
-        // Server has it but this device's localStorage doesn't — different device or cleared
-        html += `
-          <p style="font-size:13px;color:var(--warn);margin-bottom:10px">⚠ Face ID risulta attivo lato server ma non su questo browser. Riconfigura per usarlo qui, o disattivalo completamente.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="small" onclick="enrollFaceId()" style="width:auto">Configura qui</button>
-            <button class="danger small" onclick="disableFaceId()" style="width:auto">Disattiva tutto</button>
-          </div>
-        `;
+    if (creds.length === 0) {
+        html += `<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Nessuna passkey registrata. Aggiungi questo dispositivo per accedere senza password.</p>`;
     } else {
-        // Not enrolled
-        html += `
-          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Non attivato. Una volta abilitato potrai accedere con Face ID/Touch ID al posto del codice 2FA su questo dispositivo.</p>
-          <button class="small" onclick="enrollFaceId()" style="width:auto;background:var(--accent)">🔒 Attiva Face ID / Touch ID</button>
-        `;
+        html += `<p style="font-size:13px;color:var(--muted);margin-bottom:10px">${creds.length} passkey attiv${creds.length===1?'a':'e'}:</p>`;
+        html += creds.map(c => {
+            const created = c.created_at ? new Date(c.created_at).toLocaleDateString('it-CH') : '';
+            const lastUsed = c.last_used_at ? new Date(c.last_used_at).toLocaleDateString('it-CH') : 'mai usata';
+            return `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:6px;margin-bottom:6px;flex-wrap:wrap">
+                <div style="flex:1;min-width:140px">
+                    <div style="font-size:13px;font-weight:600">${(c.device_name || 'Dispositivo').replace(/</g, '&lt;')}</div>
+                    <div style="font-size:11px;color:var(--muted)">Aggiunta ${created} · Ultimo accesso: ${lastUsed}</div>
+                </div>
+                <button class="danger small" onclick='deletePasskey(${JSON.stringify(c.id)}, ${JSON.stringify(c.device_name || "Dispositivo")})' style="width:auto">Rimuovi</button>
+            </div>`;
+        }).join('');
     }
+    html += `<button class="small" onclick="enrollPasskey()" style="width:auto;background:var(--accent);margin-top:8px">🔒 Aggiungi questo dispositivo</button>`;
     el.innerHTML = html;
 }
 
@@ -1394,10 +1434,11 @@ function exportAnalyticsCSV() {
         // Validate session is still alive; otherwise back to login.
         api('admin/me', { session_token: session }).then(({ok}) => {
             if (ok) showPanel();
-            else { resetSession(); showLogin(); }
+            else { resetSession(); showLogin(); maybeShowPasskeyRow(); }
         });
     } else {
         showLogin();
+        maybeShowPasskeyRow();
     }
 })();
 </script>
