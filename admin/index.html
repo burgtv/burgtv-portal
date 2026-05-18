@@ -110,6 +110,30 @@
         .funnel-step .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:600;white-space:nowrap}
         .pill{display:inline-block;padding:2px 10px;background:var(--bg3);border-radius:999px;font-size:11px;color:var(--muted)}
         .period-select{padding:6px 10px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:13px;width:auto;margin:0}
+        /* === Sistema tab — health cards === */
+        .sys-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+        .sys-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;border-left:4px solid var(--muted);transition:.15s}
+        .sys-card.green{border-left-color:var(--success);background:rgba(16,185,129,.04)}
+        .sys-card.yellow{border-left-color:var(--warn);background:rgba(251,191,36,.05)}
+        .sys-card.red{border-left-color:var(--error);background:rgba(239,68,68,.05)}
+        .sys-card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+        .sys-card .lbl .dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+        .sys-card.green .lbl .dot{background:var(--success);box-shadow:0 0 8px rgba(16,185,129,.5)}
+        .sys-card.yellow .lbl .dot{background:var(--warn);box-shadow:0 0 8px rgba(251,191,36,.5)}
+        .sys-card.red .lbl .dot{background:var(--error);box-shadow:0 0 8px rgba(239,68,68,.5)}
+        .sys-card .val{font-size:24px;font-weight:700;margin-bottom:6px}
+        .sys-card .sub{font-size:12px;color:var(--muted)}
+        .sys-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:8px}
+        .sys-bar > div{height:100%;background:var(--success);transition:width .3s}
+        .sys-card.yellow .sys-bar > div{background:var(--warn)}
+        .sys-card.red .sys-bar > div{background:var(--error)}
+        .sys-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+        .sys-section > h3{font-size:16px;color:var(--text);text-transform:none;letter-spacing:0;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+        .sys-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+        .sys-toolbar .grow{flex:1}
+        .sys-toolbar .indicator{font-size:11px;color:var(--muted)}
+        .sys-toolbar .indicator .live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);margin-right:6px;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
         .analytics-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
         .analytics-toolbar .grow{flex:1}
         .analytics-toolbar button,.analytics-toolbar select{min-height:38px}
@@ -226,6 +250,7 @@
             <a id="tab-users" onclick="showTab('users')">Utenti</a>
             <a id="tab-activate" onclick="showTab('activate')">Attivazione</a>
             <a id="tab-analytics" onclick="showTab('analytics')">📊 Analytics</a>
+            <a id="tab-system" onclick="showTab('system')">🖥 Sistema</a>
             <a id="tab-admins" onclick="showTab('admins')">Admin</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
         </div>
@@ -329,6 +354,32 @@
                     <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>IP</th></tr></thead>
                     <tbody id="log-tbody"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Sistema -->
+        <div id="panel-system" style="display:none">
+            <div class="sys-toolbar">
+                <h2 style="margin:0" class="grow">🖥 Sistema</h2>
+                <span class="indicator"><span class="live-dot"></span><span id="sys-last-update">caricamento…</span></span>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="loadSystemStats()" title="Aggiorna ora">↻ Aggiorna</button>
+            </div>
+            <div class="err" id="sys-err"></div>
+            <div class="sys-section">
+                <h3>🖥 VPS (Netcup)</h3>
+                <div class="sys-grid" id="sys-vps-grid">
+                    <div class="sys-card"><div class="lbl">Caricamento…<span class="dot"></span></div><div class="val">…</div></div>
+                </div>
+            </div>
+            <div class="sys-section">
+                <h3>🗄 PostgreSQL</h3>
+                <div class="sys-grid" id="sys-db-grid"></div>
+                <h3 style="margin-top:14px;font-size:13px">Tabelle più grandi</h3>
+                <div id="sys-db-tables"></div>
+            </div>
+            <div class="sys-section">
+                <h3>☁ Cloudflare (ultimi 24h)</h3>
+                <div class="sys-grid" id="sys-cf-grid"></div>
             </div>
         </div>
 
@@ -516,22 +567,29 @@ function showPanel(){
     // Restore last-viewed tab so a page reload doesn't bounce the admin back
     // to Dashboard. sessionStorage clears on logout, so a fresh login still
     // starts at Dashboard naturally.
-    const validTabs = ['dashboard','users','activate','admins','log','analytics'];
+    const validTabs = ['dashboard','users','activate','admins','log','analytics','system'];
     const saved = sessionStorage.getItem('admin_tab');
     showTab(validTabs.includes(saved) ? saved : 'dashboard');
 }
 
+let sysRefreshTimer = null;
 function showTab(name) {
-    ['dashboard','users','activate','admins','log','analytics'].forEach(t=>{
+    ['dashboard','users','activate','admins','log','analytics','system'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
     sessionStorage.setItem('admin_tab', name);
+    // Stop the system auto-refresh whenever we leave that tab
+    if (sysRefreshTimer && name !== 'system') { clearInterval(sysRefreshTimer); sysRefreshTimer = null; }
     if (name==='dashboard') loadStats();
     if (name==='users') loadUsers('');
     if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
     if (name==='analytics') loadAnalytics();
+    if (name==='system') {
+        loadSystemStats();
+        if (!sysRefreshTimer) sysRefreshTimer = setInterval(loadSystemStats, 15000);
+    }
 }
 
 // ===== auth =====
@@ -1459,6 +1517,132 @@ function exportAnalyticsCSV() {
     a.href = url; a.download = `burgtv-analytics-${anCache.days}gg-${new Date().toISOString().slice(0,10)}.csv`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ===== Sistema (live VPS / DB / Cloudflare) =====
+function fmtBytes(n) {
+    n = Number(n) || 0;
+    if (n < 1024) return n + ' B';
+    if (n < 1024**2) return (n/1024).toFixed(1) + ' KB';
+    if (n < 1024**3) return (n/1024/1024).toFixed(1) + ' MB';
+    return (n/1024/1024/1024).toFixed(2) + ' GB';
+}
+function fmtUptime(sec) {
+    sec = Math.floor(Number(sec) || 0);
+    const d = Math.floor(sec / 86400);
+    const h = Math.floor((sec % 86400) / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    return `${d}g ${h}h ${m}m`;
+}
+function sysCard({label, value, sub, pct, status}) {
+    const bar = (pct !== undefined && pct !== null) ? `<div class="sys-bar"><div style="width:${Math.min(100, Math.max(0, pct))}%"></div></div>` : '';
+    return `<div class="sys-card ${status||''}">
+        <div class="lbl"><span>${label}</span><span class="dot"></span></div>
+        <div class="val">${value}</div>
+        <div class="sub">${sub||''}</div>
+        ${bar}
+    </div>`;
+}
+
+async function loadSystemStats() {
+    const errEl = document.getElementById('sys-err');
+    const { ok, data } = await api('admin/system-stats', { session_token: session });
+    if (!ok) {
+        if (errEl) { errEl.textContent = data?.error || 'Errore caricamento system stats'; errEl.classList.add('show'); }
+        return;
+    }
+    if (errEl) errEl.classList.remove('show');
+    document.getElementById('sys-last-update').textContent = 'aggiornato ' + new Date(data.fetched_at).toLocaleTimeString('it-CH');
+
+    // VPS cards
+    const ram = data.vps?.ram;
+    const load = data.vps?.load;
+    const disk = data.vps?.disk;
+    const vpsCards = [];
+    if (ram) vpsCards.push(sysCard({
+        label: '💾 RAM',
+        value: `${fmtBytes(ram.used_bytes)} / ${fmtBytes(ram.total_bytes)}`,
+        sub: `${ram.pct}% in uso`,
+        pct: ram.pct, status: ram.status,
+    }));
+    if (load) vpsCards.push(sysCard({
+        label: '⚡ Load Average',
+        value: `${load.load_1m.toFixed(2)}`,
+        sub: `1m / 5m: ${load.load_5m.toFixed(2)} / 15m: ${load.load_15m.toFixed(2)}`,
+        status: load.status,
+    }));
+    if (disk) vpsCards.push(sysCard({
+        label: '💿 Disco',
+        value: `${fmtBytes(disk.used_bytes)} / ${fmtBytes(disk.total_bytes)}`,
+        sub: `${disk.pct}% — liberi ${fmtBytes(disk.avail_bytes)}`,
+        pct: disk.pct, status: disk.status,
+    }));
+    vpsCards.push(sysCard({
+        label: '⏱ Uptime VPS',
+        value: fmtUptime(data.vps?.uptime_seconds || 0),
+        sub: '',
+        status: 'green',
+    }));
+    document.getElementById('sys-vps-grid').innerHTML = vpsCards.join('');
+
+    // DB cards
+    const db = data.db;
+    const dbCards = [];
+    dbCards.push(sysCard({
+        label: '🔌 Connessioni attive',
+        value: `${db.connections.active} / ${db.connections.max}`,
+        sub: `${db.connections.pct}% del limite`,
+        pct: db.connections.pct, status: db.connections.status,
+    }));
+    dbCards.push(sysCard({
+        label: '🗃 Dimensione DB',
+        value: fmtBytes(db.size_bytes),
+        sub: 'database burgtv',
+        status: 'green',
+    }));
+    document.getElementById('sys-db-grid').innerHTML = dbCards.join('');
+
+    const tables = (db.top_tables || []);
+    document.getElementById('sys-db-tables').innerHTML = tables.length === 0
+        ? '<p style="font-size:13px;color:var(--muted)">Nessun dato</p>'
+        : tables.map(t => `<div style="display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg3);border-radius:6px;margin-bottom:4px;font-size:13px">
+            <span style="font-family:monospace">${t.name}</span>
+            <span style="color:var(--muted)">${fmtBytes(t.bytes)}</span>
+          </div>`).join('');
+
+    // Cloudflare cards
+    const cf = data.cloudflare;
+    const cfGrid = document.getElementById('sys-cf-grid');
+    if (!cf) {
+        cfGrid.innerHTML = '<p style="font-size:13px;color:var(--muted)">Dati Cloudflare non disponibili (token o zone non configurati).</p>';
+    } else {
+        const cfCards = [];
+        cfCards.push(sysCard({
+            label: '📥 Richieste 24h',
+            value: cf.requests_24h.toLocaleString('it-CH'),
+            sub: `cache hit ${cf.cache_hit_pct}%`,
+            status: 'green',
+        }));
+        cfCards.push(sysCard({
+            label: '📦 Banda servita 24h',
+            value: fmtBytes(cf.bandwidth_24h_bytes),
+            sub: '',
+            status: 'green',
+        }));
+        cfCards.push(sysCard({
+            label: '👥 Visitatori unici 24h',
+            value: cf.unique_visitors_24h.toLocaleString('it-CH'),
+            sub: '',
+            status: 'green',
+        }));
+        cfCards.push(sysCard({
+            label: '🛡 Minacce bloccate 24h',
+            value: cf.threats_blocked_24h.toLocaleString('it-CH'),
+            sub: 'da Cloudflare WAF',
+            status: cf.threats_blocked_24h > 1000 ? 'yellow' : 'green',
+        }));
+        cfGrid.innerHTML = cfCards.join('');
+    }
 }
 
 // ===== boot =====
