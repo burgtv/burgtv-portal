@@ -653,7 +653,7 @@ function showPanel(){
 
 let sysRefreshTimer = null;
 function showTab(name) {
-    ['dashboard','users','activate','admins','log','analytics','system'].forEach(t=>{
+    ['dashboard','users','activate','admins','log','analytics','security','system'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
