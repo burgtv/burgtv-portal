@@ -303,12 +303,16 @@
         <!-- Activate -->
         <div id="panel-activate" style="display:none">
             <h2 style="margin-bottom:16px">Attivazione manuale</h2>
-            <div class="card" style="max-width:480px">
-                <p style="margin-bottom:14px">Inserisci il codice TV mostrato dall'app del cliente + email + piano. Lo script crea licenza, device, user (se manca) e ti dà la password temporanea da inviare al cliente.</p>
+            <div class="card" style="max-width:520px">
+                <p style="margin-bottom:14px">Crea una licenza per il cliente. <strong>Due modalità:</strong></p>
+                <ul style="margin:0 0 14px 18px;font-size:13px;color:var(--muted);line-height:1.6">
+                    <li><strong>Con TV-XXXX</strong>: il cliente è già sulla schermata di attivazione e ti detta il codice → licenza legata al suo device subito.</li>
+                    <li><strong>Senza TV-XXXX</strong>: lascia vuoto. Crei solo email+password. Il cliente farà login dall'app e il device si aggancerà automaticamente al primo accesso.</li>
+                </ul>
                 <div class="err" id="act-err"></div>
                 <div class="ok" id="act-ok"></div>
                 <form onsubmit="return doActivate(event)">
-                    <input id="act-code" placeholder="TV-XXXX" required style="text-transform:uppercase">
+                    <input id="act-code" placeholder="TV-XXXX (opzionale)" style="text-transform:uppercase">
                     <input id="act-email" type="email" placeholder="email@cliente.com" required>
                     <select id="act-plan">
                         <option value="permanent">Permanente (CHF 25.90 una tantum)</option>
@@ -852,6 +856,10 @@ async function doRename() {
 }
 
 // ===== activate =====
+// v1.1.33 — Dual mode:
+//   - Con TV-XXXX → endpoint /admin/activate (legacy, consume activation_sessions)
+//   - Senza TV-XXXX → endpoint /admin/activate-no-code (crea solo user+license,
+//     device_id NULL: si riempie automaticamente al primo login email+pass dall'app)
 async function doActivate(ev, force) {
     if (ev && ev.preventDefault) ev.preventDefault();
     clearErr('act-err'); document.getElementById('act-ok').classList.remove('show');
@@ -860,26 +868,34 @@ async function doActivate(ev, force) {
     const plan = document.getElementById('act-plan').value;
     const reset = document.getElementById('act-reset').checked;
     const customPwd = document.getElementById('act-password').value;
+    if (!email) { err('act-err','Email obbligatoria'); return false; }
     if (customPwd && customPwd.length < 6) { err('act-err','Password min 6 caratteri'); return false; }
     const btn = document.getElementById('act-btn'); btn.disabled = true; btn.textContent = '…';
-    const body = { session_token: session, code, email, plan, reset_password: reset };
+
+    const hasCode = code && code.length > 0;
+    const endpoint = hasCode ? 'admin/activate' : 'admin/activate-no-code';
+    const body = { session_token: session, email, plan, reset_password: reset };
+    if (hasCode) body.code = code;
     if (customPwd) body.password = customPwd;
     if (force) body.confirm = true;
-    const { ok, data } = await api('admin/activate', body);
+
+    const { ok, data } = await api(endpoint, body);
     btn.disabled = false; btn.textContent = 'Attiva';
     if (!ok) { err('act-err', data.error || 'Errore'); return false; }
-    // Backend ritorna require_confirm: true quando l'utente è già a 5/5 device
-    // — chiediamo conferma esplicita prima di forzare l'attivazione del 6°.
     if (data.require_confirm) {
         const okOverride = confirm(data.message + '\n\nVuoi forzare comunque?');
         if (!okOverride) return false;
         return doActivate(null, true);
     }
     const o = document.getElementById('act-ok');
-    o.innerHTML = `✓ Attivato!<br>Email: <strong>${email}</strong>${data.password?`<br>Password temporanea: <strong style="font-family:monospace">${data.password}</strong>`:''}<br><span style="font-size:12px">L'app TV si attiva da sola entro pochi secondi (polling).</span>`;
+    const hint = hasCode
+        ? `<br><span style="font-size:12px">L'app TV si attiva da sola entro pochi secondi (polling).</span>`
+        : `<br><span style="font-size:12px">Comunica email+password al cliente. Aprirà l'app, farà login dalle Impostazioni Premium e il suo device si aggancerà da solo.</span>`;
+    o.innerHTML = `✓ Attivato!<br>Email: <strong>${email}</strong>${data.password?`<br>Password${customPwd?'':' temporanea'}: <strong style="font-family:monospace">${data.password}</strong>`:''}${hint}`;
     o.classList.add('show');
     document.getElementById('act-code').value = '';
     document.getElementById('act-email').value = '';
+    document.getElementById('act-password').value = '';
     return false;
 }
 
