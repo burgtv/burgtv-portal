@@ -250,6 +250,7 @@
             <a id="tab-users" onclick="showTab('users')">Utenti</a>
             <a id="tab-activate" onclick="showTab('activate')">Attivazione</a>
             <a id="tab-analytics" onclick="showTab('analytics')">📊 Analytics</a>
+            <a id="tab-security" onclick="showTab('security')">🛡 Sicurezza</a>
             <a id="tab-system" onclick="showTab('system')">🖥 Sistema</a>
             <a id="tab-admins" onclick="showTab('admins')">Admin</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
@@ -359,6 +360,80 @@
                     <tbody id="log-tbody"></tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- Sicurezza (v1.2.0 Security Panel) -->
+        <div id="panel-security" style="display:none">
+            <div class="analytics-toolbar">
+                <h2 style="margin:0" class="grow">🛡 Sicurezza</h2>
+                <select id="sec-period" class="period-select" onchange="loadSecurity()">
+                    <option value="1">Ultime 24h</option>
+                    <option value="7" selected>Ultimi 7 giorni</option>
+                    <option value="30">Ultimi 30 giorni</option>
+                    <option value="90">Ultimi 90 giorni</option>
+                </select>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="loadSecurity()" title="Aggiorna">↻</button>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="openBlacklist()" title="Vedi device/IP bannati">🚫 Blacklist</button>
+            </div>
+            <div id="sec-status" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
+            <div class="err" id="sec-err"></div>
+
+            <!-- Cards top-level -->
+            <div class="cards-row" id="sec-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px">
+                <div class="card"><div style="font-size:11px;color:var(--muted)">Eventi 24h</div><div id="sec-c-24h" style="font-size:24px;font-weight:600">—</div></div>
+                <div class="card"><div style="font-size:11px;color:var(--muted)">Eventi 7gg</div><div id="sec-c-7d" style="font-size:24px;font-weight:600">—</div></div>
+                <div class="card"><div style="font-size:11px;color:var(--muted)">Critical pending</div><div id="sec-c-crit" style="font-size:24px;font-weight:600;color:#ef4444">—</div></div>
+                <div class="card"><div style="font-size:11px;color:var(--muted)">Device bannati</div><div id="sec-c-dban" style="font-size:24px;font-weight:600">—</div></div>
+                <div class="card"><div style="font-size:11px;color:var(--muted)">IP bannati</div><div id="sec-c-ipban" style="font-size:24px;font-weight:600">—</div></div>
+            </div>
+
+            <!-- Filtri tabella -->
+            <div class="filter-bar" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+                <input id="sec-q" placeholder="Cerca device_id / email / IP" style="flex:1;min-width:220px;margin:0">
+                <select id="sec-fltype" onchange="loadSecurityEvents()" style="margin:0;width:auto">
+                    <option value="">Tutti i tipi</option>
+                    <option value="brute_login">brute_login</option>
+                    <option value="license_hammer">license_hammer</option>
+                    <option value="cloned_device">cloned_device</option>
+                    <option value="geo_anomaly">geo_anomaly</option>
+                    <option value="activate_burst">activate_burst</option>
+                    <option value="device_overlimit">device_overlimit</option>
+                    <option value="root">root</option>
+                    <option value="emulator">emulator</option>
+                    <option value="frida">frida</option>
+                    <option value="xposed">xposed</option>
+                    <option value="tampered_signature">tampered_signature</option>
+                </select>
+                <select id="sec-flsev" onchange="loadSecurityEvents()" style="margin:0;width:auto">
+                    <option value="">Tutte severity</option>
+                    <option value="critical">critical</option>
+                    <option value="high">high</option>
+                    <option value="medium">medium</option>
+                    <option value="low">low</option>
+                </select>
+                <label style="display:flex;gap:6px;align-items:center;font-size:13px;margin:0"><input type="checkbox" id="sec-unres" onchange="loadSecurityEvents()" style="width:auto;margin:0"> Solo non risolti</label>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="loadSecurityEvents()">Filtra</button>
+            </div>
+
+            <!-- Tabella eventi -->
+            <div class="data-table-wrap" style="overflow-x:auto">
+                <table class="data-table" style="width:100%;font-size:13px">
+                    <thead>
+                        <tr>
+                            <th>Quando</th>
+                            <th>Tipo</th>
+                            <th>Severity</th>
+                            <th>Device</th>
+                            <th>Email</th>
+                            <th>IP</th>
+                            <th>Risolto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="sec-tbody"><tr><td colspan="8" style="text-align:center;color:var(--muted)">Carica dati…</td></tr></tbody>
+                </table>
+            </div>
+            <div id="sec-pagination" style="display:flex;gap:8px;justify-content:center;margin-top:12px;font-size:13px"></div>
         </div>
 
         <!-- Sistema -->
@@ -571,7 +646,7 @@ function showPanel(){
     // Restore last-viewed tab so a page reload doesn't bounce the admin back
     // to Dashboard. sessionStorage clears on logout, so a fresh login still
     // starts at Dashboard naturally.
-    const validTabs = ['dashboard','users','activate','admins','log','analytics','system'];
+    const validTabs = ['dashboard','users','activate','admins','log','analytics','security','system'];
     const saved = sessionStorage.getItem('admin_tab');
     showTab(validTabs.includes(saved) ? saved : 'dashboard');
 }
@@ -590,6 +665,7 @@ function showTab(name) {
     if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
     if (name==='analytics') loadAnalytics();
+    if (name==='security') loadSecurity();
     if (name==='system') {
         loadSystemStats();
         if (!sysRefreshTimer) sysRefreshTimer = setInterval(loadSystemStats, 15000);
@@ -1674,6 +1750,187 @@ async function loadSystemStats() {
         maybeShowPasskeyRow();
     }
 })();
+
+// ===== v1.2.0 Security Panel =====
+let secOffset = 0;
+const SEC_PAGE = 50;
+const SEV_COLOR = { critical:'#dc2626', high:'#ef4444', medium:'#f59e0b', low:'#6b7280' };
+
+function getSecPeriod() { return parseInt(document.getElementById('sec-period').value, 10) || 7; }
+
+async function loadSecurity() {
+    clearErr('sec-err');
+    const days = getSecPeriod();
+    document.getElementById('sec-status').textContent = 'Caricamento…';
+    const { ok, data } = await api('admin/security-overview', { session_token: session, days });
+    if (!ok) { err('sec-err', data?.error || 'Errore caricamento overview'); return; }
+    const c = data.cards || {};
+    document.getElementById('sec-c-24h').textContent = c.events_24h ?? 0;
+    document.getElementById('sec-c-7d').textContent  = c.events_7d ?? 0;
+    document.getElementById('sec-c-crit').textContent = c.critical_pending ?? 0;
+    document.getElementById('sec-c-dban').textContent = c.devices_banned ?? 0;
+    document.getElementById('sec-c-ipban').textContent = c.ips_banned ?? 0;
+    document.getElementById('sec-status').textContent = `✓ Aggregato ${days} giorni`;
+    secOffset = 0;
+    await loadSecurityEvents();
+}
+
+async function loadSecurityEvents() {
+    clearErr('sec-err');
+    const body = {
+        session_token: session,
+        days: getSecPeriod(),
+        event_type: document.getElementById('sec-fltype').value || null,
+        severity: document.getElementById('sec-flsev').value || null,
+        only_unresolved: document.getElementById('sec-unres').checked,
+        q: document.getElementById('sec-q').value.trim() || null,
+        offset: secOffset,
+        limit: SEC_PAGE,
+    };
+    const { ok, data } = await api('admin/security-events-list', body);
+    if (!ok) { err('sec-err', data?.error || 'Errore caricamento eventi'); return; }
+    const tb = document.getElementById('sec-tbody');
+    if (!data.rows || data.rows.length === 0) {
+        tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">Nessun evento per i filtri scelti</td></tr>';
+    } else {
+        tb.innerHTML = data.rows.map(r => `<tr>
+            <td style="font-size:12px;color:var(--muted)">${fmtDateTime(r.created_at)}</td>
+            <td style="font-family:monospace">${escapeHtml(r.event_type)}</td>
+            <td><span class="sev-badge" style="background:${SEV_COLOR[r.severity]||'#666'};color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">${r.severity}</span></td>
+            <td style="font-family:monospace;font-size:11px">${truncate(r.device_id, 18)}</td>
+            <td style="font-size:12px">${escapeHtml(r.email || '—')}</td>
+            <td style="font-family:monospace;font-size:11px">${escapeHtml(r.ip || '—')}</td>
+            <td>${r.resolved ? '✓' : '⏳'}</td>
+            <td><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:12px" onclick="openSecurityEvent(${r.id})">Dettagli</button></td>
+        </tr>`).join('');
+    }
+    const total = data.total ?? 0;
+    const from = total === 0 ? 0 : secOffset + 1;
+    const to = Math.min(secOffset + SEC_PAGE, total);
+    const pag = document.getElementById('sec-pagination');
+    pag.innerHTML = `<span style="color:var(--muted)">${from}–${to} di ${total}</span>
+        ${secOffset > 0 ? `<button type="button" class="secondary" style="width:auto;margin:0;padding:6px 12px" onclick="secPagePrev()">‹ Precedente</button>` : ''}
+        ${to < total ? `<button type="button" class="secondary" style="width:auto;margin:0;padding:6px 12px" onclick="secPageNext()">Successivo ›</button>` : ''}`;
+}
+
+function secPagePrev() { secOffset = Math.max(0, secOffset - SEC_PAGE); loadSecurityEvents(); }
+function secPageNext() { secOffset += SEC_PAGE; loadSecurityEvents(); }
+
+async function openSecurityEvent(id) {
+    const { ok, data } = await api('admin/security-event-detail', { session_token: session, id });
+    if (!ok) { alert(data?.error || 'Errore'); return; }
+    const e = data.event;
+    const details = JSON.stringify(e.details, null, 2);
+    const html = `
+        <h3 style="margin-top:0">🛡 Evento #${e.id}</h3>
+        <div style="font-size:13px;line-height:1.7">
+            <div><b>Tipo</b>: <code>${escapeHtml(e.event_type)}</code></div>
+            <div><b>Severity</b>: <span class="sev-badge" style="background:${SEV_COLOR[e.severity]||'#666'};color:#fff;padding:2px 8px;border-radius:4px;font-weight:600">${e.severity}</span></div>
+            <div><b>Quando</b>: ${fmtDateTime(e.created_at)}</div>
+            ${e.device_id ? `<div><b>Device</b>: <code>${escapeHtml(e.device_id)}</code></div>` : ''}
+            ${e.email ? `<div><b>Email</b>: ${escapeHtml(e.email)}</div>` : ''}
+            ${e.ip ? `<div><b>IP</b>: <code>${escapeHtml(e.ip)}</code> ${e.country?`(${e.country})`:''}</div>` : ''}
+            ${e.user_agent ? `<div><b>User-Agent</b>: <code style="font-size:11px">${escapeHtml(e.user_agent)}</code></div>` : ''}
+            ${e.resolved ? `<div style="margin-top:8px;color:#10b981"><b>Risolto</b> ${fmtDateTime(e.resolved_at)} da ${escapeHtml(e.resolved_by||'')}${e.notes?` — "${escapeHtml(e.notes)}"`:''}</div>` : ''}
+            <div style="margin-top:12px"><b>Dettagli JSON</b>:<pre style="background:var(--bg3);padding:10px;border-radius:6px;font-size:11px;max-height:200px;overflow:auto">${escapeHtml(details)}</pre></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+            ${e.device_id && !e.resolved ? `<button type="button" class="primary" style="width:auto;margin:0;background:#dc2626" onclick="banDeviceFromEvent('${escapeHtml(e.device_id).replace(/'/g,"\\'")}', ${e.id})">🚫 Ban device</button>` : ''}
+            ${e.ip && !e.resolved ? `<button type="button" class="primary" style="width:auto;margin:0;background:#dc2626" onclick="banIpFromEvent('${escapeHtml(e.ip)}', ${e.id})">🚫 Ban IP (24h)</button>` : ''}
+            ${!e.resolved ? `<button type="button" class="secondary" style="width:auto;margin:0" onclick="resolveSecurityEvent(${e.id})">✓ Marca risolto</button>` : ''}
+            <button type="button" class="secondary" style="width:auto;margin:0;margin-left:auto" onclick="closeModal()">Chiudi</button>
+        </div>`;
+    openModal(html);
+}
+
+async function banDeviceFromEvent(device_id, eventId) {
+    const reason = prompt('Motivo del ban (opzionale):', 'Banned via Security Panel') ?? null;
+    if (reason === null) return;
+    const { ok, data } = await api('admin/security-action-ban-device', { session_token: session, device_id, reason });
+    if (!ok) { alert(data?.error || 'Errore'); return; }
+    await api('admin/security-event-resolve', { session_token: session, id: eventId, notes: `Banned device: ${reason}` });
+    alert('Device bannato + licenza rimossa.');
+    closeModal();
+    loadSecurity();
+}
+
+async function banIpFromEvent(ip, eventId) {
+    const hours = parseInt(prompt('Durata ban in ore (0 = permanente):', '24'), 10);
+    if (isNaN(hours)) return;
+    const { ok, data } = await api('admin/security-action-ban-ip', { session_token: session, ip, expires_hours: hours });
+    if (!ok) { alert(data?.error || 'Errore'); return; }
+    await api('admin/security-event-resolve', { session_token: session, id: eventId, notes: `Banned IP for ${hours}h` });
+    alert('IP bannato.');
+    closeModal();
+    loadSecurity();
+}
+
+async function resolveSecurityEvent(id) {
+    const notes = prompt('Note (opzionale):', '') ?? null;
+    const { ok, data } = await api('admin/security-event-resolve', { session_token: session, id, notes });
+    if (!ok) { alert(data?.error || 'Errore'); return; }
+    closeModal();
+    loadSecurity();
+}
+
+async function openBlacklist() {
+    const { ok, data } = await api('admin/security-blacklist-list', { session_token: session });
+    if (!ok) { alert(data?.error || 'Errore'); return; }
+    const devicesHtml = data.devices.length === 0
+        ? '<p style="color:var(--muted);font-size:13px">Nessun device bannato.</p>'
+        : `<table style="width:100%;font-size:13px;border-collapse:collapse">
+             <tr style="background:var(--bg3)"><th style="text-align:left;padding:6px">Device ID</th><th style="text-align:left;padding:6px">Motivo</th><th style="text-align:left;padding:6px">Quando</th><th></th></tr>
+             ${data.devices.map(d => `<tr><td style="padding:6px;font-family:monospace;font-size:11px">${truncate(d.device_id,18)}</td><td style="padding:6px">${escapeHtml(d.reason||'')}</td><td style="padding:6px;color:var(--muted);font-size:11px">${fmtDateTime(d.banned_at)}</td><td style="padding:6px"><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="unbanDevice('${escapeHtml(d.device_id).replace(/'/g,"\\'")}')">Sblocca</button></td></tr>`).join('')}
+           </table>`;
+    const ipsHtml = data.ips.length === 0
+        ? '<p style="color:var(--muted);font-size:13px">Nessun IP bannato.</p>'
+        : `<table style="width:100%;font-size:13px;border-collapse:collapse">
+             <tr style="background:var(--bg3)"><th style="text-align:left;padding:6px">IP</th><th style="text-align:left;padding:6px">Motivo</th><th style="text-align:left;padding:6px">Scade</th><th></th></tr>
+             ${data.ips.map(d => `<tr><td style="padding:6px;font-family:monospace">${escapeHtml(d.ip)}</td><td style="padding:6px">${escapeHtml(d.reason||'')}</td><td style="padding:6px;color:var(--muted);font-size:11px">${d.expires_at?fmtDateTime(d.expires_at):'permanente'}</td><td style="padding:6px"><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="unbanIp('${escapeHtml(d.ip)}')">Sblocca</button></td></tr>`).join('')}
+           </table>`;
+    openModal(`<h3 style="margin-top:0">🚫 Blacklist</h3>
+        <h4 style="margin-top:16px;font-size:14px">Device bannati (${data.devices.length})</h4>${devicesHtml}
+        <h4 style="margin-top:20px;font-size:14px">IP bannati (${data.ips.length})</h4>${ipsHtml}
+        <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
+}
+
+async function unbanDevice(device_id) {
+    if (!confirm('Sblocca questo device? La licenza dovrà essere ri-attivata manualmente.')) return;
+    await api('admin/security-unban', { session_token: session, device_id });
+    openBlacklist();
+}
+
+async function unbanIp(ip) {
+    if (!confirm('Sblocca questo IP?')) return;
+    await api('admin/security-unban', { session_token: session, ip });
+    openBlacklist();
+}
+
+// Helpers used by security panel (define if missing)
+if (typeof fmtDateTime !== 'function') {
+    window.fmtDateTime = function(d) { const dt = new Date(d); return dt.toLocaleString('it-IT', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }); };
+}
+if (typeof truncate !== 'function') {
+    window.truncate = function(s, n) { if (!s) return '—'; return s.length <= n ? s : s.slice(0, n) + '…'; };
+}
+if (typeof escapeHtml !== 'function') {
+    window.escapeHtml = function(s) { if (s == null) return ''; return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); };
+}
+if (typeof openModal !== 'function') {
+    window.openModal = function(html) {
+        let m = document.getElementById('sec-modal-overlay');
+        if (!m) {
+            m = document.createElement('div');
+            m.id = 'sec-modal-overlay';
+            m.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px';
+            m.onclick = e => { if (e.target === m) closeModal(); };
+            document.body.appendChild(m);
+        }
+        m.innerHTML = `<div style="background:var(--bg);padding:24px;border-radius:12px;max-width:600px;width:100%;max-height:90vh;overflow:auto">${html}</div>`;
+        m.style.display = 'flex';
+    };
+    window.closeModal = function() { const m = document.getElementById('sec-modal-overlay'); if (m) m.style.display = 'none'; };
+}
 </script>
 </body>
 </html>
