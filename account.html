@@ -5,69 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account - BurgTV</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- EARLY AUTH GUARD: redirect to login BEFORE rendering anything -->
+    <script>
+      (function () {
+        var t = localStorage.getItem('session_token');
+        var e = localStorage.getItem('user_email');
+        if (!t || !e) {
+          // Hide immediately to prevent flash, then redirect
+          document.documentElement.style.display = 'none';
+          window.location.replace('login.html');
+        }
+      })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#0a0a0b;--bg-secondary:#111113;--text:#fff;--text-secondary:#a0a0a8;--accent:#B94A8E;--accent-light:#d85aa3;--accent-dark:#7B4397;--success:#10b981;--error:#ef4444;--border:rgba(255,255,255,0.12);--card-bg:rgba(255,255,255,0.03);--card-hover:rgba(255,255,255,0.06)}
-        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-        .header{background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 20px;position:sticky;top:0;z-index:100}
-        .header-inner{max-width:600px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between}
-        .logo{height:40px;width:auto}
-        .back-link{display:flex;align-items:center;gap:8px;color:var(--text-secondary);text-decoration:none;font-size:14px}
+        :root{--bg:#0a0a0b;--bg-secondary:#111113;--text:#fff;--text-secondary:#9ca3af;--accent:#B94A8E;--accent-light:#d85aa3;--accent-dark:#7B4397;--success:#10b981;--error:#ef4444;--border:rgba(255,255,255,0.10);--card-bg:rgba(255,255,255,0.03);--card-hover:rgba(255,255,255,0.06)}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+        .header{background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 16px;position:sticky;top:0;z-index:100}
+        .header-inner{max-width:680px;margin:0 auto;height:54px;display:flex;align-items:center;justify-content:space-between}
+        .logo{height:30px;width:auto}
+        .back-link{display:flex;align-items:center;gap:6px;color:var(--text-secondary);text-decoration:none;font-size:13px;font-weight:500}
         .back-link:hover{color:var(--text)}
-        .back-link svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
-        .main{max-width:600px;margin:0 auto;padding:40px 20px}
-        .page-title{font-size:28px;font-weight:700;margin-bottom:8px}
-        .page-subtitle{color:var(--text-secondary);font-size:15px;margin-bottom:40px}
-        .section{margin-bottom:32px}
-        .section-title{font-size:13px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:16px}
-        .btn{width:100%;padding:16px 20px;border-radius:12px;font-size:16px;font-family:'Inter',sans-serif;font-weight:600;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all 0.3s ease;border:none;margin-bottom:12px}
-        .btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:2;fill:none}
+        .back-link svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
+        .main{max-width:680px;margin:0 auto;padding:24px 16px 48px}
+        .page-title{font-size:22px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}
+        .page-subtitle{color:var(--text-secondary);font-size:13px;margin-bottom:28px}
+        .section{margin-bottom:24px}
+        .section-title{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:10px}
+        .btn{width:100%;padding:11px 16px;border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all 0.2s ease;border:none;margin-bottom:8px}
+        .btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none}
         .btn-primary{background:var(--accent);color:white}
-        .btn-primary:hover{background:var(--accent-light);transform:translateY(-2px)}
+        .btn-primary:hover{background:var(--accent-light)}
+        .btn-primary:disabled{opacity:0.6;cursor:not-allowed}
         .btn-secondary{background:var(--card-hover);color:var(--text);border:1px solid var(--border)}
-        .btn-secondary:hover{background:rgba(185,74,142,0.1);border-color:var(--accent)}
+        .btn-secondary:hover{background:rgba(185,74,142,0.08);border-color:var(--accent)}
         .btn-danger{background:transparent;color:var(--error);border:1px solid rgba(239,68,68,0.3)}
-        .btn-danger:hover{background:rgba(239,68,68,0.1);border-color:var(--error)}
-        .info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
-        .info-label{font-size:13px;color:var(--text-secondary);margin-bottom:4px}
-        .info-value{font-size:16px;font-weight:500}
-        .footer{text-align:center;padding:32px 20px;color:var(--text-secondary);font-size:13px}
-        .footer a{color:var(--text-secondary);text-decoration:none;margin:0 10px}
+        .btn-danger:hover{background:rgba(239,68,68,0.08);border-color:var(--error)}
+        .info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+        .info-label{font-size:12px;color:var(--text-secondary);margin-bottom:2px}
+        .info-value{font-size:14px;font-weight:500}
+        .footer{text-align:center;padding:24px 16px;color:var(--text-secondary);font-size:12px}
+        .footer a{color:var(--text-secondary);text-decoration:none;margin:0 8px}
         .footer a:hover{color:var(--accent)}
-        .device-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-        .device-info{display:flex;align-items:center;gap:12px;flex:1;min-width:200px}
-        .device-icon{width:40px;height:40px;background:var(--card-hover);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-        .device-icon svg{width:20px;height:20px;stroke:var(--accent);stroke-width:2;fill:none}
-        .device-name{font-weight:600;font-size:15px;margin-bottom:2px}
-        .device-code{font-size:12px;color:var(--text-secondary);font-family:monospace}
-        .device-actions{display:flex;gap:8px}
-        .device-btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-size:13px;font-family:inherit;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px}
+        .device-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+        .device-info{display:flex;align-items:center;gap:10px;flex:1;min-width:180px}
+        .device-icon{width:34px;height:34px;background:var(--card-hover);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .device-icon svg{width:16px;height:16px;stroke:var(--accent);stroke-width:2;fill:none}
+        .device-name{font-weight:600;font-size:13px;margin-bottom:1px}
+        .device-code{font-size:11px;color:var(--text-secondary);font-family:monospace}
+        .device-actions{display:flex;gap:6px}
+        .device-btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:7px;font-size:12px;font-family:inherit;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px}
         .device-btn:hover{background:var(--card-hover);border-color:var(--accent)}
         .device-btn.danger{color:var(--error);border-color:rgba(239,68,68,0.3)}
-        .device-btn.danger:hover{background:rgba(239,68,68,0.1);border-color:var(--error)}
-        .device-btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none}
-        .no-devices{text-align:center;padding:24px;color:var(--text-secondary);font-size:14px}
-        .spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
+        .device-btn.danger:hover{background:rgba(239,68,68,0.08);border-color:var(--error)}
+        .device-btn svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+        .no-devices{text-align:center;padding:18px;color:var(--text-secondary);font-size:13px;background:var(--card-bg);border:1px dashed var(--border);border-radius:10px}
+        .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite}
         @keyframes spin{to{transform:rotate(360deg)}}
-        .lang-switch{position:fixed;top:1rem;right:1rem;display:flex;gap:0.4rem;z-index:1000;background:var(--card-bg);backdrop-filter:blur(10px);padding:0.4rem;border-radius:10px;border:1px solid var(--border)}
-        .lang-btn{padding:0.4rem 0.8rem;background:transparent;color:var(--text-secondary);border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:500;transition:all 0.3s}
+        .lang-switch{position:fixed;top:0.75rem;right:0.75rem;display:flex;gap:0.25rem;z-index:1000;background:var(--card-bg);backdrop-filter:blur(10px);padding:0.25rem;border-radius:8px;border:1px solid var(--border)}
+        .lang-btn{padding:0.3rem 0.6rem;background:transparent;color:var(--text-secondary);border:none;border-radius:5px;cursor:pointer;font-size:0.72rem;font-weight:600;transition:all 0.2s}
         .lang-btn:hover{background:var(--card-hover);color:var(--text)}
         .lang-btn.active{background:var(--accent);color:#fff}
         /* Modal */
         .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:2000;align-items:center;justify-content:center;padding:16px}
         .modal-overlay.show{display:flex}
-        .modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:20px;padding:24px;max-width:440px;width:100%}
-        .modal h3{font-size:20px;margin-bottom:8px}
-        .modal p{font-size:14px;color:var(--text-secondary);margin-bottom:16px}
-        .modal input{width:100%;padding:14px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;outline:none;margin-bottom:8px}
+        .modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:380px;width:100%}
+        .modal h3{font-size:16px;margin-bottom:6px;font-weight:600}
+        .modal p{font-size:13px;color:var(--text-secondary);margin-bottom:12px}
+        .modal input{width:100%;padding:11px 14px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;font-size:14px;outline:none;margin-bottom:6px}
         .modal input:focus{border-color:var(--accent)}
-        .modal-buttons{display:flex;gap:12px;margin-top:12px}
+        .modal-buttons{display:flex;gap:8px;margin-top:8px}
         .modal-buttons .btn{margin-bottom:0;flex:1}
-        @media(min-width:769px){.main{max-width:700px;padding:60px 40px}.page-title{font-size:36px}.page-subtitle{font-size:17px}.section-title{font-size:14px}.info-card{padding:24px}.info-label{font-size:14px}.info-value{font-size:18px}.btn{padding:18px 24px;font-size:17px;border-radius:14px}.header-inner{max-width:700px;height:72px}.logo{height:48px}}
-        @media(min-width:1200px){.main{max-width:800px;padding:72px 48px}.page-title{font-size:40px}.btn{padding:20px 28px;font-size:18px}}
+        /* Password form inputs */
+        form.info-card input{width:100%;padding:11px 14px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;font-size:14px;outline:none;transition:border-color 0.2s}
+        form.info-card input:focus{border-color:var(--accent)}
+        /* Tablet+ */
+        @media(min-width:769px){
+            .header-inner{height:58px;max-width:720px}
+            .logo{height:34px}
+            .main{max-width:720px;padding:32px 24px 48px}
+            .page-title{font-size:24px}
+            .page-subtitle{font-size:14px;margin-bottom:32px}
+            .info-card{padding:16px 18px}
+            .info-value{font-size:15px}
+            .btn{padding:12px 18px;font-size:14px}
+            .device-card{padding:14px 16px}
+            .device-name{font-size:14px}
+        }
+        @media(min-width:1200px){
+            .main{max-width:760px}
+            .page-title{font-size:26px}
+        }
     </style>
   <script src="/assets/js/lang-dropdown.js" defer></script>
 </head>
@@ -474,6 +505,19 @@
                 alert(d.error);
             }
         }
+
+        // ===== Idle timeout (auto-logout after 60 min of inactivity) =====
+        let _lastActivity = Date.now();
+        function _resetActivity() { _lastActivity = Date.now(); }
+        ['mousemove','keydown','scroll','touchstart','click'].forEach(function(ev){
+            document.addEventListener(ev, _resetActivity, { passive: true });
+        });
+        // Check every 30 seconds; if 60 min idle, logout.
+        setInterval(function(){
+            if (Date.now() - _lastActivity > 60 * 60 * 1000) {
+                logout();
+            }
+        }, 30000);
 
         // Init
         document.addEventListener('DOMContentLoaded', function () {
