@@ -77,6 +77,12 @@
         <button class="lang-btn" data-lang="de">DE</button>
         <button class="lang-btn" data-lang="es">ES</button>
         <button class="lang-btn" data-lang="fr">FR</button>
+        <button class="lang-btn" data-lang="pt">PT</button>
+        <button class="lang-btn" data-lang="tr">TR</button>
+        <button class="lang-btn" data-lang="nl">NL</button>
+        <button class="lang-btn" data-lang="pl">PL</button>
+        <button class="lang-btn" data-lang="ru">RU</button>
+        <button class="lang-btn" data-lang="ar">AR</button>
     </div>
     
     <div class="container">
@@ -137,12 +143,18 @@
             en:{back:"Back",title:"Sign In",subtitle:"Enter your credentials",email:"Email",password:"Password",loginBtn:"Sign In",forgot:"Forgot password?",noAccount:"Don't have an account?",registerLink:"Sign up",privacy:"Privacy",terms:"Terms",errInvalid:"Invalid email or password",errGeneric:"Error. Try again."},
             de:{back:"Zurück",title:"Anmelden",subtitle:"Geben Sie Ihre Daten ein",email:"E-Mail",password:"Passwort",loginBtn:"Anmelden",forgot:"Passwort vergessen?",noAccount:"Kein Konto?",registerLink:"Registrieren",privacy:"Datenschutz",terms:"AGB",errInvalid:"Ungültige E-Mail oder Passwort",errGeneric:"Fehler. Nochmal versuchen."},
             es:{back:"Volver",title:"Iniciar sesión",subtitle:"Ingresa tus credenciales",email:"Correo",password:"Contraseña",loginBtn:"Entrar",forgot:"¿Olvidaste tu contraseña?",noAccount:"¿No tienes cuenta?",registerLink:"Regístrate",privacy:"Privacidad",terms:"Términos",errInvalid:"Correo o contraseña inválidos",errGeneric:"Error. Inténtalo de nuevo."},
-            fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié?",noAccount:"Pas de compte?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez."}
+            fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié?",noAccount:"Pas de compte?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez."},
+            pt:{back:"Voltar",title:"Iniciar sessão",subtitle:"Introduza as suas credenciais",email:"Email",password:"Palavra-passe",loginBtn:"Entrar",forgot:"Esqueceu-se da palavra-passe?",noAccount:"Não tem conta?",registerLink:"Registar",privacy:"Privacidade",terms:"Termos",errInvalid:"Email ou palavra-passe inválidos",errGeneric:"Erro. Tente novamente."},
+            tr:{back:"Geri",title:"Giriş Yap",subtitle:"Bilgilerinizi girin",email:"E-posta",password:"Şifre",loginBtn:"Giriş Yap",forgot:"Şifrenizi mi unuttunuz?",noAccount:"Hesabınız yok mu?",registerLink:"Kayıt ol",privacy:"Gizlilik",terms:"Şartlar",errInvalid:"E-posta veya şifre geçersiz",errGeneric:"Hata. Tekrar deneyin."},
+            nl:{back:"Terug",title:"Inloggen",subtitle:"Vul uw gegevens in",email:"E-mail",password:"Wachtwoord",loginBtn:"Inloggen",forgot:"Wachtwoord vergeten?",noAccount:"Nog geen account?",registerLink:"Registreren",privacy:"Privacy",terms:"Voorwaarden",errInvalid:"Ongeldig e-mailadres of wachtwoord",errGeneric:"Fout. Probeer opnieuw."},
+            pl:{back:"Wstecz",title:"Zaloguj się",subtitle:"Wpisz swoje dane",email:"E-mail",password:"Hasło",loginBtn:"Zaloguj się",forgot:"Nie pamiętasz hasła?",noAccount:"Nie masz konta?",registerLink:"Zarejestruj się",privacy:"Prywatność",terms:"Warunki",errInvalid:"Nieprawidłowy e-mail lub hasło",errGeneric:"Błąd. Spróbuj ponownie."},
+            ru:{back:"Назад",title:"Войти",subtitle:"Введите ваши данные",email:"Email",password:"Пароль",loginBtn:"Войти",forgot:"Забыли пароль?",noAccount:"Нет аккаунта?",registerLink:"Зарегистрироваться",privacy:"Конфиденциальность",terms:"Условия",errInvalid:"Неверный email или пароль",errGeneric:"Ошибка. Попробуйте снова."},
+            ar:{back:"رجوع",title:"تسجيل الدخول",subtitle:"أدخل بيانات اعتمادك",email:"البريد الإلكتروني",password:"كلمة المرور",loginBtn:"تسجيل الدخول",forgot:"نسيت كلمة المرور؟",noAccount:"ليس لديك حساب؟",registerLink:"التسجيل",privacy:"الخصوصية",terms:"الشروط",errInvalid:"البريد أو كلمة المرور غير صحيحة",errGeneric:"خطأ. حاول مرة أخرى."}
         };
         
         function _initLang(){
             const m = document.cookie.match(/burgtv_lang=([^;]+)/);
-            if (m && /^(it|en|de|es|fr)$/.test(m[1])) return m[1];
+            if (m && /^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/.test(m[1])) return m[1];
             return localStorage.getItem('lang') || localStorage.getItem('preferredLang') || 'it';
         }
         let lang = _initLang();
@@ -155,6 +167,7 @@
             localStorage.setItem('preferredLang', l);
             const dom = location.hostname.endsWith('.burgtv.com') || location.hostname === 'burgtv.com' ? '; domain=.burgtv.com' : '';
             document.cookie = 'burgtv_lang=' + l + '; max-age=31536000; path=/' + dom + '; SameSite=Lax';
+            document.documentElement.dir = (l === 'ar' ? 'rtl' : 'ltr');
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
