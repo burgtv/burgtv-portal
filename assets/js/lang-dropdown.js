@@ -147,6 +147,8 @@
     // Read original positioning BEFORE hiding (so getComputedStyle returns true rendered values)
     const cs = window.getComputedStyle(found.container);
     const wasFixed = (cs.position === 'fixed' || cs.position === 'absolute');
+    // CRITICAL: capture bounding rect BEFORE hiding — display:none returns 0
+    const savedRect = wasFixed ? found.container.getBoundingClientRect() : null;
     const savedPos = wasFixed ? {
       position: cs.position,
       zIndex: cs.zIndex && cs.zIndex !== 'auto' ? cs.zIndex : '1000',
@@ -160,11 +162,10 @@
     found.container.classList.add('bv-lang-replaced');
 
     // Apply original positioning to dropdown if original was fixed/absolute
-    if (savedPos) {
-      // Use getBoundingClientRect for accurate pixel-based positioning
-      const rect = found.container.getBoundingClientRect();
-      const fromTop = Math.round(rect.top);
-      const fromRight = Math.round(window.innerWidth - rect.right);
+    if (savedPos && savedRect) {
+      // Use the rect captured BEFORE hiding (after hide returns 0)
+      const fromTop = Math.round(savedRect.top);
+      const fromRight = Math.round(window.innerWidth - savedRect.right);
       dropdown.style.position = savedPos.position;
       dropdown.style.zIndex = savedPos.zIndex;
       dropdown.style.top = fromTop + 'px';
@@ -173,8 +174,7 @@
       dropdown.style.bottom = 'auto';
       // CRITICAL: shrink wrapper to trigger width — otherwise it inherits the
       // old flex container's width (with 11 hidden buttons inside ~330px) and
-      // the menu's right:0 anchors to wrapper-right (far off to one side of
-      // the actual visible trigger button).
+      // the menu's right:0 anchors to wrapper-right (far off from trigger).
       dropdown.style.width = 'max-content';
     }
     // Else: dropdown stays inline where the original .lang-switch was (e.g. inside nav)
