@@ -64,6 +64,12 @@
       <button id="btn-de">DE</button>
       <button id="btn-es">ES</button>
       <button id="btn-fr">FR</button>
+      <button id="btn-pt">PT</button>
+      <button id="btn-tr">TR</button>
+      <button id="btn-nl">NL</button>
+      <button id="btn-pl">PL</button>
+      <button id="btn-ru">RU</button>
+      <button id="btn-ar">AR</button>
     </div>
   </div>
 </div>
@@ -353,10 +359,27 @@
 </footer>
 
 <script>
-function setLang(l){document.querySelectorAll('.lang-block').forEach(b=>b.classList.toggle('active',b.id==='content-'+l));document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));const btn=document.getElementById('btn-'+l);if(btn)btn.classList.add('active');document.documentElement.lang=l;localStorage.setItem('preferredLang',l)}
+function setLang(l){
+  // Fallback to EN if no content block exists for this lang
+  const targetId='content-'+l;
+  const hasBlock=!!document.getElementById(targetId);
+  const displayLang=hasBlock?l:'en';
+  document.querySelectorAll('.lang-block').forEach(b=>b.classList.toggle('active',b.id==='content-'+displayLang));
+  document.querySelectorAll('.lang-switch button').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('btn-'+l);
+  if(btn)btn.classList.add('active');
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==='ar'?'rtl':'ltr');
+  localStorage.setItem('preferredLang',l);
+  localStorage.setItem('lang',l);
+  const dom=location.hostname.endsWith('.burgtv.com')||location.hostname==='burgtv.com'?'; domain=.burgtv.com':'';
+  document.cookie='burgtv_lang='+l+'; max-age=31536000; path=/'+dom+'; SameSite=Lax';
+}
 document.addEventListener('DOMContentLoaded',function(){
-  ['it','en','de','es','fr'].forEach(l=>{const b=document.getElementById('btn-'+l);if(b)b.addEventListener('click',()=>setLang(l))});
-  setLang(localStorage.getItem('preferredLang')||'it');
+  ['it','en','de','es','fr','pt','tr','nl','pl','ru','ar'].forEach(l=>{const b=document.getElementById('btn-'+l);if(b)b.addEventListener('click',()=>setLang(l))});
+  const m=document.cookie.match(/burgtv_lang=([^;]+)/);
+  const cookieL=(m&&/^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/.test(m[1]))?m[1]:null;
+  setLang(cookieL||localStorage.getItem('preferredLang')||localStorage.getItem('lang')||'it');
 });
 </script>
 
