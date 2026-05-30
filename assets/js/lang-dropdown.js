@@ -177,6 +177,26 @@
       // the menu's right:0 anchors to wrapper-right (far off from trigger).
       dropdown.style.width = 'max-content';
     }
+
+    // Defensive: if dropdown lacks fixed/sticky context, force fixed positioning
+    // so it stays at top of viewport during scroll on every page.
+    (function ensureStaysOnTopDuringScroll() {
+      if (dropdown.style.position === 'fixed' || dropdown.style.position === 'absolute') return;
+      let p = dropdown.parentElement;
+      while (p && p !== document.body) {
+        const pos = window.getComputedStyle(p).position;
+        if (pos === 'sticky' || pos === 'fixed') return; // sticky ancestor handles it
+        p = p.parentElement;
+      }
+      // No sticky/fixed ancestor — pin to top-right of viewport
+      dropdown.style.position = 'fixed';
+      dropdown.style.top = '0.75rem';
+      dropdown.style.right = '0.75rem';
+      dropdown.style.left = 'auto';
+      dropdown.style.bottom = 'auto';
+      dropdown.style.zIndex = '1000';
+      dropdown.style.width = 'max-content';
+    })();
     // Else: dropdown stays inline where the original .lang-switch was (e.g. inside nav)
 
     // Wire up dropdown
