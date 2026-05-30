@@ -25,7 +25,8 @@
         :root{--bg:#0a0a0b;--bg-secondary:#111113;--text:#fff;--text-secondary:#9ca3af;--accent:#B94A8E;--accent-light:#d85aa3;--accent-dark:#7B4397;--success:#10b981;--error:#ef4444;--border:rgba(255,255,255,0.10);--card-bg:rgba(255,255,255,0.03);--card-hover:rgba(255,255,255,0.06)}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
         .header{background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:0 16px;position:sticky;top:0;z-index:100}
-        .header-inner{max-width:680px;margin:0 auto;height:54px;display:flex;align-items:center;justify-content:space-between}
+        .header-inner{max-width:680px;margin:0 auto;height:54px;display:flex;align-items:center;justify-content:space-between;padding-right:56px}
+        @media(min-width:769px){.header-inner{padding-right:0}}
         .logo{height:30px;width:auto}
         .back-link{display:flex;align-items:center;gap:6px;color:var(--text-secondary);text-decoration:none;font-size:13px;font-weight:500}
         .back-link:hover{color:var(--text)}
@@ -238,12 +239,22 @@
             es:{title:"Cuenta",dashboard:"Panel",sec_info:"Información de cuenta",lbl_email:"Correo",lbl_plan:"Plan",plan_permanent:"Licencia permanente",plan_annual:"Suscripción anual",plan_trial:"Prueba gratuita (7 días)",sec_subscription:"Suscripción",manage_sub:"Gestionar suscripción",manage_sub_hint:"Cambiar método de pago o cancelar",sec_devices:"Tus dispositivos",devices_hint:"Puedes usar hasta 5 dispositivos",no_devices:"Ningún dispositivo registrado",loading:"Cargando…",load_error:"Error al cargar",this_device:"Este dispositivo",rename:"Renombrar",remove:"Eliminar",rename_title:"Renombrar dispositivo",rename_hint:"Elige un nombre fácil de reconocer (ej. Salón)",rename_cancel:"Cancelar",rename_save:"Guardar",rename_too_short:"El nombre debe tener al menos 2 caracteres",rename_ok:"Dispositivo renombrado",remove_confirm:"¿Eliminar \"{name}\" de tus dispositivos?",sec_change_password:"Cambiar contraseña",cp_old:"Contraseña actual",cp_new:"Nueva contraseña (mín. 6 caracteres)",cp_confirm:"Confirmar nueva contraseña",cp_submit:"Actualizar contraseña",cp_too_short:"La contraseña debe tener al menos 6 caracteres",cp_no_match:"Las contraseñas no coinciden",cp_same:"La nueva contraseña debe ser diferente",cp_ok:"Contraseña actualizada",cp_forgot:"¿Olvidaste tu contraseña?",cp_reset_link:"Restablecer por correo",sec_session:"Sesión",logout:"Cerrar sesión",sec_delete:"Eliminar cuenta (borrar todos los datos)",delete_intro:"Eliminar la cuenta significa <strong>borrar permanentemente</strong> tus datos (usuario, licencias, dispositivos). Escríbenos y responderemos en 24 horas.",delete_vs_cancel:"¿Solo quieres dejar de pagar pero mantener acceso hasta fin de período? Usa <strong>\"Gestionar suscripción\"</strong> arriba (abre el portal de Stripe).",delete_warn_title:"⚠ Tienes una suscripción activa",delete_warn_body:"Eliminar la cuenta NO cancela el pago anual. Para evitar la renovación primero haz clic en \"Gestionar suscripción\" arriba.",delete_note:"Nota: si tienes una suscripción anual activa, cancelarla primero desde \"Gestionar suscripción\", de lo contrario seguirá renovándose.",delete_contact:"Escribe a info@burgtv.com",error:"Error. Contacta info@burgtv.com",footer_privacy:"Privacidad",footer_terms:"Términos"},
             fr:{title:"Compte",dashboard:"Tableau de bord",sec_info:"Informations du compte",lbl_email:"Email",lbl_plan:"Plan",plan_permanent:"Licence permanente",plan_annual:"Abonnement annuel",plan_trial:"Essai gratuit (7 jours)",sec_subscription:"Abonnement",manage_sub:"Gérer l'abonnement",manage_sub_hint:"Changer le mode de paiement ou annuler",sec_devices:"Vos appareils",devices_hint:"Vous pouvez utiliser jusqu'à 5 appareils",no_devices:"Aucun appareil enregistré",loading:"Chargement…",load_error:"Erreur de chargement",this_device:"Cet appareil",rename:"Renommer",remove:"Supprimer",rename_title:"Renommer l'appareil",rename_hint:"Choisissez un nom facile à reconnaître (ex. Salon)",rename_cancel:"Annuler",rename_save:"Enregistrer",rename_too_short:"Le nom doit comporter au moins 2 caractères",rename_ok:"Appareil renommé",remove_confirm:"Supprimer \"{name}\" de vos appareils ?",sec_change_password:"Changer le mot de passe",cp_old:"Mot de passe actuel",cp_new:"Nouveau mot de passe (min 6 caractères)",cp_confirm:"Confirmer le nouveau mot de passe",cp_submit:"Mettre à jour le mot de passe",cp_too_short:"Le mot de passe doit comporter au moins 6 caractères",cp_no_match:"Les mots de passe ne correspondent pas",cp_same:"Le nouveau mot de passe doit être différent",cp_ok:"Mot de passe mis à jour",cp_forgot:"Mot de passe oublié ?",cp_reset_link:"Réinitialiser par email",sec_session:"Session",logout:"Déconnexion",sec_delete:"Supprimer le compte (effacer toutes les données)",delete_intro:"Supprimer votre compte signifie <strong>effacer définitivement</strong> vos données (compte, licences, appareils). Écrivez-nous et nous répondrons sous 24 heures.",delete_vs_cancel:"Vous voulez seulement arrêter de payer mais garder l'accès jusqu'à la fin de la période ? Utilisez <strong>\"Gérer l'abonnement\"</strong> ci-dessus (portail Stripe).",delete_warn_title:"⚠ Vous avez un abonnement actif",delete_warn_body:"Supprimer le compte n'annule PAS le paiement annuel. Pour éviter le renouvellement, cliquez d'abord sur \"Gérer l'abonnement\" ci-dessus.",delete_note:"Remarque : si vous avez un abonnement annuel actif, annulez-le d'abord depuis \"Gérer l'abonnement\", sinon il continuera à se renouveler.",delete_contact:"Écrire à info@burgtv.com",error:"Erreur. Contactez info@burgtv.com",footer_privacy:"Confidentialité",footer_terms:"Conditions"}
         };
-        let lang = localStorage.getItem('lang') || 'it';
+        // Read initial lang from cookie (cross-subdomain) → localStorage → default IT
+        function _initLang(){
+            const m = document.cookie.match(/burgtv_lang=([^;]+)/);
+            if (m && /^(it|en|de|es|fr)$/.test(m[1])) return m[1];
+            return localStorage.getItem('lang') || localStorage.getItem('preferredLang') || 'it';
+        }
+        let lang = _initLang();
         let renameTarget = null; // {deviceId, currentName}
 
         function applyLang(l) {
+            if (!T[l]) l = 'it';
             lang = l;
             localStorage.setItem('lang', l);
+            localStorage.setItem('preferredLang', l);
+            const dom = location.hostname.endsWith('.burgtv.com') || location.hostname === 'burgtv.com' ? '; domain=.burgtv.com' : '';
+            document.cookie = 'burgtv_lang=' + l + '; max-age=31536000; path=/' + dom + '; SameSite=Lax';
             const d = T[l] || T.it;
             document.documentElement.lang = l;
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
@@ -252,6 +263,8 @@
                 const attr = el.dataset.i18nAttr;
                 if (d[k] != null) {
                     if (attr) el.setAttribute(attr, d[k]);
+                    // If translation contains HTML tags, use innerHTML; else safer textContent.
+                    else if (typeof d[k] === 'string' && d[k].indexOf('<') !== -1) el.innerHTML = d[k];
                     else el.textContent = d[k];
                 }
             });

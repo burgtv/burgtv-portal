@@ -140,12 +140,21 @@
             fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié?",noAccount:"Pas de compte?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez."}
         };
         
-        let lang = localStorage.getItem('lang') || 'it';
+        function _initLang(){
+            const m = document.cookie.match(/burgtv_lang=([^;]+)/);
+            if (m && /^(it|en|de|es|fr)$/.test(m[1])) return m[1];
+            return localStorage.getItem('lang') || localStorage.getItem('preferredLang') || 'it';
+        }
+        let lang = _initLang();
         let turnstileToken = null;
-        
+
         function setLang(l) {
+            if (!T[l]) l = 'it';
             lang = l;
             localStorage.setItem('lang', l);
+            localStorage.setItem('preferredLang', l);
+            const dom = location.hostname.endsWith('.burgtv.com') || location.hostname === 'burgtv.com' ? '; domain=.burgtv.com' : '';
+            document.cookie = 'burgtv_lang=' + l + '; max-age=31536000; path=/' + dom + '; SameSite=Lax';
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
