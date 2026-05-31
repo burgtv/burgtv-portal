@@ -10,11 +10,11 @@
     :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12);--warn:#ff9b6f}
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
-    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 20px}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;max-width:none;margin:0;padding:0 24px}
+    .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 16px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:none;margin:0;padding:0 18px;gap:12px}
     .nav-left{display:flex;align-items:center;gap:16px}
-    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}
-    .brand img{height:48px;width:auto}
+    .brand{display:flex;align-items:center;text-decoration:none;color:#fff}.brand strong{font-size:1rem;font-weight:600}
+    .brand img{height:36px;width:auto}
     .menu-toggle{background:transparent;border:none;cursor:pointer;padding:8px;display:flex;flex-direction:column;gap:5px}
     .menu-toggle span{display:block;width:28px;height:3px;background:var(--text);border-radius:2px;transition:all 0.3s ease}
     .menu-toggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}
@@ -64,7 +64,7 @@
     .toc a{color:var(--muted);text-decoration:none}
     .toc a:hover{color:var(--accent)}
     .legal-notice{font-size:0.85rem;font-style:italic;color:var(--muted);padding:10px;background:rgba(0,0,0,0.3);border-left:3px solid var(--accent);margin:12px 0}
-    @media(max-width:768px){.lang-switch button{padding:4px 8px;font-size:12px}h1{font-size:1.8rem};.toc ol{columns:1}}
+    @media(max-width:768px){.nav-inner{height:54px;padding:0 14px}.brand img{height:30px}.brand strong{font-size:.92rem}.lang-switch button{padding:4px 8px;font-size:12px}h1{font-size:1.8rem};.toc ol{columns:1}}
     @media(max-width:640px){
     .nav-inner{height:60px}
     .brand img{height:32px}
