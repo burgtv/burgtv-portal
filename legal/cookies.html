@@ -9,7 +9,7 @@
   <style>
     :root{--bg:#0b0b0c;--text:#fff;--muted:#c9c9d1;--accent:#B94A8E;--accent2:#7B4397;--border:rgba(255,255,255,.12)}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.8}
+    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;font-size:14px;-webkit-font-smoothing:antialiased}
     .nav{position:sticky;top:0;background:rgba(10,10,20,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);z-index:100;padding:0 16px}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:none;margin:0;padding:0 18px;gap:12px}
     .brand{display:flex;align-items:center;text-decoration:none;color:#fff}.brand strong{font-size:1rem;font-weight:600}
@@ -34,7 +34,7 @@
     .lang-switch button.active{border-color:var(--accent);background:rgba(185,74,142,.1);color:#fff}
     .wrap{max-width:1100px;margin:0 auto;padding:48px 20px}
     h1{font-size:2.2rem;margin-bottom:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    h2{font-size:1.4rem;margin:32px 0 12px;color:#fff}
+    h2{font-size:clamp(18px,2.6vw,22px);margin:24px 0 10px;color:#fff;letter-spacing:-0.01em;font-weight:700}
     h3{font-size:1.1rem;margin:20px 0 8px;color:var(--accent)}
     p,li{color:var(--muted)}
     ul{margin:0 0 18px 22px}
