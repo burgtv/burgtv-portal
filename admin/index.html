@@ -498,7 +498,7 @@
 
             <!-- 2. DOWNLOAD APK -->
             <div class="analytics-section">
-                <h3><span class="ico">📥</span> Download APK <span class="pill">download.burgtv.com</span></h3>
+                <h3><span class="ico">📥</span> Download APK <span class="pill">GitHub Releases (reali)</span></h3>
                 <div class="stats" id="an-dl-kpi">
                     <div class="stat"><div class="lbl">Download totali</div><div class="val">…</div></div>
                 </div>
@@ -509,13 +509,13 @@
 
             <!-- 3. VENDITE STRIPE -->
             <div class="analytics-section">
-                <h3><span class="ico">💰</span> Vendite Stripe</h3>
+                <h3><span class="ico">💰</span> Vendite (Apple + Stripe)</h3>
                 <div class="stats" id="an-sales-kpi">
                     <div class="stat"><div class="lbl">MRR</div><div class="val">…</div></div>
                 </div>
                 <div class="chart-box" style="position:relative">
                     <canvas id="an-chart-sales"></canvas>
-                    <div id="an-chart-sales-empty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:13px;padding:20px">Nessun pagamento Stripe nel periodo selezionato.</div>
+                    <div id="an-chart-sales-empty" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:13px;padding:20px">Nessun pagamento Stripe nel periodo. Le vendite Apple iOS (reali) sono nei riquadri qui sopra 🍎</div>
                 </div>
                 <h3 style="margin-top:14px">🌍 Paesi paganti</h3>
                 <div id="an-sales-countries"></div>
@@ -1439,8 +1439,8 @@ function renderTraffic(t) {
     const sito = (t.totals || []).find(r => r.hostname === 'burgtv.com') || { requests:0, bytes:0 };
     const totReq = (t.totals || []).reduce((a,r) => a + Number(r.requests || 0), 0);
     document.getElementById('an-traf-kpi').innerHTML = `
-      <div class="stat"><div class="lbl">Visite sito</div><div class="val">${fmtNum(sito.requests)}</div><div class="sub">burgtv.com</div></div>
-      <div class="stat"><div class="lbl">Tutti i domini</div><div class="val">${fmtNum(totReq)}</div><div class="sub">incluso admin/api/download</div></div>
+      <div class="stat"><div class="lbl">👁 Visite reali (persone)</div><div class="val">${fmtNum(t.real_visits||0)}</div><div class="sub">beacon JS · bot esclusi</div></div>
+      <div class="stat"><div class="lbl">🤖 Richieste sito (bot incl.)</div><div class="val">${fmtNum(sito.requests)}</div><div class="sub">burgtv.com · Nginx grezzo</div></div>
       <div class="stat"><div class="lbl">Banda servita</div><div class="val">${(Number(sito.bytes)/1024/1024).toFixed(1)} MB</div><div class="sub">burgtv.com</div></div>
       <div class="stat"><div class="lbl">Domini attivi</div><div class="val">${(t.totals||[]).length}</div><div class="sub">sottodomini distinti</div></div>
     `;
@@ -1481,8 +1481,8 @@ function renderTraffic(t) {
 function renderDownloads(t) {
     const dl = (t.totals || []).find(r => r.hostname === 'download.burgtv.com') || { requests:0, bytes:0 };
     document.getElementById('an-dl-kpi').innerHTML = `
-      <div class="stat"><div class="lbl">Richieste APK</div><div class="val">${fmtNum(dl.requests)}</div><div class="sub">download.burgtv.com</div></div>
-      <div class="stat"><div class="lbl">Dati serviti</div><div class="val">${(Number(dl.bytes)/1024/1024).toFixed(1)} MB</div><div class="sub">totale periodo</div></div>
+      <div class="stat"><div class="lbl">📥 Download reali (GitHub)</div><div class="val">${fmtNum(t.github_downloads?.total||0)}</div><div class="sub">TV ${fmtNum(t.github_downloads?.tv||0)} + mobile ${fmtNum(t.github_downloads?.mobile||0)} · cumulativi</div></div>
+      <div class="stat"><div class="lbl">🔄 Richieste check-update</div><div class="val">${fmtNum(dl.requests)}</div><div class="sub">download.burgtv.com · non download</div></div>
       <div class="stat"><div class="lbl">Media/giorno</div><div class="val">${(Number(dl.requests)/Math.max(1,t.days)).toFixed(0)}</div><div class="sub">${t.days} giorni</div></div>
       <div class="stat"><div class="lbl">Paesi raggiunti</div><div class="val">${(t.by_country||[]).filter(r=>r.hostname==='download.burgtv.com').length}</div><div class="sub">distinti</div></div>
     `;
@@ -1507,11 +1507,13 @@ function renderSales(s) {
     const canceled = (s.by_day || []).reduce((a,r) => a + Number(r.canceled_subscriptions || 0), 0);
     const revenue = (s.by_day || []).reduce((a,r) => a + Number(r.revenue_cents || 0), 0);
 
+    const appleTotal = s.apple_total || 0;
+    const appleBreak = (s.apple || []).map(a => `${a.n} ${a.license_type}`).join(' + ') || '—';
     document.getElementById('an-sales-kpi').innerHTML = `
-      <div class="stat"><div class="lbl">MRR corrente</div><div class="val">${fmtMoney(mrr)}</div><div class="sub">ricorrente mensile</div></div>
-      <div class="stat"><div class="lbl">Sub attive</div><div class="val">${fmtNum(active)}</div><div class="sub">incl. trial</div></div>
-      <div class="stat"><div class="lbl">Nuove nel periodo</div><div class="val">+${fmtNum(newSubs)}</div><div class="sub">${s.days} giorni</div></div>
-      <div class="stat"><div class="lbl">Cancellate</div><div class="val">-${fmtNum(canceled)}</div><div class="sub">${revenue>0?fmtMoney(revenue)+' incasso':'(periodo)'}</div></div>
+      <div class="stat"><div class="lbl">🍎 Vendite Apple (reali)</div><div class="val">${fmtNum(appleTotal)}</div><div class="sub">${appleBreak} · iOS</div></div>
+      <div class="stat"><div class="lbl">MRR Stripe</div><div class="val">${fmtMoney(mrr)}</div><div class="sub">ricorrente mensile</div></div>
+      <div class="stat"><div class="lbl">Sub Stripe attive</div><div class="val">${fmtNum(active)}</div><div class="sub">incl. trial</div></div>
+      <div class="stat"><div class="lbl">Nuove Stripe nel periodo</div><div class="val">+${fmtNum(newSubs)}</div><div class="sub">${s.days} giorni</div></div>
     `;
 
     const days = (s.by_day || []).map(r => r.date);
@@ -1537,11 +1539,11 @@ function renderSales(s) {
 
 function renderFunnel(f) {
     const steps = [
-        { label:'👁  Visite sito',       value: f.visits,        color:'#B94A8E' },
-        { label:'📥 Richieste APK',     value: f.downloads,     color:'#7B4397' },
+        { label:'👁  Visite reali',      value: f.visits,        color:'#B94A8E' },
+        { label:'📥 Download reali',     value: f.downloads,     color:'#7B4397' },
         { label:'✉️  Registrazioni',    value: f.registrations, color:'#fbbf24' },
         { label:'📲 Attivazioni',       value: f.activations,   color:'#10b981' },
-        { label:'💰 Paganti',           value: f.paying,        color:'#ef4444' },
+        { label:'💰 Paganti (Apple+Stripe)', value: f.paying,    color:'#ef4444' },
     ];
     const max = Math.max(1, ...steps.map(s => s.value));
     document.getElementById('an-funnel').innerHTML = steps.map((s, i) => {
