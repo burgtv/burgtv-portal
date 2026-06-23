@@ -486,7 +486,7 @@
                 <div class="chart-box"><canvas id="an-chart-traffic"></canvas></div>
                 <div class="two-col">
                     <div>
-                        <h3 style="margin-top:14px">🌍 Top paesi (sito)</h3>
+                        <h3 style="margin-top:14px">🌍 Top paesi — richieste (bot incl.)</h3>
                         <div id="an-traf-countries"></div>
                     </div>
                     <div>
@@ -503,7 +503,7 @@
                     <div class="stat"><div class="lbl">Download totali</div><div class="val">…</div></div>
                 </div>
                 <div class="chart-box"><canvas id="an-chart-downloads"></canvas></div>
-                <h3 style="margin-top:14px">🌍 Top paesi (download)</h3>
+                <h3 style="margin-top:14px">🌍 Top paesi — richieste check-update (bot incl.)</h3>
                 <div id="an-dl-countries"></div>
             </div>
 
@@ -1452,7 +1452,7 @@ function renderTraffic(t) {
         return Number(row?.requests || 0);
     });
     lineChart('an-chart-traffic', days.map(d => d.slice(5)), [
-        { label:'Visite burgtv.com', data:siteSeries, borderColor:'#B94A8E', backgroundColor:'rgba(185,74,142,0.15)' },
+        { label:'Richieste burgtv.com (bot incl.)', data:siteSeries, borderColor:'#B94A8E', backgroundColor:'rgba(185,74,142,0.15)' },
     ]);
 
     // Countries — site only
@@ -1493,7 +1493,7 @@ function renderDownloads(t) {
         return Number(row?.requests || 0);
     });
     lineChart('an-chart-downloads', days.map(d => d.slice(5)), [
-        { label:'Download APK', data:dlSeries, borderColor:'#7B4397', backgroundColor:'rgba(123,67,151,0.15)' },
+        { label:'Richieste check-update (bot incl.)', data:dlSeries, borderColor:'#7B4397', backgroundColor:'rgba(123,67,151,0.15)' },
     ]);
 
     const dlCountries = (t.by_country || []).filter(r => r.hostname === 'download.burgtv.com').slice(0, 15);
