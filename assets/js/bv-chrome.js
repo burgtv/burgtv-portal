@@ -17,7 +17,7 @@
     tr:{f:'Özellikler',d:'İndir',q:'FAQ',l:'Legal Hub',t:'Şartlar ve Koşullar',p:'Gizlilik',c:'İletişim'},
     nl:{f:'Functies',d:'Downloaden',q:'FAQ',l:'Legal Hub',t:'Voorwaarden',p:'Privacy',c:'Contact'},
     pl:{f:'Funkcje',d:'Pobierz',q:'FAQ',l:'Legal Hub',t:'Regulamin',p:'Prywatność',c:'Kontakt'},
-    ru:{f:'Функции',d:'Скачать',q:'FAQ',l:'Условия',t:'Условия',p:'Конфиденциальность',c:'Контакты'},
+    ru:{f:'Функции',d:'Скачать',q:'FAQ',l:'Legal Hub',t:'Условия',p:'Конфиденциальность',c:'Контакты'},
     ar:{f:'الميزات',d:'تحميل',q:'الأسئلة الشائعة',l:'Legal Hub',t:'الشروط والأحكام',p:'سياسة الخصوصية',c:'اتصل بنا'}
   };
   var HOME='https://burgtv.com', DL='https://download.burgtv.com', LOGO=HOME+'/assets/branding/logo.png';
@@ -79,6 +79,7 @@
     document.body.appendChild(foot);
     document.body.classList.add('bv-chrome');
     render();
+    document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("[data-lang]"))setTimeout(render,60);},true);
     try{new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
