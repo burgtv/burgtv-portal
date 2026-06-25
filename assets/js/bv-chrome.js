@@ -1,99 +1,50 @@
-/* BurgTV shared chrome (header + footer) — coerente su tutte le pagine.
- * Uso: <script src="/assets/js/bv-chrome.js" defer></script>
- * - Inietta header (logo->home + Funzioni/Download/FAQ) e footer (legal + ©).
- * - Ristruttura il body in colonna preservando il contenuto centrato delle pagine-form.
- * - i18n autonomo (11 lingue) sincronizzato con il cookie burgtv_lang + <html lang>.
- * - Nasconde l'eventuale freccia "indietro" (.burgtv-back-btn): la sostituisce il logo.
+/* BurgTV shared chrome (header + hamburger/sidebar + footer + cookie) — IDENTICO alla home.
+ * Uso: <script src="/assets/js/bv-chrome.js" defer></script>  (richiede lang-dropdown.js per il selettore lingua)
  */
 (function () {
   "use strict";
-  var T = {
-    it:{f:'Funzioni',d:'Download',q:'FAQ',l:'Legal Hub',t:'Termini e Condizioni',p:'Privacy Policy',c:'Contatti'},
-    en:{f:'Features',d:'Download',q:'FAQ',l:'Legal Hub',t:'Terms & Conditions',p:'Privacy Policy',c:'Contact'},
-    de:{f:'Funktionen',d:'Download',q:'FAQ',l:'Legal Hub',t:'AGB',p:'Datenschutz',c:'Kontakt'},
-    es:{f:'Funciones',d:'Descargar',q:'FAQ',l:'Legal Hub',t:'Términos y Condiciones',p:'Privacidad',c:'Contacto'},
-    fr:{f:'Fonctions',d:'Télécharger',q:'FAQ',l:'Legal Hub',t:'Conditions',p:'Confidentialité',c:'Contact'},
-    pt:{f:'Funções',d:'Baixar',q:'FAQ',l:'Legal Hub',t:'Termos e Condições',p:'Privacidade',c:'Contato'},
-    tr:{f:'Özellikler',d:'İndir',q:'FAQ',l:'Legal Hub',t:'Şartlar ve Koşullar',p:'Gizlilik',c:'İletişim'},
-    nl:{f:'Functies',d:'Downloaden',q:'FAQ',l:'Legal Hub',t:'Voorwaarden',p:'Privacy',c:'Contact'},
-    pl:{f:'Funkcje',d:'Pobierz',q:'FAQ',l:'Legal Hub',t:'Regulamin',p:'Prywatność',c:'Kontakt'},
-    ru:{f:'Функции',d:'Скачать',q:'FAQ',l:'Legal Hub',t:'Условия',p:'Конфиденциальность',c:'Контакты'},
-    ar:{f:'الميزات',d:'تحميل',q:'الأسئلة الشائعة',l:'Legal Hub',t:'الشروط والأحكام',p:'سياسة الخصوصية',c:'اتصل بنا'}
-  };
-  var HOME='https://burgtv.com', DL='https://download.burgtv.com', LOGO=HOME+'/assets/branding/logo.png';
-  // Banner cookie informativo (solo cookie necessari) — [testo, link, bottone]
-  var CC = {
-    it:['Usiamo cookie necessari per il funzionamento del sito e la preferenza lingua. Nessun cookie di tracciamento o pubblicitario.','Cookie policy','Ho capito'],
-    en:['We use necessary cookies to make the site work and remember your language. No tracking or advertising cookies.','Cookie policy','Got it'],
-    de:['Wir verwenden notwendige Cookies für den Betrieb der Website und die Sprachauswahl. Keine Tracking- oder Werbe-Cookies.','Cookie-Richtlinie','Verstanden'],
-    es:['Usamos cookies necesarias para el funcionamiento del sitio y la preferencia de idioma. Sin cookies de seguimiento ni publicidad.','Política de cookies','Entendido'],
-    fr:['Nous utilisons des cookies nécessaires au fonctionnement du site et à la langue. Aucun cookie de suivi ou publicitaire.','Politique cookies','J’ai compris'],
-    pt:['Usamos cookies necessários para o funcionamento do site e a preferência de idioma. Sem cookies de rastreamento ou publicidade.','Política de cookies','Entendi'],
-    tr:['Sitenin çalışması ve dil tercihi için gerekli çerezleri kullanıyoruz. İzleme veya reklam çerezi yok.','Çerez politikası','Anladım'],
-    nl:['We gebruiken noodzakelijke cookies om de site te laten werken en je taal te onthouden. Geen tracking- of advertentiecookies.','Cookiebeleid','Begrepen'],
-    pl:['Używamy niezbędnych plików cookie do działania strony i preferencji języka. Bez śledzenia ani reklam.','Polityka cookies','Rozumiem'],
-    ru:['Мы используем необходимые файлы cookie для работы сайта и выбора языка. Без отслеживания и рекламы.','Политика cookie','Понятно'],
-    ar:['نستخدم ملفات تعريف الارتباط الضرورية لعمل الموقع وتفضيل اللغة. لا ملفات تتبع أو إعلانات.','سياسة ملفات الارتباط','حسناً']
-  };
-
+  var I18N = {"it":{"nav.features":"Funzioni","nav.devices":"Download","nav.faq":"FAQ","menu.home":"Home","menu.login":"Accedi","menu.features":"Funzionalità","menu.devices":"Download","menu.faq":"FAQ","menu.legal":"Legal Hub","menu.terms":"Termini e Condizioni","menu.privacy":"Privacy Policy","menu.contact":"Contatti","footer.legal":"Legal Hub","footer.terms":"Termini e Condizioni","footer.privacy":"Privacy Policy","footer.contact":"Contatti"},"en":{"nav.features":"Features","nav.devices":"Download","nav.faq":"FAQ","menu.home":"Home","menu.login":"Sign In","menu.features":"Features","menu.devices":"Download","menu.faq":"FAQ","menu.legal":"Legal Hub","menu.terms":"Terms and Conditions","menu.privacy":"Privacy Policy","menu.contact":"Contact","footer.legal":"Legal Hub","footer.terms":"Terms and Conditions","footer.privacy":"Privacy Policy","footer.contact":"Contact"},"de":{"nav.features":"Funktionen","nav.devices":"Download","nav.faq":"FAQ","menu.home":"Startseite","menu.login":"Anmelden","menu.features":"Funktionen","menu.devices":"Download","menu.faq":"FAQ","menu.legal":"Legal Hub","menu.terms":"AGB","menu.privacy":"Datenschutz","menu.contact":"Kontakt","footer.legal":"Legal Hub","footer.terms":"AGB","footer.privacy":"Datenschutz","footer.contact":"Kontakt"},"es":{"nav.features":"Funciones","nav.devices":"Descargar","nav.faq":"FAQ","menu.home":"Inicio","menu.login":"Acceder","menu.features":"Funciones","menu.devices":"Descargar","menu.faq":"FAQ","menu.legal":"Legal Hub","menu.terms":"Términos","menu.privacy":"Privacidad","menu.contact":"Contacto","footer.legal":"Legal Hub","footer.terms":"Términos","footer.privacy":"Privacidad","footer.contact":"Contacto"},"fr":{"nav.features":"Fonctionnalités","nav.devices":"Télécharger","nav.faq":"FAQ","menu.home":"Accueil","menu.login":"Connexion","menu.features":"Fonctionnalités","menu.devices":"Télécharger","menu.faq":"FAQ","menu.legal":"Legal Hub","menu.terms":"Conditions","menu.privacy":"Confidentialité","menu.contact":"Contact","footer.legal":"Legal Hub","footer.terms":"Conditions","footer.privacy":"Confidentialité","footer.contact":"Contact"},"pt":{"nav.features":"Funcionalidades","nav.devices":"Download","nav.faq":"FAQ","menu.home":"Início","menu.login":"Entrar","menu.features":"Funcionalidades","menu.devices":"Download","menu.faq":"FAQ","menu.legal":"Centro Legal","menu.terms":"Termos e Condições","menu.privacy":"Política de Privacidade","menu.contact":"Contactos","footer.legal":"Centro Legal","footer.terms":"Termos e Condições","footer.privacy":"Política de Privacidade","footer.contact":"Contactos"},"tr":{"nav.features":"Özellikler","nav.devices":"İndir","nav.faq":"SSS","menu.home":"Ana Sayfa","menu.login":"Giriş Yap","menu.features":"Özellikler","menu.devices":"İndir","menu.faq":"SSS","menu.legal":"Yasal Merkez","menu.terms":"Şartlar ve Koşullar","menu.privacy":"Gizlilik Politikası","menu.contact":"İletişim","footer.legal":"Yasal Merkez","footer.terms":"Şartlar ve Koşullar","footer.privacy":"Gizlilik Politikası","footer.contact":"İletişim"},"nl":{"nav.features":"Functies","nav.devices":"Downloaden","nav.faq":"FAQ","menu.home":"Home","menu.login":"Inloggen","menu.features":"Functies","menu.devices":"Downloaden","menu.faq":"FAQ","menu.legal":"Juridisch centrum","menu.terms":"Algemene voorwaarden","menu.privacy":"Privacybeleid","menu.contact":"Contact","footer.legal":"Juridisch centrum","footer.terms":"Algemene voorwaarden","footer.privacy":"Privacybeleid","footer.contact":"Contact"},"pl":{"nav.features":"Funkcje","nav.devices":"Pobierz","nav.faq":"FAQ","menu.home":"Strona główna","menu.login":"Zaloguj się","menu.features":"Funkcje","menu.devices":"Pobierz","menu.faq":"FAQ","menu.legal":"Centrum prawne","menu.terms":"Regulamin","menu.privacy":"Polityka prywatności","menu.contact":"Kontakt","footer.legal":"Centrum prawne","footer.terms":"Regulamin","footer.privacy":"Polityka prywatności","footer.contact":"Kontakt"},"ru":{"nav.features":"Функции","nav.devices":"Скачать","nav.faq":"FAQ","menu.home":"Главная","menu.login":"Войти","menu.features":"Функции","menu.devices":"Скачать","menu.faq":"FAQ","menu.legal":"Правовой центр","menu.terms":"Условия использования","menu.privacy":"Политика конфиденциальности","menu.contact":"Контакты","footer.legal":"Правовой центр","footer.terms":"Условия использования","footer.privacy":"Политика конфиденциальности","footer.contact":"Контакты"},"ar":{"nav.features":"الميزات","nav.devices":"تحميل","nav.faq":"الأسئلة الشائعة","menu.home":"الرئيسية","menu.login":"تسجيل الدخول","menu.features":"الميزات","menu.devices":"تحميل","menu.faq":"الأسئلة الشائعة","menu.legal":"المركز القانوني","menu.terms":"الشروط والأحكام","menu.privacy":"سياسة الخصوصية","menu.contact":"اتصل بنا","footer.legal":"المركز القانوني","footer.terms":"الشروط والأحكام","footer.privacy":"سياسة الخصوصية","footer.contact":"اتصل بنا"}};
+  var CC = {"it":["Usiamo cookie necessari per il funzionamento del sito e la preferenza lingua. Nessun cookie di tracciamento o pubblicitario.","Cookie policy","Ho capito"],"en":["We use necessary cookies to make the site work and remember your language. No tracking or advertising cookies.","Cookie policy","Got it"],"de":["Wir verwenden notwendige Cookies für den Betrieb der Website und die Sprachauswahl. Keine Tracking- oder Werbe-Cookies.","Cookie-Richtlinie","Verstanden"],"es":["Usamos cookies necesarias para el funcionamiento del sitio y la preferencia de idioma. Sin cookies de seguimiento ni publicidad.","Política de cookies","Entendido"],"fr":["Nous utilisons des cookies nécessaires au fonctionnement du site et à la langue. Aucun cookie de suivi ou publicitaire.","Politique cookies","J’ai compris"],"pt":["Usamos cookies necessários para o funcionamento do site e a preferência de idioma. Sem cookies de rastreamento ou publicidade.","Política de cookies","Entendi"],"tr":["Sitenin çalışması ve dil tercihi için gerekli çerezleri kullanıyoruz. İzleme veya reklam çerezi yok.","Çerez politikası","Anladım"],"nl":["We gebruiken noodzakelijke cookies om de site te laten werken en je taal te onthouden. Geen tracking- of advertentiecookies.","Cookiebeleid","Begrepen"],"pl":["Używamy niezbędnych plików cookie do działania strony i preferencji języka. Bez śledzenia ani reklam.","Polityka cookies","Rozumiem"],"ru":["Мы используем необходимые файлы cookie для работы сайта и выбора языка. Без отслеживания и рекламы.","Политика cookie","Понятно"],"ar":["نستخدم ملفات تعريف الارتباط الضرورية لعمل الموقع وتفضيل اللغة. لا ملفات تتبع أو إعلانات.","سياسة ملفات الارتباط","حسناً"]};
+  var IC = {"home":"<path d=\"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><polyline points=\"9 22 9 12 15 12 15 22\"/>","login":"<path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"/><polyline points=\"10 17 15 12 10 7\"/><line x1=\"15\" y1=\"12\" x2=\"3\" y2=\"12\"/>","features":"<polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"/>","devices":"<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"7 10 12 15 17 10\"/><line x1=\"12\" y1=\"15\" x2=\"12\" y2=\"3\"/>","faq":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/>","legal":"<path d=\"m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\"/><path d=\"m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\"/><path d=\"M7 21h10\"/><path d=\"M12 3v18\"/><path d=\"M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2\"/>","terms":"<path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"9\" y1=\"13\" x2=\"15\" y2=\"13\"/><line x1=\"9\" y1=\"17\" x2=\"13\" y2=\"17\"/>","privacy":"<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/>","contact":"<path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/>"};
+  var HOME='https://burgtv.com', DL='https://download.burgtv.com', APP='https://app.burgtv.com', LOGO=HOME+'/assets/branding/logo.png';
+  // voci sidebar: [chiave i18n, href, icona] — null = divider
+  var NAV=[
+    ['menu.home',HOME,'home'],
+    ['menu.login',APP+'/login.html','login'],
+    ['menu.features',HOME+'/#features','features'],
+    ['menu.devices',DL,'devices'],
+    null,
+    ['menu.faq',HOME+'/#faq','faq'],
+    ['menu.legal',HOME+'/legal/','legal'],
+    ['menu.terms',HOME+'/legal/terms.html','terms'],
+    ['menu.privacy',HOME+'/legal/privacy.html','privacy'],
+    ['menu.contact','mailto:info@burgtv.com','contact']
+  ];
   function lang(){
     var m=document.cookie.match(/burgtv_lang=([^;]+)/);
-    if(m&&T[m[1]])return m[1];
+    if(m&&I18N[m[1]])return m[1];
     var d=(document.documentElement.lang||'').slice(0,2);
-    if(T[d])return d;
-    try{var s=localStorage.getItem('preferredLang')||localStorage.getItem('lang');if(T[s])return s;}catch(e){}
+    if(I18N[d])return d;
+    try{var s=localStorage.getItem('preferredLang')||localStorage.getItem('lang');if(I18N[s])return s;}catch(e){}
     return 'it';
   }
+  function tr(k){var l=lang();return (I18N[l]&&I18N[l][k])||I18N.it[k]||k;}
   function css(){
     if(document.getElementById('bv-chrome-css'))return;
     var s=document.createElement('style');s.id='bv-chrome-css';
-    s.textContent=[
-      '.burgtv-back-btn{display:none!important}',
-      'body.bv-chrome{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:100vh;margin:0;padding:0!important}',
-      '.bv-main{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:1.5rem 1rem;box-sizing:border-box}',
-      '.bv-nav{flex:0 0 auto;background:rgba(10,10,20,.95);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}',
-      '.bv-nav-inner{display:flex;align-items:center;gap:24px;height:60px;max-width:1200px;margin:0 auto;padding:0 18px}',
-      '.bv-brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}',
-      '.bv-brand img{height:34px;width:auto;display:block}',
-      '.bv-links{display:flex;align-items:center;gap:24px}',
-      '.bv-links a{color:#d9def7;text-decoration:none;font-size:15px;font-weight:500;transition:color .2s;font-family:inherit}',
-      '.bv-links a:hover{color:#B94A8E}',
-      '.bv-footer{flex:0 0 auto;border-top:1px solid rgba(255,255,255,.06);padding:22px 18px;background:#0e0e18}',
-      '.bv-foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:1200px;margin:0 auto}',
-      '.bv-foot-brand img{height:28px;width:auto;display:block}',
-      '.bv-foot-links{display:flex;gap:18px;flex-wrap:wrap}',
-      '.bv-foot-links a{color:#9ca3af;text-decoration:none;font-size:13px;transition:color .25s;font-family:inherit}',
-      '.bv-foot-links a:hover{color:#B94A8E}',
-      '.bv-foot-inner small{color:rgba(255,255,255,.45);font-size:13px}',
-      '.bv-cookie{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:calc(100% - 32px);max-width:680px;background:rgba(20,20,30,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);padding:16px 18px;z-index:2147483000;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:inherit}',
-      '.bv-cookie p{margin:0;flex:1 1 320px;color:#d9def7;font-size:13px;line-height:1.5}',
-      '.bv-cookie a{color:#B94A8E;text-decoration:underline}',
-      '.bv-cookie button{flex:0 0 auto;background:linear-gradient(135deg,#B94A8E,#7B4397);color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}',
-      '.bv-cookie button:hover{opacity:.9}',
-      '@media(max-width:520px){.bv-cookie{flex-direction:column;align-items:stretch;text-align:center;bottom:10px}.bv-cookie button{width:100%}}',
-      '@media(max-width:720px){.bv-nav-inner{gap:14px;height:54px;padding:0 14px}.bv-links{gap:14px}.bv-links a{font-size:13px}.bv-foot-inner{flex-direction:column;text-align:center;justify-content:center}}',
-      '@media(max-width:420px){.bv-links{gap:10px}.bv-links a{font-size:12px}.bv-brand img{height:28px}}'
-    ].join('');
+    s.textContent=['.burgtv-back-btn{display:none!important}','body.bv-chrome{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:100vh;margin:0;padding:0!important}','.bv-main{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:1.5rem 1rem;box-sizing:border-box}','.bv-nav{flex:0 0 auto;position:relative;z-index:90;background:rgba(10,10,20,.95);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}','.bv-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:60px;max-width:1200px;margin:0 auto;padding:0 18px}','.bv-nav-l{display:flex;align-items:center}','.bv-mtoggle{background:transparent;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:4px;margin-right:10px}','.bv-mtoggle span{display:block;width:22px;height:2.5px;background:#fff;border-radius:2px;transition:all .3s ease}','.bv-mtoggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}','.bv-mtoggle.active span:nth-child(2){opacity:0}','.bv-mtoggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-8px)}','.bv-brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}','.bv-brand img{height:34px;width:auto;display:block}','.bv-links{display:flex;align-items:center;gap:24px}','.bv-links a{color:#d9def7;text-decoration:none;font-size:15px;font-weight:500;transition:color .2s;font-family:inherit}','.bv-links a:hover{color:#B94A8E}','.bv-sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,.08);transition:left .3s ease;z-index:99;overflow-y:auto}','.bv-sidebar.active{left:0}','.bv-sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px}','.bv-sidebar-header img{height:40px;width:auto}','.bv-sidebar-nav{padding:20px 0}','.bv-sidebar-nav a{display:flex;align-items:center;gap:14px;padding:13px 22px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;transition:all .2s ease;border-left:3px solid transparent}','.bv-sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:#B94A8E}','.bv-sidebar-nav a:hover .bv-sb-icon{color:#B94A8E}','.bv-sb-icon{width:18px;height:18px;flex-shrink:0;stroke:currentColor;stroke-width:2;fill:none;color:#9ca3af;transition:color .2s;stroke-linecap:round;stroke-linejoin:round}','.bv-sidebar-divider{height:1px;background:rgba(255,255,255,.08);margin:10px 20px}','.bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:98}','.bv-overlay.active{display:block}','.bv-footer{flex:0 0 auto;border-top:1px solid rgba(255,255,255,.06);padding:22px 18px;background:#0e0e18}','.bv-foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:1200px;margin:0 auto}','.bv-foot-brand img{height:28px;width:auto;display:block}','.bv-foot-links{display:flex;gap:18px;flex-wrap:wrap}','.bv-foot-links a{color:#9ca3af;text-decoration:none;font-size:13px;transition:color .25s;font-family:inherit}','.bv-foot-links a:hover{color:#B94A8E}','.bv-foot-inner small{color:rgba(255,255,255,.45);font-size:13px}','.bv-cookie{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:calc(100% - 32px);max-width:680px;background:rgba(20,20,30,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);padding:16px 18px;z-index:2147483000;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:inherit}','.bv-cookie p{margin:0;flex:1 1 320px;color:#d9def7;font-size:13px;line-height:1.5}','.bv-cookie a{color:#B94A8E;text-decoration:underline}','.bv-cookie button{flex:0 0 auto;background:linear-gradient(135deg,#B94A8E,#7B4397);color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}','.bv-cookie button:hover{opacity:.9}','@media(max-width:900px){.bv-links{display:none}}','@media(max-width:720px){.bv-nav-inner{height:54px;padding:0 14px}.bv-foot-inner{flex-direction:column;text-align:center;justify-content:center}}','@media(max-width:520px){.bv-cookie{flex-direction:column;align-items:stretch;text-align:center;bottom:10px}.bv-cookie button{width:100%}}',].join('');
     document.head.appendChild(s);
   }
+  function svg(name){return '<svg class="bv-sb-icon" viewBox="0 0 24 24">'+(IC[name]||'')+'</svg>';}
   function render(){
-    var L=lang(),t=T[L]||T.it;
+    var l=lang();
+    document.querySelectorAll('[data-bvk]').forEach(function(e){var k=e.getAttribute('data-bvk');var v=(I18N[l]&&I18N[l][k])||I18N.it[k];if(v!=null)e.textContent=v;});
+    var cc=CC[l]||CC.it;
     var set=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
-    set('bv-l-f',t.f);set('bv-l-d',t.d);set('bv-l-q',t.q);
-    set('bv-f-l',t.l);set('bv-f-t',t.t);set('bv-f-p',t.p);set('bv-f-c',t.c);
-    var cc=CC[L]||CC.it;
     set('bv-ck-txt',cc[0]);set('bv-ck-link',cc[1]);set('bv-ck-btn',cc[2]);
   }
-  function cookieOk(){
-    try{if(localStorage.getItem('bv_cookie_ok')==='1')return true;}catch(e){}
-    return /(?:^|;\s*)bv_cookie_ok=1/.test(document.cookie);
-  }
-  function acceptCookie(){
-    try{localStorage.setItem('bv_cookie_ok','1');}catch(e){}
-    var dom=(location.hostname.endsWith('.burgtv.com')||location.hostname==='burgtv.com')?'; domain=.burgtv.com':'';
-    document.cookie='bv_cookie_ok=1; max-age=31536000; path=/'+dom+'; SameSite=Lax';
-    var b=document.getElementById('bv-cookie');if(b)b.parentNode.removeChild(b);
-  }
+  function cookieOk(){try{if(localStorage.getItem('bv_cookie_ok')==='1')return true;}catch(e){}return /(?:^|;\s*)bv_cookie_ok=1/.test(document.cookie);}
+  function acceptCookie(){try{localStorage.setItem('bv_cookie_ok','1');}catch(e){}var d=(location.hostname.endsWith('.burgtv.com')||location.hostname==='burgtv.com')?'; domain=.burgtv.com':'';document.cookie='bv_cookie_ok=1; max-age=31536000; path=/'+d+'; SameSite=Lax';var b=document.getElementById('bv-cookie');if(b)b.parentNode.removeChild(b);}
   function cookieBanner(){
     if(cookieOk()||document.getElementById('bv-cookie'))return;
     var b=document.createElement('div');b.className='bv-cookie';b.id='bv-cookie';b.setAttribute('role','dialog');b.setAttribute('aria-live','polite');
@@ -101,25 +52,43 @@
     document.body.appendChild(b);
     b.querySelector('#bv-ck-btn').addEventListener('click',acceptCookie);
   }
+  function navLinks(){
+    return '<a href="'+HOME+'/#features" data-bvk="nav.features"></a><a href="'+DL+'" data-bvk="nav.devices"></a><a href="'+HOME+'/#faq" data-bvk="nav.faq"></a>';
+  }
+  function sidebarHTML(){
+    var h='<div class="bv-sidebar-header"><img src="'+LOGO+'" alt="BurgTV"></div><nav class="bv-sidebar-nav">';
+    NAV.forEach(function(it){ if(!it){h+='<div class="bv-sidebar-divider"></div>';return;} h+='<a href="'+it[1]+'">'+svg(it[2])+'<span data-bvk="'+it[0]+'"></span></a>'; });
+    return h+'</nav>';
+  }
   function build(){
     if(document.getElementById('bv-chrome-header'))return;
     css();
     var main=document.createElement('main');main.className='bv-main';
     while(document.body.firstChild){main.appendChild(document.body.firstChild);}
     var head=document.createElement('header');head.className='bv-nav';head.id='bv-chrome-header';
-    head.innerHTML='<div class="bv-nav-inner"><a class="bv-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a>'+
-      '<nav class="bv-links"><a id="bv-l-f" href="'+HOME+'/#features"></a><a id="bv-l-d" href="'+DL+'"></a><a id="bv-l-q" href="'+HOME+'/#faq"></a></nav></div>';
+    head.innerHTML='<div class="bv-nav-inner"><div class="bv-nav-l"><button class="bv-mtoggle" id="bv-mtoggle" aria-label="Menu"><span></span><span></span><span></span></button><a class="bv-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a></div><nav class="bv-links">'+navLinks()+'</nav></div>';
+    var side=document.createElement('aside');side.className='bv-sidebar';side.id='bv-sidebar';side.innerHTML=sidebarHTML();
+    var ov=document.createElement('div');ov.className='bv-overlay';ov.id='bv-overlay';
     var foot=document.createElement('footer');foot.className='bv-footer';foot.id='bv-chrome-footer';
-    foot.innerHTML='<div class="bv-foot-inner"><a class="bv-foot-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a>'+
-      '<div class="bv-foot-links"><a id="bv-f-l" href="'+HOME+'/legal/"></a><a id="bv-f-t" href="'+HOME+'/legal/terms.html"></a><a id="bv-f-p" href="'+HOME+'/legal/privacy.html"></a><a id="bv-f-c" href="mailto:info@burgtv.com"></a></div>'+
-      '<small>© '+(new Date().getFullYear())+' BurgTV – burgtv.com</small></div>';
+    foot.innerHTML='<div class="bv-foot-inner"><a class="bv-foot-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a><div class="bv-foot-links"><a href="'+HOME+'/legal/" data-bvk="footer.legal"></a><a href="'+HOME+'/legal/terms.html" data-bvk="footer.terms"></a><a href="'+HOME+'/legal/privacy.html" data-bvk="footer.privacy"></a><a href="mailto:info@burgtv.com" data-bvk="footer.contact"></a></div><small>\u00a9 '+(new Date().getFullYear())+' BurgTV \u2013 burgtv.com</small></div>';
+    document.body.appendChild(side);
+    document.body.appendChild(ov);
     document.body.appendChild(head);
     document.body.appendChild(main);
     document.body.appendChild(foot);
     document.body.classList.add('bv-chrome');
     cookieBanner();
     render();
-    document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("[data-lang]"))setTimeout(render,60);},true);
+    // toggle menu
+    var mt=document.getElementById('bv-mtoggle');
+    function toggle(){mt.classList.toggle('active');side.classList.toggle('active');ov.classList.toggle('active');}
+    function close(){mt.classList.remove('active');side.classList.remove('active');ov.classList.remove('active');}
+    mt.addEventListener('click',toggle);
+    ov.addEventListener('click',close);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+    side.querySelectorAll('a[href]').forEach(function(a){a.addEventListener('click',close);});
+    // re-render testi al cambio lingua
+    document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-lang]'))setTimeout(render,60);},true);
     try{new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
