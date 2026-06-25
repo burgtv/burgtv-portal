@@ -1,5 +1,5 @@
 /* BurgTV shared chrome (header + hamburger/sidebar + footer + cookie) — IDENTICO alla home.
- * Uso: <script src="/assets/js/bv-chrome.js" defer></script>  (richiede lang-dropdown.js per il selettore lingua)
+ * Uso: <script src="/assets/js/bv-chrome.js" defer></script> (con lang-dropdown.js per il selettore lingua)
  */
 (function () {
   "use strict";
@@ -7,19 +7,7 @@
   var CC = {"it":["Usiamo cookie necessari per il funzionamento del sito e la preferenza lingua. Nessun cookie di tracciamento o pubblicitario.","Cookie policy","Ho capito"],"en":["We use necessary cookies to make the site work and remember your language. No tracking or advertising cookies.","Cookie policy","Got it"],"de":["Wir verwenden notwendige Cookies für den Betrieb der Website und die Sprachauswahl. Keine Tracking- oder Werbe-Cookies.","Cookie-Richtlinie","Verstanden"],"es":["Usamos cookies necesarias para el funcionamiento del sitio y la preferencia de idioma. Sin cookies de seguimiento ni publicidad.","Política de cookies","Entendido"],"fr":["Nous utilisons des cookies nécessaires au fonctionnement du site et à la langue. Aucun cookie de suivi ou publicitaire.","Politique cookies","J’ai compris"],"pt":["Usamos cookies necessários para o funcionamento do site e a preferência de idioma. Sem cookies de rastreamento ou publicidade.","Política de cookies","Entendi"],"tr":["Sitenin çalışması ve dil tercihi için gerekli çerezleri kullanıyoruz. İzleme veya reklam çerezi yok.","Çerez politikası","Anladım"],"nl":["We gebruiken noodzakelijke cookies om de site te laten werken en je taal te onthouden. Geen tracking- of advertentiecookies.","Cookiebeleid","Begrepen"],"pl":["Używamy niezbędnych plików cookie do działania strony i preferencji języka. Bez śledzenia ani reklam.","Polityka cookies","Rozumiem"],"ru":["Мы используем необходимые файлы cookie для работы сайта и выбора языка. Без отслеживания и рекламы.","Политика cookie","Понятно"],"ar":["نستخدم ملفات تعريف الارتباط الضرورية لعمل الموقع وتفضيل اللغة. لا ملفات تتبع أو إعلانات.","سياسة ملفات الارتباط","حسناً"]};
   var IC = {"home":"<path d=\"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/><polyline points=\"9 22 9 12 15 12 15 22\"/>","login":"<path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"/><polyline points=\"10 17 15 12 10 7\"/><line x1=\"15\" y1=\"12\" x2=\"3\" y2=\"12\"/>","features":"<polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"/>","devices":"<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"7 10 12 15 17 10\"/><line x1=\"12\" y1=\"15\" x2=\"12\" y2=\"3\"/>","faq":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/>","legal":"<path d=\"m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\"/><path d=\"m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z\"/><path d=\"M7 21h10\"/><path d=\"M12 3v18\"/><path d=\"M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2\"/>","terms":"<path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><polyline points=\"14 2 14 8 20 8\"/><line x1=\"9\" y1=\"13\" x2=\"15\" y2=\"13\"/><line x1=\"9\" y1=\"17\" x2=\"13\" y2=\"17\"/>","privacy":"<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/>","contact":"<path d=\"M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z\"/><polyline points=\"22,6 12,13 2,6\"/>"};
   var HOME='https://burgtv.com', DL='https://download.burgtv.com', APP='https://app.burgtv.com', LOGO=HOME+'/assets/branding/logo.png';
-  // voci sidebar: [chiave i18n, href, icona] — null = divider
-  var NAV=[
-    ['menu.home',HOME,'home'],
-    ['menu.login',APP+'/login.html','login'],
-    ['menu.features',HOME+'/#features','features'],
-    ['menu.devices',DL,'devices'],
-    null,
-    ['menu.faq',HOME+'/#faq','faq'],
-    ['menu.legal',HOME+'/legal/','legal'],
-    ['menu.terms',HOME+'/legal/terms.html','terms'],
-    ['menu.privacy',HOME+'/legal/privacy.html','privacy'],
-    ['menu.contact','mailto:info@burgtv.com','contact']
-  ];
+  var NAV=[['menu.home',HOME,'home'],['menu.login',APP+'/login.html','login'],['menu.features',HOME+'/#features','features'],['menu.devices',DL,'devices'],null,['menu.faq',HOME+'/#faq','faq'],['menu.legal',HOME+'/legal/','legal'],['menu.terms',HOME+'/legal/terms.html','terms'],['menu.privacy',HOME+'/legal/privacy.html','privacy'],['menu.contact','mailto:info@burgtv.com','contact']];
   function lang(){
     var m=document.cookie.match(/burgtv_lang=([^;]+)/);
     if(m&&I18N[m[1]])return m[1];
@@ -28,19 +16,17 @@
     try{var s=localStorage.getItem('preferredLang')||localStorage.getItem('lang');if(I18N[s])return s;}catch(e){}
     return 'it';
   }
-  function tr(k){var l=lang();return (I18N[l]&&I18N[l][k])||I18N.it[k]||k;}
   function css(){
     if(document.getElementById('bv-chrome-css'))return;
     var s=document.createElement('style');s.id='bv-chrome-css';
-    s.textContent=['.burgtv-back-btn{display:none!important}','body.bv-chrome{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:100vh;margin:0;padding:0!important}','.bv-main{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:1.5rem 1rem;box-sizing:border-box}','.bv-nav{flex:0 0 auto;position:relative;z-index:90;background:rgba(10,10,20,.95);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}','.bv-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:60px;max-width:1200px;margin:0 auto;padding:0 18px}','.bv-nav-l{display:flex;align-items:center}','.bv-mtoggle{background:transparent;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:4px;margin-right:10px}','.bv-mtoggle span{display:block;width:22px;height:2.5px;background:#fff;border-radius:2px;transition:all .3s ease}','.bv-mtoggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}','.bv-mtoggle.active span:nth-child(2){opacity:0}','.bv-mtoggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-8px)}','.bv-brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}','.bv-brand img{height:34px;width:auto;display:block}','.bv-links{display:flex;align-items:center;gap:24px}','.bv-links a{color:#d9def7;text-decoration:none;font-size:15px;font-weight:500;transition:color .2s;font-family:inherit}','.bv-links a:hover{color:#B94A8E}','.bv-sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,.08);transition:left .3s ease;z-index:99;overflow-y:auto}','.bv-sidebar.active{left:0}','.bv-sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px}','.bv-sidebar-header img{height:40px;width:auto}','.bv-sidebar-nav{padding:20px 0}','.bv-sidebar-nav a{display:flex;align-items:center;gap:14px;padding:13px 22px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;transition:all .2s ease;border-left:3px solid transparent}','.bv-sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:#B94A8E}','.bv-sidebar-nav a:hover .bv-sb-icon{color:#B94A8E}','.bv-sb-icon{width:18px;height:18px;flex-shrink:0;stroke:currentColor;stroke-width:2;fill:none;color:#9ca3af;transition:color .2s;stroke-linecap:round;stroke-linejoin:round}','.bv-sidebar-divider{height:1px;background:rgba(255,255,255,.08);margin:10px 20px}','.bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:98}','.bv-overlay.active{display:block}','.bv-footer{flex:0 0 auto;border-top:1px solid rgba(255,255,255,.06);padding:22px 18px;background:#0e0e18}','.bv-foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:1200px;margin:0 auto}','.bv-foot-brand img{height:28px;width:auto;display:block}','.bv-foot-links{display:flex;gap:18px;flex-wrap:wrap}','.bv-foot-links a{color:#9ca3af;text-decoration:none;font-size:13px;transition:color .25s;font-family:inherit}','.bv-foot-links a:hover{color:#B94A8E}','.bv-foot-inner small{color:rgba(255,255,255,.45);font-size:13px}','.bv-cookie{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:calc(100% - 32px);max-width:680px;background:rgba(20,20,30,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);padding:16px 18px;z-index:2147483000;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:inherit}','.bv-cookie p{margin:0;flex:1 1 320px;color:#d9def7;font-size:13px;line-height:1.5}','.bv-cookie a{color:#B94A8E;text-decoration:underline}','.bv-cookie button{flex:0 0 auto;background:linear-gradient(135deg,#B94A8E,#7B4397);color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}','.bv-cookie button:hover{opacity:.9}','@media(max-width:900px){.bv-links{display:none}}','@media(max-width:720px){.bv-nav-inner{height:54px;padding:0 14px}.bv-foot-inner{flex-direction:column;text-align:center;justify-content:center}}','@media(max-width:520px){.bv-cookie{flex-direction:column;align-items:stretch;text-align:center;bottom:10px}.bv-cookie button{width:100%}}',].join('');
+    s.textContent=[".burgtv-back-btn{display:none!important}", "body.bv-chrome{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:100vh;margin:0;padding:0!important}", ".bv-main{flex:1 0 auto;width:100%;box-sizing:border-box}", ".bv-main.bv-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 1rem}", ".bv-nav{flex:0 0 auto;position:relative;z-index:90;background:rgba(10,10,20,.95);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}", ".bv-nav-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;height:60px;max-width:none;width:100%;padding:0 18px;box-sizing:border-box}", ".bv-nav-l{display:flex;align-items:center}", ".bv-mtoggle{background:transparent;border:none;cursor:pointer;padding:6px;display:flex;flex-direction:column;gap:4px;margin-right:10px}", ".bv-mtoggle span{display:block;width:22px;height:2.5px;background:#fff;border-radius:2px;transition:all .3s ease}", ".bv-mtoggle.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px)}", ".bv-mtoggle.active span:nth-child(2){opacity:0}", ".bv-mtoggle.active span:nth-child(3){transform:rotate(-45deg) translate(7px,-8px)}", ".bv-brand{display:flex;align-items:center;text-decoration:none;flex-shrink:0}", ".bv-brand img{height:34px;width:auto;display:block}", ".bv-links{display:flex;align-items:center;gap:24px}", ".bv-links a{color:#d9def7;text-decoration:none;font-size:15px;font-weight:500;transition:color .2s;font-family:inherit}", ".bv-links a:hover{color:#B94A8E}", ".bv-sidebar{position:fixed;top:0;left:-320px;width:300px;height:100vh;background:rgba(15,15,25,.98);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-right:1px solid rgba(255,255,255,.08);transition:left .3s ease;z-index:99;overflow-y:auto}", ".bv-sidebar.active{left:0}", ".bv-sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px}", ".bv-sidebar-header img{height:40px;width:auto}", ".bv-sidebar-nav{padding:20px 0}", ".bv-sidebar-nav a{display:flex;align-items:center;gap:14px;padding:13px 22px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;transition:all .2s ease;border-left:3px solid transparent}", ".bv-sidebar-nav a:hover{background:rgba(255,255,255,.05);border-left-color:#B94A8E}", ".bv-sidebar-nav a:hover .bv-sb-icon{color:#B94A8E}", ".bv-sb-icon{width:18px;height:18px;flex-shrink:0;stroke:currentColor;stroke-width:2;fill:none;color:#9ca3af;transition:color .2s;stroke-linecap:round;stroke-linejoin:round}", ".bv-sidebar-divider{height:1px;background:rgba(255,255,255,.08);margin:10px 20px}", ".bv-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:98}", ".bv-overlay.active{display:block}", ".bv-footer{flex:0 0 auto;border-top:1px solid rgba(255,255,255,.06);padding:22px 18px;background:#0e0e18}", ".bv-foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:1180px;margin:0 auto}", ".bv-foot-brand img{height:28px;width:auto;display:block}", ".bv-foot-links{display:flex;gap:18px;flex-wrap:wrap}", ".bv-foot-links a{color:#9ca3af;text-decoration:none;font-size:13px;transition:color .25s;font-family:inherit}", ".bv-foot-links a:hover{color:#B94A8E}", ".bv-foot-inner small{color:rgba(255,255,255,.45);font-size:13px}", ".bv-cookie{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);width:calc(100% - 32px);max-width:680px;background:rgba(20,20,30,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);padding:16px 18px;z-index:2147483000;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-family:inherit}", ".bv-cookie p{margin:0;flex:1 1 320px;color:#d9def7;font-size:13px;line-height:1.5}", ".bv-cookie a{color:#B94A8E;text-decoration:underline}", ".bv-cookie button{flex:0 0 auto;background:linear-gradient(135deg,#B94A8E,#7B4397);color:#fff;border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .2s}", ".bv-cookie button:hover{opacity:.9}", "@media(max-width:900px){.bv-links{display:none}}", "@media(max-width:720px){.bv-nav-inner{height:54px;padding:0 14px}.bv-foot-inner{flex-direction:column;text-align:center;justify-content:center}}", "@media(max-width:520px){.bv-cookie{flex-direction:column;align-items:stretch;text-align:center;bottom:10px}.bv-cookie button{width:100%}}"].join('');
     document.head.appendChild(s);
   }
-  function svg(name){return '<svg class="bv-sb-icon" viewBox="0 0 24 24">'+(IC[name]||'')+'</svg>';}
+  function svg(n){return '<svg class="bv-sb-icon" viewBox="0 0 24 24">'+(IC[n]||'')+'</svg>';}
   function render(){
     var l=lang();
     document.querySelectorAll('[data-bvk]').forEach(function(e){var k=e.getAttribute('data-bvk');var v=(I18N[l]&&I18N[l][k])||I18N.it[k];if(v!=null)e.textContent=v;});
-    var cc=CC[l]||CC.it;
-    var set=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
+    var cc=CC[l]||CC.it,set=function(id,v){var e=document.getElementById(id);if(e)e.textContent=v;};
     set('bv-ck-txt',cc[0]);set('bv-ck-link',cc[1]);set('bv-ck-btn',cc[2]);
   }
   function cookieOk(){try{if(localStorage.getItem('bv_cookie_ok')==='1')return true;}catch(e){}return /(?:^|;\s*)bv_cookie_ok=1/.test(document.cookie);}
@@ -49,45 +35,32 @@
     if(cookieOk()||document.getElementById('bv-cookie'))return;
     var b=document.createElement('div');b.className='bv-cookie';b.id='bv-cookie';b.setAttribute('role','dialog');b.setAttribute('aria-live','polite');
     b.innerHTML='<p><span id="bv-ck-txt"></span> <a id="bv-ck-link" href="'+HOME+'/legal/cookies.html"></a></p><button type="button" id="bv-ck-btn"></button>';
-    document.body.appendChild(b);
-    b.querySelector('#bv-ck-btn').addEventListener('click',acceptCookie);
-  }
-  function navLinks(){
-    return '<a href="'+HOME+'/#features" data-bvk="nav.features"></a><a href="'+DL+'" data-bvk="nav.devices"></a><a href="'+HOME+'/#faq" data-bvk="nav.faq"></a>';
-  }
-  function sidebarHTML(){
-    var h='<div class="bv-sidebar-header"><img src="'+LOGO+'" alt="BurgTV"></div><nav class="bv-sidebar-nav">';
-    NAV.forEach(function(it){ if(!it){h+='<div class="bv-sidebar-divider"></div>';return;} h+='<a href="'+it[1]+'">'+svg(it[2])+'<span data-bvk="'+it[0]+'"></span></a>'; });
-    return h+'</nav>';
+    document.body.appendChild(b);b.querySelector('#bv-ck-btn').addEventListener('click',acceptCookie);
   }
   function build(){
     if(document.getElementById('bv-chrome-header'))return;
+    var centered=false;try{var cs=getComputedStyle(document.body);centered=cs.display.indexOf('flex')>=0&&cs.alignItems.indexOf('center')>=0;}catch(e){}
     css();
-    var main=document.createElement('main');main.className='bv-main';
+    var main=document.createElement('main');main.className='bv-main'+(centered?' bv-center':'');
     while(document.body.firstChild){main.appendChild(document.body.firstChild);}
     var head=document.createElement('header');head.className='bv-nav';head.id='bv-chrome-header';
-    head.innerHTML='<div class="bv-nav-inner"><div class="bv-nav-l"><button class="bv-mtoggle" id="bv-mtoggle" aria-label="Menu"><span></span><span></span><span></span></button><a class="bv-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a></div><nav class="bv-links">'+navLinks()+'</nav></div>';
-    var side=document.createElement('aside');side.className='bv-sidebar';side.id='bv-sidebar';side.innerHTML=sidebarHTML();
+    head.innerHTML='<div class="bv-nav-inner"><div class="bv-nav-l"><button class="bv-mtoggle" id="bv-mtoggle" aria-label="Menu"><span></span><span></span><span></span></button><a class="bv-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a></div><nav class="bv-links"><a href="'+HOME+'/#features" data-bvk="nav.features"></a><a href="'+DL+'" data-bvk="nav.devices"></a><a href="'+HOME+'/#faq" data-bvk="nav.faq"></a></nav></div>';
+    var side=document.createElement('aside');side.className='bv-sidebar';side.id='bv-sidebar';
+    var sh='<div class="bv-sidebar-header"><img src="'+LOGO+'" alt="BurgTV"></div><nav class="bv-sidebar-nav">';
+    NAV.forEach(function(it){if(!it){sh+='<div class="bv-sidebar-divider"></div>';return;}sh+='<a href="'+it[1]+'">'+svg(it[2])+'<span data-bvk="'+it[0]+'"></span></a>';});
+    side.innerHTML=sh+'</nav>';
     var ov=document.createElement('div');ov.className='bv-overlay';ov.id='bv-overlay';
     var foot=document.createElement('footer');foot.className='bv-footer';foot.id='bv-chrome-footer';
     foot.innerHTML='<div class="bv-foot-inner"><a class="bv-foot-brand" href="'+HOME+'"><img src="'+LOGO+'" alt="BurgTV"></a><div class="bv-foot-links"><a href="'+HOME+'/legal/" data-bvk="footer.legal"></a><a href="'+HOME+'/legal/terms.html" data-bvk="footer.terms"></a><a href="'+HOME+'/legal/privacy.html" data-bvk="footer.privacy"></a><a href="mailto:info@burgtv.com" data-bvk="footer.contact"></a></div><small>\u00a9 '+(new Date().getFullYear())+' BurgTV \u2013 burgtv.com</small></div>';
-    document.body.appendChild(side);
-    document.body.appendChild(ov);
-    document.body.appendChild(head);
-    document.body.appendChild(main);
-    document.body.appendChild(foot);
+    document.body.appendChild(side);document.body.appendChild(ov);document.body.appendChild(head);document.body.appendChild(main);document.body.appendChild(foot);
     document.body.classList.add('bv-chrome');
-    cookieBanner();
-    render();
-    // toggle menu
+    cookieBanner();render();
     var mt=document.getElementById('bv-mtoggle');
     function toggle(){mt.classList.toggle('active');side.classList.toggle('active');ov.classList.toggle('active');}
     function close(){mt.classList.remove('active');side.classList.remove('active');ov.classList.remove('active');}
-    mt.addEventListener('click',toggle);
-    ov.addEventListener('click',close);
+    mt.addEventListener('click',toggle);ov.addEventListener('click',close);
     document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
     side.querySelectorAll('a[href]').forEach(function(a){a.addEventListener('click',close);});
-    // re-render testi al cambio lingua
     document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-lang]'))setTimeout(render,60);},true);
     try{new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
   }
