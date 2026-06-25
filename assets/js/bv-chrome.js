@@ -117,8 +117,8 @@
     document.body.appendChild(main);
     document.body.appendChild(foot);
     document.body.classList.add('bv-chrome');
-    render();
     cookieBanner();
+    render();
     document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest("[data-lang]"))setTimeout(render,60);},true);
     try{new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
   }
