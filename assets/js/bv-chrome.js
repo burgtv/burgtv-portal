@@ -49,7 +49,7 @@
     var s=document.createElement('style');s.id='bv-chrome-css';
     s.textContent=[
       '.burgtv-back-btn{display:none!important}',
-      'body.bv-chrome{display:flex!important;flex-direction:column!important;min-height:100vh;margin:0;padding:0!important}',
+      'body.bv-chrome{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-height:100vh;margin:0;padding:0!important}',
       '.bv-main{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:1.5rem 1rem;box-sizing:border-box}',
       '.bv-nav{flex:0 0 auto;background:rgba(10,10,20,.95);backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}',
       '.bv-nav-inner{display:flex;align-items:center;gap:24px;height:60px;max-width:1200px;margin:0 auto;padding:0 18px}',
