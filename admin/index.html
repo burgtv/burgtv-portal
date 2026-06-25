@@ -1506,7 +1506,7 @@ function renderTraffic(t) {
     // Referrers — only those for burgtv.com host (rest is admin/api noise)
     const refs = (t.referrers || []).filter(r => r.hostname === 'burgtv.com');
     if (refs.length === 0) {
-        document.getElementById('an-traf-referrers').innerHTML = '<p style="font-size:13px;color:var(--muted)">Nessuna sorgente registrata ancora.<br><span style="font-size:11px">Le sorgenti vengono raccolte solo dopo che lo snippet di tracking è installato sul sito (in arrivo nel prossimo deploy).</span></p>';
+        document.getElementById('an-traf-referrers').innerHTML = '<p style="font-size:13px;color:var(--muted)">Nessuna sorgente registrata in questo periodo.</p>';
     } else {
         const max = Math.max(...refs.map(r => Number(r.requests) || 0));
         document.getElementById('an-traf-referrers').innerHTML = refs.slice(0, 12).map(r => {
