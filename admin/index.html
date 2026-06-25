@@ -292,13 +292,25 @@
                 <button type="button" onclick="clearUserFilters()" style="width:auto;margin:0;padding:10px 14px;background:var(--bg3)">Reset</button>
                 <button type="button" onclick="exportUsersCSV()" style="width:auto;margin:0;padding:10px 14px" title="Scarica CSV con i filtri correnti">Esporta CSV</button>
                 <span id="users-count" class="me"></span>
+                <select id="users-pagesize" onchange="usersPageSize=+this.value; usersPage=0; loadUsers(document.getElementById('users-search').value)" style="width:auto;margin:0;padding:10px 12px" title="Righe per pagina">
+                    <option value="25">25/pag</option>
+                    <option value="50">50/pag</option>
+                    <option value="75">75/pag</option>
+                </select>
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Email</th><th>Piano</th><th>Licenze</th><th>Device</th><th>Registrato</th></tr></thead>
+                    <thead><tr>
+                        <th onclick="sortUsers('email')" style="cursor:pointer;user-select:none">Email <span id="sa-email"></span></th>
+                        <th>Piano</th>
+                        <th onclick="sortUsers('licenses')" style="cursor:pointer;user-select:none">Licenze <span id="sa-licenses"></span></th>
+                        <th onclick="sortUsers('devices')" style="cursor:pointer;user-select:none">Device <span id="sa-devices"></span></th>
+                        <th onclick="sortUsers('created_at')" style="cursor:pointer;user-select:none">Registrato <span id="sa-created_at"></span></th>
+                    </tr></thead>
                     <tbody id="users-tbody"></tbody>
                 </table>
             </div>
+            <div id="users-pagination" style="display:flex;gap:10px;align-items:center;justify-content:center;margin-top:12px;font-size:13px"></div>
         </div>
 
         <!-- Activate -->
@@ -766,6 +778,7 @@ function goUsersFiltered(planType, status) {
 
 // ===== users list =====
 let searchTimer = null;
+let usersPage = 0, usersPageSize = 25, usersSortBy = 'created_at', usersSortDir = 'desc';
 function searchUsers() {
     clearTimeout(searchTimer);
     searchTimer = setTimeout(() => loadUsers(document.getElementById('users-search').value), 250);
@@ -776,15 +789,18 @@ function clearUserFilters() {
     document.getElementById('users-search').value = '';
     loadUsers('');
 }
-async function loadUsers(q) {
+async function loadUsers(q, keepPage=false) {
+    if (!keepPage) usersPage = 0;
     document.getElementById('users-tbody').innerHTML = '<tr><td colspan="5">…</td></tr>';
     const planF = (document.getElementById('users-plan-filter')||{}).value || null;
     const statF = (document.getElementById('users-status-filter')||{}).value || null;
-    const { ok, data } = await api('admin/users-list', { session_token: session, search: q, page: 0, plan_filter: planF, status_filter: statF });
+    const { ok, data } = await api('admin/users-list', { session_token: session, search: q, page: usersPage, page_size: usersPageSize, plan_filter: planF, status_filter: statF, sort_by: usersSortBy, sort_dir: usersSortDir });
     if (!ok) return;
     document.getElementById('users-count').textContent = `${data.total} utenti`;
+    renderUsersSortArrows();
     if (!data.rows || data.rows.length === 0) {
         document.getElementById('users-tbody').innerHTML = '<tr><td colspan="5">Nessun risultato</td></tr>';
+        renderUsersPagination(data.total || 0);
         return;
     }
     document.getElementById('users-tbody').innerHTML = data.rows.map(r=>{
@@ -794,6 +810,34 @@ async function loadUsers(q) {
                    : '<span class="tag err">Nessuna</span>';
         return `<tr class="clickable" onclick='openUser(${JSON.stringify(r.email)})'><td>${r.email}</td><td>${plan}</td><td>${r.licenses_active}/${r.licenses}</td><td>${r.devices}</td><td>${(r.created_at||'').slice(0,10)}</td></tr>`;
     }).join('');
+    renderUsersPagination(data.total || 0);
+}
+
+// Ordinamento colonne: clic sull'intestazione → alterna ▲/▼ (server-side, whitelisted)
+function sortUsers(col){
+    if (usersSortBy === col) usersSortDir = (usersSortDir === 'asc') ? 'desc' : 'asc';
+    else { usersSortBy = col; usersSortDir = (col === 'email') ? 'asc' : 'desc'; }
+    loadUsers(document.getElementById('users-search').value); // torna a pagina 0
+}
+function renderUsersSortArrows(){
+    ['email','licenses','devices','created_at'].forEach(c=>{
+        const sp = document.getElementById('sa-'+c);
+        if (sp) sp.textContent = (usersSortBy === c) ? (usersSortDir === 'asc' ? '▲' : '▼') : '';
+    });
+}
+function gotoUsersPage(p){ usersPage = p; loadUsers(document.getElementById('users-search').value, true); }
+function renderUsersPagination(total){
+    const el = document.getElementById('users-pagination');
+    if (!el) return;
+    const totalPages = Math.max(1, Math.ceil(total / usersPageSize));
+    if (usersPage >= totalPages) usersPage = totalPages - 1;
+    const cur = usersPage + 1;
+    const from = total === 0 ? 0 : usersPage * usersPageSize + 1;
+    const to = Math.min(total, (usersPage + 1) * usersPageSize);
+    el.innerHTML = `
+        <button class="secondary small" ${usersPage<=0?'disabled':''} onclick="gotoUsersPage(${usersPage-1})">← Prec</button>
+        <span style="color:var(--muted)">${from}–${to} di ${total} · pag. ${cur}/${totalPages}</span>
+        <button class="secondary small" ${cur>=totalPages?'disabled':''} onclick="gotoUsersPage(${usersPage+1})">Succ →</button>`;
 }
 
 // ===== user detail =====
@@ -838,7 +882,7 @@ async function openUser(email) {
     }).join('') || '<p>Nessuna licenza</p>';
     document.getElementById('ud-devices').innerHTML = (data.devices||[]).map(d=>`
       <div class="device">
-        <div class="info"><div class="name">${(d.device_name||'').replace(/</g,'&lt;')}</div><div class="code">${d.device_code||''} · ${d.device_model||''} · ${(d.last_active||'').slice(0,10)}</div></div>
+        <div class="info"><div class="name">${(d.device_name||'').replace(/</g,'&lt;')} <span style="color:var(--muted);font-weight:400">#${(d.device_id||'').slice(-6)}</span></div><div class="code">${d.device_code||''} · ${d.device_model||''} · ${(d.last_active||'').slice(0,10)}</div></div>
         <div class="actions">
           <button class="secondary small" onclick='openRn(${JSON.stringify(d.device_id)}, ${JSON.stringify(d.device_name||"")})'>Rinomina</button>
           <button class="danger small" onclick='udRemoveDevice(${JSON.stringify(d.device_id)}, ${JSON.stringify(d.device_name||"")})'>Rimuovi</button>
