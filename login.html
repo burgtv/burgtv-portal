@@ -147,9 +147,12 @@
         };
         
         function _initLang(){
+            const RE=/^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/;
             const m = document.cookie.match(/burgtv_lang=([^;]+)/);
-            if (m && /^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/.test(m[1])) return m[1];
-            return localStorage.getItem('lang') || localStorage.getItem('preferredLang') || 'it';
+            if (m && RE.test(m[1])) return m[1];
+            const sv = localStorage.getItem('lang') || localStorage.getItem('preferredLang'); if(sv && RE.test(sv)) return sv;
+            const nv = ((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0,2).toLowerCase(); if(RE.test(nv)) return nv;
+            return 'it';
         }
         let lang = _initLang();
         let turnstileToken = null;

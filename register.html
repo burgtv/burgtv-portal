@@ -204,9 +204,12 @@
         }
 
         function _initLang(){
+            const RE=/^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/;
             const m=document.cookie.match(/burgtv_lang=([^;]+)/);
-            if(m && /^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/.test(m[1])) return m[1];
-            return localStorage.getItem('preferredLanguage')||localStorage.getItem('preferredLang')||localStorage.getItem('lang')||'it';
+            if(m && RE.test(m[1])) return m[1];
+            const sv=localStorage.getItem('preferredLanguage')||localStorage.getItem('preferredLang')||localStorage.getItem('lang'); if(sv && RE.test(sv)) return sv;
+            const nv=((navigator.languages&&navigator.languages[0])||navigator.language||'').slice(0,2).toLowerCase(); if(RE.test(nv)) return nv;
+            return 'it';
         }
         let currentLang=_initLang(),selectedPlan='annual',turnstileToken=null;
         const urlParams=new URLSearchParams(window.location.search),tvCode=urlParams.get('code'),planParam=urlParams.get('plan');
