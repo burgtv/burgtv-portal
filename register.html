@@ -57,7 +57,7 @@
         .password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-secondary);cursor:pointer;padding:4px;display:flex;align-items:center}
         .password-toggle:hover{color:var(--text)}
         .password-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
-        .turnstile-wrapper{display:flex;justify-content:center;margin-bottom:14px;transform:scale(0.9);transform-origin:center}
+        .turnstile-wrapper{display:flex;justify-content:center;margin-bottom:14px}
         .btn-pay{width:100%;padding:12px 16px;font-size:14px;font-family:'Inter',sans-serif;font-weight:600;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-dark) 100%);color:#fff;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s ease;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(185,74,142,0.28)}
         .btn-pay:hover{box-shadow:0 8px 22px rgba(185,74,142,0.38)}
         .btn-pay:disabled{opacity:0.7;cursor:not-allowed}
@@ -152,12 +152,11 @@
             <div class="form-group"><input type="email" id="email" class="form-input" placeholder=" " required autocomplete="email"><label for="email" class="form-label" data-i18n="email">Email</label></div>
             <div class="form-group"><input type="password" id="password" class="form-input" placeholder=" " required autocomplete="new-password" minlength="8"><label for="password" class="form-label" data-i18n="password">Password</label><button type="button" class="password-toggle" onclick="togglePassword('password','eyeIcon1')"><svg id="eyeIcon1" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
             <div class="form-group"><input type="password" id="confirmPassword" class="form-input" placeholder=" " required autocomplete="new-password"><label for="confirmPassword" class="form-label" data-i18n="confirmPassword">Conferma Password</label><button type="button" class="password-toggle" onclick="togglePassword('confirmPassword','eyeIcon2')"><svg id="eyeIcon2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
-            <div class="turnstile-wrapper"><div class="cf-turnstile" data-sitekey="0x4AAAAAACI9QL47xbPexYyL" data-callback="onTurnstileSuccess" data-theme="dark"></div></div>
+            <div class="turnstile-wrapper"><div class="cf-turnstile" data-sitekey="0x4AAAAAACI9QL47xbPexYyL" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-expired-callback="onTurnstileExpired" data-retry="auto" data-theme="dark"></div></div>
             <button type="submit" class="btn-pay" id="payBtn"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span id="btnText" data-i18n="payBtn">Continua al pagamento</span></button>
         </form>
         <div class="secure-badge"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="secure">Pagamento sicuro con Stripe</span></div>
         <div class="login-link"><span data-i18n="hasAccount">Hai già un account?</span> <a href="login.html" data-i18n="loginLink">Accedi</a></div>
-        <div class="form-footer"><a href="legal/privacy.html" data-i18n="privacy">Privacy</a><span class="dot">•</span><a href="legal/terms.html" data-i18n="terms">Termini</a><span class="dot">•</span><a href="mailto:info@burgtv.com">info@burgtv.com</a></div>
     </div>
     <script>
         const SUPABASE_URL='https://api.burgtv.com';
@@ -227,6 +226,8 @@
         function selectPlan(p){selectedPlan=p;document.getElementById('planAnnual').classList.toggle('selected',p==='annual');document.getElementById('planPermanent').classList.toggle('selected',p==='permanent')}
         function togglePassword(i,ic){const inp=document.getElementById(i),icon=document.getElementById(ic);if(inp.type==='password'){inp.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'}else{inp.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'}}
         function onTurnstileSuccess(t){turnstileToken=t}
+        function onTurnstileError(){turnstileToken=null;try{turnstile.reset();}catch(_){}}
+        function onTurnstileExpired(){turnstileToken=null;}
         function showError(m){document.getElementById('errorText').textContent=m;document.getElementById('errorMessage').classList.add('show')}
         function hideError(){document.getElementById('errorMessage').classList.remove('show')}
         function setLoading(l){const b=document.getElementById('payBtn'),t=document.getElementById('btnText');b.disabled=l;t.innerHTML=l?'<span class="spinner"></span>':translations[currentLang].payBtn}
