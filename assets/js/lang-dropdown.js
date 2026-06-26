@@ -100,7 +100,7 @@
     var RE=/^(it|en|de|es|fr|pt|tr|nl|pl|ru|ar)$/;
     var sv = localStorage.getItem('preferredLang') || localStorage.getItem('burgtv_lang'); if(sv && RE.test(sv)) return sv;
     var nv = ((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0,2).toLowerCase(); if(RE.test(nv)) return nv;
-    return 'it';
+    return 'en';
   }
 
   function buildDropdown(currentLang) {
