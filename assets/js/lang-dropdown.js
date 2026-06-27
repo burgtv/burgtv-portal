@@ -29,20 +29,20 @@
     if (document.getElementById('burgtv-lang-dd-styles')) return;
     const css = `
       .bv-lang-dd { position: relative; display: inline-block; font-family: inherit; }
-      .bv-lang-dd-trigger { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; font-family: inherit; line-height: 1; min-height: 36px; }
-      .bv-lang-dd-trigger:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
-      .bv-lang-dd-trigger .bv-flag { font-size: 18px; line-height: 1; }
-      .bv-lang-dd-trigger .bv-chev { width: 14px; height: 14px; transition: transform 0.2s; opacity: 0.7; flex-shrink: 0; }
+      .bv-lang-dd-trigger { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.10); color: #e7e6f0; padding: 8px 12px; border-radius: 11px; cursor: pointer; font-size: 14px; font-weight: 500; transition: border-color .2s, background .2s; font-family: inherit; line-height: 1; min-height: 36px; }
+      .bv-lang-dd-trigger:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.18); }
+      .bv-lang-dd-trigger .bv-globe { width: 16px; height: 16px; opacity: .85; flex-shrink: 0; }
+      .bv-lang-dd-trigger .bv-code { font-weight: 700; letter-spacing: .03em; }
+      .bv-lang-dd-trigger .bv-chev { width: 11px; height: 11px; transition: transform 0.2s; opacity: 0.7; flex-shrink: 0; }
       .bv-lang-dd-trigger[aria-expanded="true"] .bv-chev { transform: rotate(180deg); }
-      .bv-lang-dd-menu { position: absolute; top: calc(100% + 8px); right: 0; min-width: 170px; max-width: calc(100vw - 24px); max-height: calc(100vh - 80px); overflow-y: auto; background: rgba(20,20,30,0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 6px; list-style: none; margin: 0; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .2s, transform .2s; z-index: 99999; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-      .bv-lang-dd-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
-      .bv-lang-dd-opt { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 14px; color: #d9def7; transition: background 0.15s; }
-      .bv-lang-dd-opt:hover { background: rgba(255,255,255,0.06); color: #fff; }
-      .bv-lang-dd-opt.active { background: rgba(185,74,142,0.18); color: #fff; }
-      .bv-lang-dd-opt .bv-flag { font-size: 18px; line-height: 1; }
-      .bv-lang-dd-opt .bv-name { flex: 1; }
-      .bv-lang-dd-opt .bv-check { width: 14px; height: 14px; opacity: 0; color: #B94A8E; flex-shrink: 0; }
-      .bv-lang-dd-opt.active .bv-check { opacity: 1; }
+      .bv-lang-dd-menu { position: absolute; top: calc(100% + 8px); right: 0; width: 312px; max-width: calc(100vw - 24px); max-height: 360px; overflow-y: auto; background: rgba(14,11,24,0.97); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; padding: 8px; list-style: none; margin: 0; opacity: 0; pointer-events: none; transform: translateY(-8px) scale(.98); transform-origin: top right; transition: opacity .2s, transform .2s; z-index: 99999; box-shadow: 0 18px 50px -12px rgba(0,0,0,0.6); display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+      .bv-lang-dd-menu.open { opacity: 1; pointer-events: auto; transform: none; }
+      .bv-lang-dd-opt { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: 1px solid transparent; border-radius: 10px; cursor: pointer; font-size: 13.5px; color: #cfcde0; transition: background .15s, border-color .15s, color .15s; }
+      .bv-lang-dd-opt:hover { background: rgba(255,255,255,0.07); color: #fff; }
+      .bv-lang-dd-opt.active { background: rgba(185,74,142,0.16); border-color: rgba(185,74,142,0.4); color: #fff; font-weight: 600; }
+      .bv-lang-dd-opt .bv-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.10); background: rgba(185,74,142,0.12); color: #e06bb0; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
+      .bv-lang-dd-opt.active .bv-badge { background: linear-gradient(135deg,#d85aa3,#B94A8E 45%,#7B4397); color: #fff; border-color: transparent; }
+      .bv-lang-dd-opt .bv-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .bv-lang-replaced { display: none !important; }
     `;
     const style = document.createElement('style');
@@ -109,16 +109,15 @@
     const meta = LANG_META[currentLang] || LANG_META.it;
     wrap.innerHTML = `
       <button class="bv-lang-dd-trigger" aria-expanded="false" aria-haspopup="listbox" aria-label="Language">
-        <span class="bv-flag">${meta.flag}</span>
+        <svg class="bv-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18 M12 3c2.6 2.7 2.6 15.3 0 18 M12 3c-2.6 2.7-2.6 15.3 0 18"/></svg>
         <span class="bv-code">${meta.code}</span>
-        <svg class="bv-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        <svg class="bv-chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg>
       </button>
       <ul class="bv-lang-dd-menu" role="listbox">
         ${Object.entries(LANG_META).map(([l, m]) => `
           <li class="bv-lang-dd-opt${l === currentLang ? ' active' : ''}" data-lang="${l}" role="option">
-            <span class="bv-flag">${m.flag}</span>
+            <span class="bv-badge">${m.code}</span>
             <span class="bv-name">${m.name}</span>
-            <svg class="bv-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
           </li>
         `).join('')}
       </ul>
@@ -129,9 +128,7 @@
   function setActiveInDropdown(wrap, lang) {
     const meta = LANG_META[lang];
     if (!meta) return;
-    const flag = wrap.querySelector('.bv-lang-dd-trigger .bv-flag');
     const code = wrap.querySelector('.bv-lang-dd-trigger .bv-code');
-    if (flag) flag.textContent = meta.flag;
     if (code) code.textContent = meta.code;
     wrap.querySelectorAll('.bv-lang-dd-opt').forEach(o => {
       o.classList.toggle('active', o.dataset.lang === lang);
