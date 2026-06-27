@@ -91,6 +91,8 @@
     var bg=document.createElement('div');bg.className='bv-bgfx';bg.setAttribute('aria-hidden','true');bg.innerHTML='<div class="bv-a bv-a1"></div><div class="bv-a bv-a2"></div><div class="bv-a bv-a3"></div><div class="bv-grid"></div><div class="bv-vig"></div>';document.body.appendChild(bg);
     document.body.appendChild(side);document.body.appendChild(ov);document.body.appendChild(head);document.body.appendChild(main);document.body.appendChild(foot);
     document.body.classList.add('bv-chrome');
+    // se loggato, niente CTA "Prova Premium" nel footer (l'utente ha gia un account)
+    try{ if(localStorage.getItem('session_token')){ var fc=foot.querySelector('.bv-foot-cta'); if(fc)fc.style.display='none'; } }catch(e){}
     cookieBanner();render();
     var mt=document.getElementById('bv-mtoggle');
     function toggle(){mt.classList.toggle('active');side.classList.toggle('active');ov.classList.toggle('active');}
