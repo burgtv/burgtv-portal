@@ -35,12 +35,12 @@
         .plan-card{background:var(--card-hover);border:1.5px solid var(--border);border-radius:10px;padding:12px 12px 12px 34px;cursor:pointer;transition:all 0.2s ease;position:relative}
         .plan-card:hover{border-color:rgba(185,74,142,0.4)}
         .plan-card.selected{border-color:var(--accent);background:rgba(185,74,142,0.08)}
-        .plan-card.popular::before{content:attr(data-badge);position:absolute;top:-8px;right:10px;background:var(--accent);color:white;font-size:9px;font-weight:600;padding:2px 8px;border-radius:8px}
+        .plan-card.popular::before{content:attr(data-badge);position:absolute;top:-8px;right:10px;background:var(--accent);color:white;font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px}
         .plan-name{font-size:13px;font-weight:600;margin-bottom:2px}
         .plan-price{font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .plan-period{font-size:11px;color:var(--text-secondary)}
-        .plan-desc{font-size:10px;color:var(--text-secondary);margin-top:3px;line-height:1.3}
-        .plan-trial{font-size:10px;color:var(--success);margin-top:4px;display:flex;align-items:center;gap:3px}
+        .plan-period{font-size:13px;color:var(--text-secondary)}
+        .plan-desc{font-size:13px;color:var(--text-secondary);margin-top:3px;line-height:1.3}
+        .plan-trial{font-size:13px;color:var(--success);margin-top:4px;display:flex;align-items:center;gap:3px}
         .plan-trial svg{width:11px;height:11px;stroke:currentColor;stroke-width:2;fill:none}
         .plan-radio{position:absolute;top:50%;left:12px;transform:translateY(-50%);width:16px;height:16px;border:1.5px solid var(--border);border-radius:50%;background:transparent;transition:all 0.2s ease}
         .plan-card.selected .plan-radio{border-color:var(--accent);background:var(--accent)}
@@ -84,7 +84,7 @@
         @media(max-width:768px){.burgtv-back-btn{display:none!important}}
 </style>
   <script src="/assets/js/lang-dropdown.js?v=20260531-7" defer></script>
-  <script src="/assets/js/bv-chrome.js?v=20261009-8" defer></script>
+  <script src="/assets/js/bv-chrome.js?v=20261009-9" defer></script>
 </head>
 <body>
     <a href="https://burgtv.com/" class="burgtv-back-btn" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>
@@ -225,7 +225,7 @@
             const b=document.getElementById('btn-'+l);if(b)b.classList.add('active');
             document.documentElement.dir=(l==='ar'?'rtl':'ltr');updateTexts();
         }
-        function updateTexts(){const t=translations[currentLang];document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]})}
+        function updateTexts(){const t=translations[currentLang];document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.getAttribute('data-i18n');if(t[k])e.textContent=t[k]});const pb={it:'Popolare',en:'Popular',de:'Beliebt',es:'Popular',fr:'Populaire',pt:'Popular',tr:'Popüler',nl:'Populair',pl:'Popularny',ru:'Популярный',ar:'الأكثر شيوعًا'};const pc=document.getElementById('planPermanent');if(pc)pc.setAttribute('data-badge',pb[currentLang]||pb.en)}
         function selectPlan(p){selectedPlan=p;document.getElementById('planAnnual').classList.toggle('selected',p==='annual');document.getElementById('planPermanent').classList.toggle('selected',p==='permanent')}
         function togglePassword(i,ic){const inp=document.getElementById(i),icon=document.getElementById(ic);if(inp.type==='password'){inp.type='text';icon.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'}else{inp.type='password';icon.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'}}
         function onTurnstileSuccess(t){turnstileToken=t}
