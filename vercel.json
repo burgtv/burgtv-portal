@@ -3,6 +3,8 @@
     { "source": "/legal", "destination": "https://burgtv.com/legal/", "statusCode": 301 },
     { "source": "/legal/", "destination": "https://burgtv.com/legal/", "statusCode": 301 },
     { "source": "/legal/index.html", "destination": "https://burgtv.com/legal/", "statusCode": 301 },
+    { "source": "/legal/:doc(terms|privacy)(\\.html)?", "has": [{ "type": "header", "key": "user-agent", "value": ".*(iPhone|iPad|iPod).*" }], "destination": "https://burgtv.com/legal/ios/:doc/", "statusCode": 302 },
+    { "source": "/legal/:doc(terms|privacy)(\\.html)?", "has": [{ "type": "header", "key": "user-agent", "value": "Mozilla/5\\.0 \\(Linux; Android.*" }], "destination": "https://burgtv.com/legal/android/:doc/", "statusCode": 302 },
     { "source": "/legal/:doc(terms|privacy|cookies|aup|dmca|good-faith|transparency|delete-account|faq).html", "destination": "https://burgtv.com/legal/:doc/", "statusCode": 301 },
     { "source": "/legal/:doc(terms|privacy|cookies|aup|dmca|good-faith|transparency|delete-account|faq)", "destination": "https://burgtv.com/legal/:doc/", "statusCode": 301 },
     { "source": "/play/:doc(terms|privacy).html", "destination": "https://burgtv.com/legal/play/:doc/", "statusCode": 301 },
