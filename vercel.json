@@ -1,4 +1,13 @@
 {
+  "redirects": [
+    { "source": "/legal", "destination": "https://burgtv.com/legal/", "statusCode": 301 },
+    { "source": "/legal/", "destination": "https://burgtv.com/legal/", "statusCode": 301 },
+    { "source": "/legal/index.html", "destination": "https://burgtv.com/legal/", "statusCode": 301 },
+    { "source": "/legal/:doc(terms|privacy|cookies|aup|dmca|good-faith|transparency|delete-account|faq).html", "destination": "https://burgtv.com/legal/:doc/", "statusCode": 301 },
+    { "source": "/legal/:doc(terms|privacy|cookies|aup|dmca|good-faith|transparency|delete-account|faq)", "destination": "https://burgtv.com/legal/:doc/", "statusCode": 301 },
+    { "source": "/play/:doc(terms|privacy).html", "destination": "https://burgtv.com/legal/play/:doc/", "statusCode": 301 },
+    { "source": "/play/:doc(terms|privacy)", "destination": "https://burgtv.com/legal/play/:doc/", "statusCode": 301 }
+  ],
   "rewrites": [
     {
       "source": "/:path*",
