@@ -4,16 +4,17 @@
     <meta charset="UTF-8"><meta name="color-scheme" content="dark"><style id="bv-cloak">html:not(.bv-ready) body{opacity:0}html.bv-ready body{opacity:1;transition:opacity .14s ease}</style><noscript><style>body{opacity:1!important}</style></noscript><script>(function(){var d=false;function r(){if(d)return;d=true;document.documentElement.classList.add('bv-ready')}function c(){if(d)return;if(document.querySelector('.bv-lang-dd')){requestAnimationFrame(r);return}requestAnimationFrame(c)}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',c)}else{c()}setTimeout(r,1500);})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accedi - BurgTV</title>
-    <meta name="description" content="Accedi al tuo account BurgTV Premium">
+    <meta name="description" content="Accedi al tuo account BurgTV per gestire la licenza Premium della TV e i dispositivi collegati (fino a 5 TV).">
+    <link rel="canonical" href="https://app.burgtv.com/login.html">
+    <meta property="og:type" content="website"><meta property="og:site_name" content="BurgTV"><meta property="og:url" content="https://app.burgtv.com/login.html">
+    <meta property="og:title" content="Accedi - BurgTV"><meta property="og:description" content="Gestisci la licenza Premium della TV e i tuoi dispositivi BurgTV.">
+    <meta property="og:image" content="https://burgtv.com/assets/og/og-it.jpg"><meta name="twitter:card" content="summary_large_image">
     <link rel="icon" type="image/x-icon" href="favicon.ico"><link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"><meta name="theme-color" content="#B94A8E">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:optional;src:url('/assets/fonts/inter-var.woff2') format('woff2')}@font-face{font-family:'Inter Fallback';src:local('Arial');ascent-override:90.20%;descent-override:22.48%;line-gap-override:0%;size-adjust:107.40%}</style>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0a0a0b;--bg2:#111113;--text:#fff;--muted:#9ca3af;--accent:#B94A8E;--accent-light:#d85aa3;--accent-dark:#7B4397;--success:#10b981;--error:#ef4444;--border:rgba(255,255,255,0.10);--card:rgba(255,255,255,0.03)}
-        body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+        body{font-family:'Inter','Inter Fallback',sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
         body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 50%,rgba(185,74,142,0.08),transparent 50%),radial-gradient(circle at 80% 80%,rgba(123,67,151,0.08),transparent 50%);pointer-events:none}
         .lang-switch{position:fixed;top:0.75rem;right:0.75rem;display:flex;gap:0.25rem;z-index:1000;background:var(--card);backdrop-filter:blur(10px);padding:0.25rem;border-radius:8px;border:1px solid var(--border)}
         .lang-btn{padding:0.3rem 0.6rem;background:transparent;color:var(--muted);border:none;border-radius:5px;cursor:pointer;font-size:0.72rem;font-weight:600;transition:all 0.2s}
@@ -27,12 +28,17 @@
         .form-group{position:relative;margin-bottom:14px}
         .form-input{width:100%;padding:12px 14px;padding-right:42px;font-size:14px;font-family:inherit;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;transition:all 0.2s}
         .form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(185,74,142,0.12)}
-        .form-input:focus+.form-label,.form-input:not(:placeholder-shown)+.form-label{top:-7px;left:10px;font-size:11px;background:var(--bg2);padding:0 6px;color:var(--accent)}
+        .form-input:focus+.form-label,.form-input:not(:placeholder-shown)+.form-label{top:-8px;left:10px;font-size:12px;background:var(--bg2);padding:0 6px;color:var(--accent)}
         .form-label{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none;transition:all 0.2s}
         .password-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center}
         .password-toggle:hover{color:var(--text)}
         .password-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none}
-        .turnstile-wrapper{display:flex;justify-content:center;margin-bottom:14px}
+        .turnstile-wrapper{display:flex;justify-content:center}
+        .turnstile-wrapper .cf-turnstile:not(:empty){margin-bottom:14px}
+        .form-input:focus-visible,.password-toggle:focus-visible,.btn-login:focus-visible,.form-links a:focus-visible{outline:2px solid #e06bb0;outline-offset:2px}
+        .forgot-link{padding:4px 0}
+        [dir=rtl] .form-label{left:auto;right:14px}[dir=rtl] .form-input:focus+.form-label,[dir=rtl] .form-input:not(:placeholder-shown)+.form-label{left:auto;right:10px}
+        [dir=rtl] .form-input{padding-right:14px;padding-left:42px}[dir=rtl] .password-toggle{right:auto;left:12px}
         .btn-login{width:100%;padding:12px 16px;font-size:14px;font-family:inherit;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 18px rgba(185,74,142,0.28)}
         .btn-login:hover{box-shadow:0 8px 22px rgba(185,74,142,0.38)}
         .btn-login:disabled{opacity:0.7;cursor:not-allowed}
@@ -66,11 +72,12 @@
         .burgtv-back-btn svg{width:16px;height:16px}
         @media(max-width:768px){.burgtv-back-btn{display:none!important}}
 </style>
-  <script src="/assets/js/lang-dropdown.js?v=20261009-1" defer></script>
-  <script src="/assets/js/bv-chrome.js?v=20261009-11" defer></script>
+  <script src="/assets/js/lang-dropdown.js?v=20261010-1" defer></script>
+  <script src="/assets/js/bv-chrome.js?v=20261010-1" defer></script>
+  <script src="/assets/js/bv-turnstile.js?v=20261010-1" defer></script>
 </head>
 <body>
-    <a href="https://burgtv.com/" class="burgtv-back-btn" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>
+    <a href="https://burgtv.com/" class="burgtv-back-btn" aria-label="Back" data-i18n-attr="aria-label:backAria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></a>
     
     <div class="lang-switch">
         <button class="lang-btn active" data-lang="it">IT</button>
@@ -88,13 +95,13 @@
     
     <div class="container">
         <div class="logo-section">
-            <img src="logo.png" alt="BurgTV" class="logo-img">
+            <img src="assets/logo-240.webp" alt="BurgTV" class="logo-img" width="91" height="48">
             <h1 data-i18n="title">Accedi</h1>
             <p data-i18n="subtitle">Inserisci le tue credenziali</p>
         </div>
         
-        <div class="error-message" id="errorMessage">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div class="error-message" id="errorMessage" role="alert">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <span id="errorText"></span>
         </div>
         
@@ -107,13 +114,13 @@
             <div class="form-group">
                 <input type="password" id="password" class="form-input" placeholder=" " required autocomplete="current-password">
                 <label for="password" class="form-label" data-i18n="password">Password</label>
-                <button type="button" class="password-toggle" aria-label="Mostra o nascondi password" id="togglePwd">
-                    <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <button type="button" class="password-toggle" aria-label="Mostra o nascondi la password" data-i18n-attr="aria-label:showPwd" aria-pressed="false" id="togglePwd">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
             </div>
             
             <div class="turnstile-wrapper">
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAACI9QL47xbPexYyL" data-callback="onTurnstileSuccess" data-error-callback="onTurnstileError" data-expired-callback="onTurnstileExpired" data-retry="auto" data-theme="dark"></div>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAACI9QL47xbPexYyL"></div>
             </div>
             
             <button type="submit" class="btn-login" id="loginBtn">
@@ -133,17 +140,17 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
         
         const T = {
-            it:{back:"Indietro",title:"Accedi",subtitle:"Inserisci le tue credenziali",email:"Email",password:"Password",loginBtn:"Accedi",forgot:"Password dimenticata?",noAccount:"Non hai un account?",registerLink:"Registrati",privacy:"Privacy",terms:"Termini",errInvalid:"Email o password non validi",errGeneric:"Errore. Riprova."},
-            en:{back:"Back",title:"Sign In",subtitle:"Enter your credentials",email:"Email",password:"Password",loginBtn:"Sign In",forgot:"Forgot password?",noAccount:"Don't have an account?",registerLink:"Sign up",privacy:"Privacy",terms:"Terms",errInvalid:"Invalid email or password",errGeneric:"Error. Try again."},
-            de:{back:"Zurück",title:"Anmelden",subtitle:"Geben Sie Ihre Daten ein",email:"E-Mail",password:"Passwort",loginBtn:"Anmelden",forgot:"Passwort vergessen?",noAccount:"Kein Konto?",registerLink:"Registrieren",privacy:"Datenschutz",terms:"AGB",errInvalid:"Ungültige E-Mail oder Passwort",errGeneric:"Fehler. Nochmal versuchen."},
-            es:{back:"Volver",title:"Iniciar sesión",subtitle:"Ingresa tus credenciales",email:"Correo",password:"Contraseña",loginBtn:"Entrar",forgot:"¿Olvidaste tu contraseña?",noAccount:"¿No tienes cuenta?",registerLink:"Regístrate",privacy:"Privacidad",terms:"Términos",errInvalid:"Correo o contraseña inválidos",errGeneric:"Error. Inténtalo de nuevo."},
-            fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié?",noAccount:"Pas de compte?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez."},
-            pt:{back:"Voltar",title:"Entrar",subtitle:"Digite suas credenciais",email:"E-mail",password:"Senha",loginBtn:"Entrar",forgot:"Esqueceu a senha?",noAccount:"Não tem uma conta?",registerLink:"Cadastre-se",privacy:"Privacidade",terms:"Termos",errInvalid:"E-mail ou senha inválidos",errGeneric:"Erro. Tente novamente."},
-            tr:{back:"Geri",title:"Giriş Yap",subtitle:"Bilgilerinizi girin",email:"E-posta",password:"Şifre",loginBtn:"Giriş Yap",forgot:"Şifrenizi mi unuttunuz?",noAccount:"Hesabınız yok mu?",registerLink:"Kayıt ol",privacy:"Gizlilik",terms:"Şartlar",errInvalid:"E-posta veya şifre geçersiz",errGeneric:"Hata. Tekrar deneyin."},
-            nl:{back:"Terug",title:"Inloggen",subtitle:"Vul uw gegevens in",email:"E-mail",password:"Wachtwoord",loginBtn:"Inloggen",forgot:"Wachtwoord vergeten?",noAccount:"Nog geen account?",registerLink:"Registreren",privacy:"Privacy",terms:"Voorwaarden",errInvalid:"Ongeldig e-mailadres of wachtwoord",errGeneric:"Fout. Probeer opnieuw."},
-            pl:{back:"Wstecz",title:"Zaloguj się",subtitle:"Wpisz swoje dane",email:"E-mail",password:"Hasło",loginBtn:"Zaloguj się",forgot:"Nie pamiętasz hasła?",noAccount:"Nie masz konta?",registerLink:"Zarejestruj się",privacy:"Prywatność",terms:"Warunki",errInvalid:"Nieprawidłowy e-mail lub hasło",errGeneric:"Błąd. Spróbuj ponownie."},
-            ru:{back:"Назад",title:"Войти",subtitle:"Введите ваши данные",email:"Email",password:"Пароль",loginBtn:"Войти",forgot:"Забыли пароль?",noAccount:"Нет аккаунта?",registerLink:"Зарегистрироваться",privacy:"Конфиденциальность",terms:"Условия",errInvalid:"Неверный email или пароль",errGeneric:"Ошибка. Попробуйте снова."},
-            ar:{back:"رجوع",title:"تسجيل الدخول",subtitle:"أدخل بيانات اعتمادك",email:"البريد الإلكتروني",password:"كلمة المرور",loginBtn:"تسجيل الدخول",forgot:"نسيت كلمة المرور؟",noAccount:"ليس لديك حساب؟",registerLink:"التسجيل",privacy:"الخصوصية",terms:"الشروط",errInvalid:"البريد أو كلمة المرور غير صحيحة",errGeneric:"خطأ. حاول مرة أخرى."}
+            it:{back:"Indietro",title:"Accedi",subtitle:"Inserisci le tue credenziali",email:"Email",password:"Password",loginBtn:"Accedi",forgot:"Password dimenticata?",noAccount:"Non hai un account?",registerLink:"Registrati",privacy:"Privacy",terms:"Termini",errInvalid:"Email o password non validi",errGeneric:"Errore. Riprova.",showPwd:"Mostra o nascondi la password",backAria:"Torna a burgtv.com",errVerify:"Verifica di sicurezza non completata. Attendi qualche secondo e riprova."},
+            en:{back:"Back",title:"Sign In",subtitle:"Enter your credentials",email:"Email",password:"Password",loginBtn:"Sign In",forgot:"Forgot password?",noAccount:"Don't have an account?",registerLink:"Sign up",privacy:"Privacy",terms:"Terms",errInvalid:"Invalid email or password",errGeneric:"Error. Try again.",showPwd:"Show or hide password",backAria:"Back to burgtv.com",errVerify:"Security check not completed. Wait a few seconds and try again."},
+            de:{back:"Zurück",title:"Anmelden",subtitle:"Gib deine Zugangsdaten ein",email:"E-Mail",password:"Passwort",loginBtn:"Anmelden",forgot:"Passwort vergessen?",noAccount:"Kein Konto?",registerLink:"Registrieren",privacy:"Datenschutz",terms:"AGB",errInvalid:"E-Mail oder Passwort ungültig",errGeneric:"Fehler. Versuche es erneut.",showPwd:"Passwort anzeigen oder verbergen",backAria:"Zurück zu burgtv.com",errVerify:"Sicherheitsprüfung nicht abgeschlossen. Warte ein paar Sekunden und versuche es erneut."},
+            es:{back:"Volver",title:"Iniciar sesión",subtitle:"Introduce tus credenciales",email:"Correo",password:"Contraseña",loginBtn:"Entrar",forgot:"¿Olvidaste tu contraseña?",noAccount:"¿No tienes cuenta?",registerLink:"Regístrate",privacy:"Privacidad",terms:"Términos",errInvalid:"Correo o contraseña inválidos",errGeneric:"Error. Inténtalo de nuevo.",showPwd:"Mostrar u ocultar la contraseña",backAria:"Volver a burgtv.com",errVerify:"La verificación de seguridad no se ha completado. Espera unos segundos e inténtalo de nuevo."},
+            fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié ?",noAccount:"Pas encore de compte ?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez.",showPwd:"Afficher ou masquer le mot de passe",backAria:"Retour à burgtv.com",errVerify:"Vérification de sécurité non terminée. Patientez quelques secondes et réessayez."},
+            pt:{back:"Voltar",title:"Entrar",subtitle:"Digite suas credenciais",email:"E-mail",password:"Senha",loginBtn:"Entrar",forgot:"Esqueceu a senha?",noAccount:"Não tem uma conta?",registerLink:"Cadastre-se",privacy:"Privacidade",terms:"Termos",errInvalid:"E-mail ou senha inválidos",errGeneric:"Erro. Tente novamente.",showPwd:"Mostrar ou ocultar a senha",backAria:"Voltar para burgtv.com",errVerify:"A verificação de segurança não foi concluída. Aguarde alguns segundos e tente novamente."},
+            tr:{back:"Geri",title:"Giriş yap",subtitle:"Bilgilerini gir",email:"E-posta",password:"Şifre",loginBtn:"Giriş yap",forgot:"Şifreni mi unuttun?",noAccount:"Hesabın yok mu?",registerLink:"Kayıt ol",privacy:"Gizlilik",terms:"Şartlar",errInvalid:"E-posta veya şifre geçersiz",errGeneric:"Hata. Tekrar dene.",showPwd:"Şifreyi göster veya gizle",backAria:"burgtv.com'a dön",errVerify:"Güvenlik doğrulaması tamamlanmadı. Birkaç saniye bekle ve tekrar dene."},
+            nl:{back:"Terug",title:"Inloggen",subtitle:"Vul je gegevens in",email:"E-mail",password:"Wachtwoord",loginBtn:"Inloggen",forgot:"Wachtwoord vergeten?",noAccount:"Nog geen account?",registerLink:"Registreren",privacy:"Privacy",terms:"Voorwaarden",errInvalid:"Ongeldig e-mailadres of wachtwoord",errGeneric:"Fout. Probeer opnieuw.",showPwd:"Wachtwoord tonen of verbergen",backAria:"Terug naar burgtv.com",errVerify:"Beveiligingscontrole niet voltooid. Wacht een paar seconden en probeer het opnieuw."},
+            pl:{back:"Wstecz",title:"Zaloguj się",subtitle:"Wpisz swoje dane",email:"E-mail",password:"Hasło",loginBtn:"Zaloguj się",forgot:"Nie pamiętasz hasła?",noAccount:"Nie masz konta?",registerLink:"Zarejestruj się",privacy:"Prywatność",terms:"Warunki",errInvalid:"Nieprawidłowy e-mail lub hasło",errGeneric:"Błąd. Spróbuj ponownie.",showPwd:"Pokaż lub ukryj hasło",backAria:"Wróć do burgtv.com",errVerify:"Weryfikacja bezpieczeństwa nie została ukończona. Poczekaj kilka sekund i spróbuj ponownie."},
+            ru:{back:"Назад",title:"Войти",subtitle:"Введите ваши данные",email:"Email",password:"Пароль",loginBtn:"Войти",forgot:"Забыли пароль?",noAccount:"Нет аккаунта?",registerLink:"Зарегистрироваться",privacy:"Конфиденциальность",terms:"Условия",errInvalid:"Неверный email или пароль",errGeneric:"Ошибка. Попробуйте снова.",showPwd:"Показать или скрыть пароль",backAria:"Вернуться на burgtv.com",errVerify:"Проверка безопасности не завершена. Подождите несколько секунд и попробуйте снова."},
+            ar:{back:"رجوع",title:"تسجيل الدخول",subtitle:"أدخل بيانات اعتمادك",email:"البريد الإلكتروني",password:"كلمة المرور",loginBtn:"تسجيل الدخول",forgot:"نسيت كلمة المرور؟",noAccount:"ليس لديك حساب؟",registerLink:"التسجيل",privacy:"الخصوصية",terms:"الشروط",errInvalid:"البريد أو كلمة المرور غير صحيحة",errGeneric:"خطأ. حاول مرة أخرى.",showPwd:"إظهار كلمة المرور أو إخفاؤها",backAria:"العودة إلى burgtv.com",errVerify:"لم يكتمل التحقق الأمني. انتظر بضع ثوانٍ ثم حاول مرة أخرى."}
         };
         
         function _initLang(){
@@ -155,7 +162,6 @@
             return 'en';
         }
         let lang = _initLang();
-        let turnstileToken = null;
 
         function setLang(l) {
             if (!T[l]) l = 'it';
@@ -170,18 +176,21 @@
                 const key = el.dataset.i18n;
                 if (T[l][key]) el.textContent = T[l][key];
             });
+            document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+                const p = el.dataset.i18nAttr.split(':');
+                if (T[l][p[1]]) el.setAttribute(p[0], T[l][p[1]]);
+            });
+            document.documentElement.lang = l;
+            document.title = T[l].title + ' - BurgTV';
         }
         
-        function onTurnstileSuccess(token) { turnstileToken = token; }
-        function onTurnstileError() { turnstileToken = null; try{ turnstile.reset(); }catch(_){} }
-        function onTurnstileExpired() { turnstileToken = null; }
-        
+        // Turnstile: caricato al primo uso del modulo (assets/js/bv-turnstile.js)
         function showError(msg) {
-            document.getElementById('errorText').textContent = msg;
             document.getElementById('errorMessage').classList.add('show');
+            document.getElementById('errorText').textContent = msg;
         }
         
-        function hideError() { document.getElementById('errorMessage').classList.remove('show'); }
+        function hideError() { document.getElementById('errorMessage').classList.remove('show'); document.getElementById('errorText').textContent = ''; }
         
         function setLoading(loading) {
             const btn = document.getElementById('loginBtn');
@@ -194,9 +203,10 @@
             const input = document.getElementById('password');
             const isPassword = input.type === 'password';
             input.type = isPassword ? 'text' : 'password';
+            this.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
             this.innerHTML = isPassword 
-                ? '<svg viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-                : '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+                ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+                : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
         });
         
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -216,6 +226,10 @@
             }
             
             setLoading(true);
+
+            // Token anti-bot: se il widget non e' ancora pronto lo aspettiamo (max 20 s)
+            const turnstileToken = window.BVTS ? await BVTS.token() : null;
+            if (!turnstileToken) { showError(T[lang].errVerify); setLoading(false); return; }
             
             try {
                 const response = await fetch(`${SUPABASE_URL}/functions/v1/login`, {
@@ -228,8 +242,12 @@
                 });
                 
                 const data = await response.json();
+                if (window.BVTS) BVTS.consume(); // il token vale una sola volta
                 
-                if (!response.ok) throw new Error(data.error || 'Login failed');
+                if (!response.ok) {
+                    if (data.error_code && String(data.error_code).indexOf('turnstile') === 0) { showError(T[lang].errVerify); setLoading(false); return; }
+                    throw new Error(data.error || 'Login failed');
+                }
 
                 // Salva sessione
                 localStorage.setItem('session_token', data.session_token);
@@ -245,6 +263,7 @@
                 window.location.href = 'account.html';
             } catch (error) {
                 console.error('Login error:', error);
+                if (window.BVTS) BVTS.consume();
                 showError(T[lang].errInvalid);
                 setLoading(false);
             }
