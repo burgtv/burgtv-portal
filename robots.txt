@@ -1,5 +1,4 @@
 User-agent: *
-Disallow: /account.html
 Disallow: /attiva/
 Disallow: /admin/
 Disallow: /test/
