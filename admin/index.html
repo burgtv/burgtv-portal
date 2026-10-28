@@ -15,7 +15,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="BurgTV Admin">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.js" integrity="sha384-zYPBGXwO4633CABX/5Spf6emCKUJCfoOkhOMYyxMsatqQZPnDblmmOewfjsIVWCM" crossorigin="anonymous" defer></script>
+    <script src="vendor/qrcode-generator-1.4.4.js" defer></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0a0a0b;--bg2:#111113;--bg3:#1a1a1d;--text:#fff;--muted:#a0a0a8;--accent:#B94A8E;--accent2:#7B4397;--success:#10b981;--warn:#fbbf24;--error:#ef4444;--border:rgba(255,255,255,.12);--card:rgba(255,255,255,.03);--card-hover:rgba(255,255,255,.06)}
@@ -90,6 +91,14 @@
         .device .code{font-size:11px;color:var(--muted);font-family:monospace}
         .device .actions{display:flex;gap:6px}
         .actions-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+        .pc-table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+        .pc-table th,.pc-table td{border-bottom:1px solid var(--border);padding:6px 8px;text-align:left;vertical-align:top}
+        .pc-list{margin:6px 0 10px 18px;font-size:13px;line-height:1.55}
+        .pc-list.warn li{color:var(--warn)}
+        .pc-list.block li{color:var(--error)}
+        .hist{font-size:12px;color:var(--muted);line-height:1.6}
+        details.adv{margin-top:10px;font-size:13px;color:var(--muted)}
+        details.adv summary{cursor:pointer}
         .table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
         /* === Analytics tab === */
         .analytics-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
@@ -288,6 +297,9 @@
                     <option value="active">Active</option>
                     <option value="cancelled">Cancelled</option>
                     <option value="expired">Expired</option>
+                    <option value="past_due">Past due (pagamento in ritardo)</option>
+                    <option value="refunded">Refunded</option>
+                    <option value="trial_expired">Trial expired</option>
                 </select>
                 <button type="button" onclick="clearUserFilters()" style="width:auto;margin:0;padding:10px 14px;background:var(--bg3)">Reset</button>
                 <button type="button" onclick="exportUsersCSV()" style="width:auto;margin:0;padding:10px 14px" title="Scarica CSV con i filtri correnti">Esporta CSV</button>
@@ -368,7 +380,7 @@
             <h2 style="margin-bottom:16px">Audit log (ultime 100 azioni)</h2>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>IP</th></tr></thead>
+                    <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>Dettagli</th><th>IP</th></tr></thead>
                     <tbody id="log-tbody"></tbody>
                 </table>
             </div>
@@ -562,16 +574,90 @@
         <h3 style="margin-top:16px">Dispositivi</h3>
         <div id="ud-devices"></div>
 
+        <h3 style="margin-top:16px">Storico</h3>
+        <div id="ud-history" class="hist"></div>
+
         <h3 style="margin-top:16px">Azioni</h3>
         <div class="actions-grid">
-            <button class="secondary" onclick="udResetPassword()">🔑 Reset password</button>
-            <button class="secondary" onclick="udCancelSub()">💳 Cancel Stripe sub</button>
-            <button class="danger" onclick="udCleanup()" style="grid-column:1/-1">🗑 Elimina account (irreversibile)</button>
+            <button class="secondary" onclick="openResetLink()">Invia link per nuova password</button>
+            <button class="secondary" onclick="openPlanChange()">Cambia piano</button>
+            <button class="secondary" onclick="udCancelSub()">Annulla abbonamento Stripe</button>
+            <button class="danger" onclick="udCleanup()">Elimina account (irreversibile)</button>
         </div>
+        <details class="adv">
+            <summary>Avanzate</summary>
+            <p style="margin:8px 0">Imposta una password scelta da te solo se il cliente non riceve le e-mail. La password passa per le tue mani: preferisci sempre il link.</p>
+            <button class="secondary small" onclick="udResetPassword()">Imposta password manualmente</button>
+        </details>
     </div>
 </div>
 
 <!-- ==================== RENAME MODAL ==================== -->
+<div class="modal-overlay" id="rl-modal">
+    <div class="modal">
+        <h2 style="margin:0 0 12px">Link per nuova password</h2>
+        <p style="font-size:14px;line-height:1.5">Il cliente <strong id="rl-email"></strong> riceverà un'e-mail con un link personale.</p>
+        <ul class="pc-list">
+            <li>Il link vale 60 minuti e si usa una sola volta; un nuovo invio annulla il precedente.</li>
+            <li>Il cliente sceglie la password da solo: tu non la vedi mai.</li>
+            <li>Dopo il cambio vengono chiuse tutte le sue sessioni (sito e app) e l'azione resta nel registro.</li>
+        </ul>
+        <label style="font-size:13px;color:var(--muted)">Lingua dell'e-mail</label>
+        <select id="rl-lang">
+            <option value="it">Italiano</option><option value="en">English</option><option value="de">Deutsch</option>
+            <option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option>
+            <option value="tr">Türkçe</option><option value="nl">Nederlands</option><option value="pl">Polski</option>
+            <option value="ru">Русский</option><option value="ar">العربية</option>
+        </select>
+        <div class="err" id="rl-err"></div>
+        <div class="ok" id="rl-ok"></div>
+        <div class="actions-grid">
+            <button type="button" class="secondary" onclick="closeResetLink()">Chiudi</button>
+            <button type="button" id="rl-btn" onclick="doSendResetLink()">Invia link</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="pc-modal">
+    <div class="modal" style="max-width:640px">
+        <h2 style="margin:0 0 12px">Cambia piano</h2>
+        <p style="font-size:14px">Cliente: <strong id="pc-email"></strong></p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0">
+            <label style="font-size:13px;flex:1;min-width:180px">Nuovo piano
+                <select id="pc-to" onchange="pcOptionsChanged()">
+                    <option value="permanent">Permanente (nessuna scadenza)</option>
+                    <option value="annual">Annuale (con scadenza) / proroga</option>
+                </select>
+            </label>
+            <label style="font-size:13px;flex:1;min-width:180px" id="pc-date-wrap">Scadenza (solo annuale)
+                <input type="date" id="pc-date" onchange="pcOptionsChanged()">
+            </label>
+            <label style="font-size:13px;flex:1;min-width:180px" id="pc-stripe-wrap">Abbonamento Stripe
+                <select id="pc-stripe" onchange="pcOptionsChanged()">
+                    <option value="cancel_now">Annulla subito (senza rimborso)</option>
+                    <option value="cancel_at_period_end">Chiudi a fine periodo</option>
+                </select>
+            </label>
+        </div>
+        <div id="pc-preview"><p style="color:var(--muted);font-size:13px">Caricamento riepilogo...</p></div>
+        <label style="font-size:13px">Motivo (obbligatorio, resta nello storico)
+            <input id="pc-reason" maxlength="500" placeholder="es. il cliente ha chiesto il permanente e ha pagato la differenza">
+        </label>
+        <label style="font-size:13px">Com'è stata pagata la differenza (facoltativo)
+            <input id="pc-note" maxlength="300" placeholder="es. TWINT 17.00 CHF del 29.10 / regalo">
+        </label>
+        <label style="font-size:13px">Codice 2FA (6 cifre)
+            <input id="pc-totp" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="123456">
+        </label>
+        <div class="err" id="pc-err"></div>
+        <div class="ok" id="pc-ok"></div>
+        <div class="actions-grid">
+            <button type="button" class="secondary" onclick="closePlanChange()">Annulla</button>
+            <button type="button" id="pc-btn" onclick="doApplyPlanChange()" disabled>Conferma e applica</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="rn-modal">
     <div class="modal">
         <h2 id="rn-title">Rinomina dispositivo</h2>
@@ -619,6 +705,25 @@
 <script>
 const API = 'https://api.burgtv.com';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
+
+// 29/10: TUTTO ciò che arriva dal server (email, nomi dispositivo, modelli, eventi) passa da esc()
+// prima di finire in innerHTML. I pulsanti usano data-act + data-* invece di JSON dentro onclick.
+function esc(v) { if (v === null || v === undefined) return ''; return String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeHtml(v) { return esc(v); }
+const ACTIONS = {};
+document.addEventListener('click', ev => {
+    const el = ev.target.closest('[data-act]');
+    if (!el || !ACTIONS[el.dataset.act]) return;
+    ev.preventDefault();
+    ACTIONS[el.dataset.act](el.dataset, el);
+});
+function askTotp(what) {
+    const c = prompt(`Conferma con il codice 2FA (6 cifre) per: ${what}`);
+    if (c === null) return null;
+    const t = c.trim();
+    if (!/^\d{6}$/.test(t)) { alert('Il codice deve avere 6 cifre'); return null; }
+    return t;
+}
 
 let session = sessionStorage.getItem('admin_session');
 let myEmail = sessionStorage.getItem('admin_email');
@@ -705,7 +810,12 @@ async function doLogin(ev) {
     pendingLogin = data.login_token;
     myEmail = email;
     if (data.needs_setup) {
-        document.getElementById('setup-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(data.totp_uri)}`;
+        // 29/10: QR generato nel browser. Prima l'indirizzo con il SEGRETO 2FA veniva mandato a
+        // api.qrserver.com (servizio esterno) per disegnare l'immagine.
+        try {
+            const qr = qrcode(0, 'M'); qr.addData(data.totp_uri); qr.make();
+            document.getElementById('setup-qr').src = qr.createDataURL(5, 10);
+        } catch (e) { document.getElementById('setup-qr').alt = 'QR non disponibile: usa il codice qui sotto'; }
         document.getElementById('setup-secret').textContent = data.totp_secret.match(/.{1,4}/g).join(' ');
         showSetup();
     } else {
@@ -756,15 +866,16 @@ async function loadStats() {
     const u = data.users || {};
     document.getElementById('stats-grid').innerHTML = `
       <div class="stat"><div class="lbl">Utenti</div><div class="val">${u.n||0}</div><div class="sub">${u.with_pwd||0} con password</div></div>
-      <div class="stat"><div class="lbl">Sessioni attive</div><div class="val">${data.active_sessions||0}</div><div class="sub">scadenza 30 giorni</div></div>
+      <div class="stat"><div class="lbl">Accessi clienti validi</div><div class="val">${data.active_sessions||0}</div><div class="sub">sito 24 ore, app fino a 10 anni</div></div>
       <div class="stat"><div class="lbl">Dispositivi</div><div class="val">${data.devices?.total||0}</div><div class="sub">${data.devices?.unique_id||0} univoci</div></div>
-      <div class="stat"><div class="lbl">Attivazioni 24h</div><div class="val">${(data.activations_last_24h||[]).reduce((s,r)=>s+r.n,0)}</div><div class="sub">${(data.activations_last_24h||[]).map(r=>r.status+':'+r.n).join(', ')||'-'}</div></div>
+      <div class="stat"><div class="lbl">Codici TV creati 24h</div><div class="val">${(data.activations_last_24h||[]).reduce((s,r)=>s+r.n,0)}</div><div class="sub">${esc((data.activations_last_24h||[]).map(r=>r.status+':'+r.n).join(', ')||'-')}</div></div>
     `;
     document.getElementById('licenses-breakdown').innerHTML = `<div class="table-wrap"><table><thead><tr><th>Status</th><th>Tipo</th><th>Quantità</th></tr></thead><tbody>${
-      (data.licenses_breakdown||[]).map(r=>`<tr class="clickable" onclick='goUsersFiltered(${JSON.stringify(r.license_type||"")}, ${JSON.stringify(r.status||"")})' title="Filtra utenti per questo tipo"><td><span class="tag ${r.status==='active'?'success':r.status==='cancelled'?'err':'warn'}">${r.status}</span></td><td>${r.license_type||'-'}</td><td>${r.n}</td></tr>`).join('')
+      (data.licenses_breakdown||[]).map(r=>`<tr class="clickable" data-act="filterUsers" data-plan="${esc(r.license_type||'')}" data-status="${esc(r.status||'')}" title="Filtra utenti per questo tipo"><td><span class="tag ${r.status==='active'?'success':r.status==='cancelled'?'err':'warn'}">${esc(r.status)}</span></td><td>${esc(r.license_type||'-')}</td><td>${esc(r.n)}</td></tr>`).join('')
     }</tbody></table></div>`;
 }
 
+ACTIONS.filterUsers = d => goUsersFiltered(d.plan, d.status);
 // Click su riga della breakdown → switch a tab Utenti con i filtri pre-impostati.
 function goUsersFiltered(planType, status) {
     showTab('users');
@@ -808,7 +919,7 @@ async function loadUsers(q, keepPage=false) {
                    : r.plan === 'annual'    ? '<span class="tag success">Annuale</span>'
                    : r.plan === 'lifetime'  ? '<span class="tag">Lifetime</span>'
                    : '<span class="tag err">Nessuna</span>';
-        return `<tr class="clickable" onclick='openUser(${JSON.stringify(r.email)})'><td>${r.email}</td><td>${plan}</td><td>${r.licenses_active}/${r.licenses}</td><td>${r.devices}</td><td>${(r.created_at||'').slice(0,10)}</td></tr>`;
+        return `<tr class="clickable" data-act="openUser" data-email="${esc(r.email)}"><td>${esc(r.email)}</td><td>${plan}</td><td>${esc(r.licenses_active)}/${esc(r.licenses)}</td><td>${esc(r.devices)}</td><td>${esc((r.created_at||'').slice(0,10))}</td></tr>`;
     }).join('');
     renderUsersPagination(data.total || 0);
 }
@@ -841,6 +952,9 @@ function renderUsersPagination(total){
 }
 
 // ===== user detail =====
+ACTIONS.openUser = d => openUser(d.email);
+ACTIONS.renameDevice = d => openRn(d.id, d.name);
+ACTIONS.removeDevice = d => udRemoveDevice(d.id, d.name);
 async function openUser(email) {
     currentUserEmail = email;
     document.getElementById('ud-email').textContent = email;
@@ -854,41 +968,48 @@ async function openUser(email) {
     currentUserDetail = data;
     const u = data.user || {};
     document.getElementById('ud-info').innerHTML = `
-      <div class="row"><div class="k">ID</div><div>${u.id || '-'}</div></div>
-      <div class="row"><div class="k">Password</div><div>${u.has_password ? '✓ impostata' : '✗ non impostata'}</div></div>
-      <div class="row"><div class="k">Creato</div><div>${(u.created_at||'').slice(0,19).replace('T',' ')}</div></div>
+      <div class="row"><div class="k">ID</div><div>${esc(u.id || '-')}</div></div>
+      <div class="row"><div class="k">Password</div><div>${u.has_password ? 'impostata' : 'non impostata (usa "Invia link per nuova password")'}</div></div>
+      <div class="row"><div class="k">Creato</div><div>${esc((u.created_at||'').slice(0,19).replace('T',' '))}</div></div>
     `;
     document.getElementById('ud-licenses').innerHTML = (data.licenses||[]).map(l=>{
       const s = l.stripe;
       let stripeBlock = '';
       if (s) {
-          const amt = (s.amount!=null && s.currency) ? `${s.amount.toFixed(2)} ${s.currency.toUpperCase()}/${s.interval||'?'}` : '';
+          const amt = (s.amount!=null && s.currency) ? esc(`${Number(s.amount).toFixed(2)} ${String(s.currency).toUpperCase()}/${s.interval||'?'}`) : '';
           const renewal = s.current_period_end ? new Date(s.current_period_end).toLocaleDateString('it-IT') : '—';
           const cancelTag = s.cancel_at_period_end ? '<span class="tag warn">Si cancella a fine periodo</span>' : '';
-          const dashLink = s.customer_dashboard_url ? `<a href="${s.customer_dashboard_url}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">↗ Apri in Stripe</a>` : '';
+          const dashLink = s.customer_dashboard_url && /^https:\/\/dashboard\.stripe\.com\//.test(s.customer_dashboard_url) ? `<a href="${esc(s.customer_dashboard_url)}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">Apri in Stripe</a>` : '';
           stripeBlock = `<div style="margin-top:4px;padding:8px 10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--muted);line-height:1.6">
-              <strong style="color:var(--text)">Stripe</strong> · ${amt} · prossimo rinnovo ${renewal} · status <code>${s.status}</code> ${cancelTag} ${dashLink?' · '+dashLink:''}
+              <strong style="color:var(--text)">Stripe</strong> · ${amt} · prossimo rinnovo ${esc(renewal)} · status <code>${esc(s.status)}</code> ${cancelTag} ${dashLink?' · '+dashLink:''}
           </div>`;
       } else if (l.stripe_subscription_id) {
           stripeBlock = '<div style="margin-top:4px;font-size:11px;color:var(--muted)">Sub Stripe presente ma non leggibile (chiave o sub non valida)</div>';
       }
       return `<div class="row">
-        <div class="k">${l.license_type}</div>
+        <div class="k">${esc(l.license_type)}</div>
         <div>
-            <span class="tag ${l.status==='active'?'success':'err'}">${l.status}</span> · attivata ${(l.activated_at||'').slice(0,10)} ${l.expires_at?'· scade '+l.expires_at.slice(0,10):''}
+            <span class="tag ${l.status==='active'?'success':'err'}">${esc(l.status)}</span> · attivata ${esc((l.activated_at||'').slice(0,10))} ${l.expires_at?'· scade '+esc(String(l.expires_at).slice(0,10)):''}
             ${stripeBlock}
         </div>
       </div>`;
     }).join('') || '<p>Nessuna licenza</p>';
     document.getElementById('ud-devices').innerHTML = (data.devices||[]).map(d=>`
       <div class="device">
-        <div class="info"><div class="name">${(d.device_name||'').replace(/</g,'&lt;')} <span style="color:var(--muted);font-weight:400">#${(d.device_id||'').slice(-6)}</span></div><div class="code">${d.device_code||''} · ${d.device_model||''} · ${(d.last_active||'').slice(0,10)}</div></div>
+        <div class="info"><div class="name">${esc(d.device_name||'')} <span style="color:var(--muted);font-weight:400">#${esc((d.device_id||'').slice(-6))}</span></div><div class="code">${esc(d.device_code||'')} · ${esc(d.device_model||'')} · ${esc((d.last_active||'').slice(0,10))}</div></div>
         <div class="actions">
-          <button class="secondary small" onclick='openRn(${JSON.stringify(d.device_id)}, ${JSON.stringify(d.device_name||"")})'>Rinomina</button>
-          <button class="danger small" onclick='udRemoveDevice(${JSON.stringify(d.device_id)}, ${JSON.stringify(d.device_name||"")})'>Rimuovi</button>
+          <button class="secondary small" data-act="renameDevice" data-id="${esc(d.device_id)}" data-name="${esc(d.device_name||'')}">Rinomina</button>
+          <button class="danger small" data-act="removeDevice" data-id="${esc(d.device_id)}" data-name="${esc(d.device_name||'')}">Rimuovi</button>
         </div>
       </div>
     `).join('') || '<p>Nessun dispositivo</p>';
+    const fmt = v => v ? esc(String(v).slice(0,16).replace('T',' ')) : '—';
+    const links = (data.reset_links||[]).map(r => {
+        const st = r.used_at ? `usato ${fmt(r.used_at)}` : r.invalidated_at ? 'annullato' : (new Date(r.expires_at) < new Date() ? 'scaduto' : `valido fino ${fmt(r.expires_at)}`);
+        return `<div>Link password ${fmt(r.created_at)} · ${r.initiated_by==='admin' ? 'da '+esc(r.admin_email||'admin') : 'chiesto dal cliente'} · ${esc(st)} · e-mail ${esc(r.email_status||'?')}</div>`;
+    }).join('');
+    const plans = (data.plan_changes||[]).map(c => `<div>Piano ${fmt(c.created_at)}: ${esc(c.from_type)} -> ${esc(c.to_type)}${c.to_expires_at?' (scade '+fmt(c.to_expires_at).slice(0,10)+')':''} · ${esc(c.admin_email||'')} · "${esc(c.reason)}"${c.payment_note?' · pagamento: '+esc(c.payment_note):''}${c.stripe_action && c.stripe_action!=='none'?' · Stripe '+esc(c.stripe_action)+': '+esc(c.stripe_result||''):''}</div>`).join('');
+    document.getElementById('ud-history').innerHTML = (plans + links) || 'Nessun cambio piano o link password registrato.';
 }
 function closeUserModal(){ document.getElementById('user-modal').classList.remove('show'); }
 
@@ -899,12 +1020,111 @@ async function udRemoveDevice(deviceId, name) {
     openUser(currentUserEmail);
 }
 async function udResetPassword() {
-    const pwd = prompt(`Nuova password per ${currentUserEmail} (min 6 caratteri):`);
+    if (!confirm('Sconsigliato: con "Invia link per nuova password" il cliente sceglie la password da solo e tu non la vedi mai. Continuare comunque?')) return;
+    const pwd = prompt(`Nuova password per ${currentUserEmail} (min 8 caratteri):`);
     if (!pwd) return;
-    if (pwd.length < 6) return alert('Min 6 caratteri');
+    if (pwd.length < 8) return alert('Min 8 caratteri');
     const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
-    const o = document.getElementById('ud-ok'); o.textContent = '✓ Password aggiornata. Comunicala al cliente: ' + pwd; o.classList.add('show');
+    const o = document.getElementById('ud-ok'); o.textContent = 'Password aggiornata e sessioni del cliente chiuse. Comunicagliela a voce o per telefono, non per e-mail.'; o.classList.add('show');
+}
+
+// ===== A) link per nuova password =====
+function openResetLink() {
+    document.getElementById('rl-email').textContent = currentUserEmail;
+    clearErr('rl-err'); document.getElementById('rl-ok').classList.remove('show');
+    document.getElementById('rl-btn').disabled = false;
+    document.getElementById('rl-modal').classList.add('show');
+}
+function closeResetLink(){ document.getElementById('rl-modal').classList.remove('show'); openUser(currentUserEmail); }
+async function doSendResetLink() {
+    clearErr('rl-err'); document.getElementById('rl-ok').classList.remove('show');
+    const btn = document.getElementById('rl-btn'); btn.disabled = true; btn.textContent = 'Invio...';
+    const { ok, data } = await api('admin/send-reset-link', { session_token: session, target_email: currentUserEmail, lang: document.getElementById('rl-lang').value });
+    btn.textContent = 'Invia link';
+    if (!ok) { btn.disabled = false; err('rl-err', data.error || 'Invio non riuscito'); return; }
+    const until = new Date(data.expires_at).toLocaleTimeString('it-CH', { hour:'2-digit', minute:'2-digit' });
+    const o = document.getElementById('rl-ok'); o.textContent = `E-mail inviata. Il link vale fino alle ${until}. Se il cliente non la trova, controlli la cartella spam.`; o.classList.add('show');
+}
+
+// ===== B) cambio piano =====
+let pcPreview = null, pcTimer = null;
+function openPlanChange() {
+    pcPreview = null;
+    document.getElementById('pc-email').textContent = currentUserEmail;
+    const active = (currentUserDetail?.licenses || []).find(l => ['active','past_due','expired'].includes(l.status));
+    const cur = active ? (active.license_type === 'lifetime' ? 'permanent' : active.license_type === 'subscription' ? 'annual' : active.license_type) : 'annual';
+    document.getElementById('pc-to').value = cur === 'permanent' ? 'annual' : 'permanent';
+    const d = new Date(); d.setFullYear(d.getFullYear() + 1);
+    document.getElementById('pc-date').value = d.toISOString().slice(0,10);
+    ['pc-reason','pc-note','pc-totp'].forEach(id => document.getElementById(id).value = '');
+    clearErr('pc-err'); document.getElementById('pc-ok').classList.remove('show');
+    document.getElementById('pc-modal').classList.add('show');
+    pcOptionsChanged();
+}
+function closePlanChange(){ document.getElementById('pc-modal').classList.remove('show'); openUser(currentUserEmail); }
+function pcBody() {
+    const to = document.getElementById('pc-to').value;
+    const b = { session_token: session, target_email: currentUserEmail, to_plan: to, stripe_mode: document.getElementById('pc-stripe').value };
+    if (to === 'annual') b.expires_at = document.getElementById('pc-date').value + 'T23:59:59Z';
+    return b;
+}
+function pcOptionsChanged() {
+    document.getElementById('pc-date-wrap').style.display = document.getElementById('pc-to').value === 'annual' ? '' : 'none';
+    clearTimeout(pcTimer); pcTimer = setTimeout(loadPlanPreview, 200);
+}
+async function loadPlanPreview() {
+    const box = document.getElementById('pc-preview');
+    document.getElementById('pc-btn').disabled = true;
+    const { ok, data } = await api('admin/plan-change-preview', pcBody());
+    if (!ok) { box.innerHTML = `<p class="err show">${esc(data.error || 'Errore anteprima')}</p>`; return; }
+    renderPlanPreview(data.preview);
+}
+function renderPlanPreview(pv) {
+    pcPreview = pv;
+    const box = document.getElementById('pc-preview');
+    document.getElementById('pc-stripe-wrap').style.display = (pv.before && pv.before.stripe_subscription_id && pv.to_plan === 'permanent') ? '' : 'none';
+    const day = v => v ? new Date(v).toLocaleDateString('it-CH') : 'nessuna';
+    const table = pv.before ? `<table class="pc-table"><tr><th></th><th>Prima</th><th>Dopo</th></tr>
+        <tr><td>Piano</td><td>${esc(pv.before.license_type)}</td><td><strong>${esc(pv.after ? pv.after.license_type : '-')}</strong></td></tr>
+        <tr><td>Stato</td><td>${esc(pv.before.status)}</td><td>${esc(pv.after ? pv.after.status : '-')}</td></tr>
+        <tr><td>Scadenza</td><td>${esc(day(pv.before.expires_at))}</td><td><strong>${esc(pv.after ? day(pv.after.expires_at) : '-')}</strong></td></tr>
+        <tr><td>Abbonamento Stripe</td><td>${esc(pv.before.stripe_subscription_id || 'nessuno')}</td><td>${esc(pv.after ? (pv.after.stripe_subscription_id || 'nessuno') : '-')}</td></tr>
+        <tr><td>Dispositivi</td><td>${esc(pv.devices)}</td><td>${esc(pv.devices)} (invariati)</td></tr></table>` : '';
+    const list = (arr, cls) => arr.length ? `<ul class="pc-list ${cls}">${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+    box.innerHTML = table
+        + (pv.effects.length ? '<strong style="font-size:13px">Cosa succede</strong>' + list(pv.effects, '') : '')
+        + (pv.warnings.length ? '<strong style="font-size:13px;color:var(--warn)">Attenzione</strong>' + list(pv.warnings, 'warn') : '')
+        + (pv.blocking.length ? '<strong style="font-size:13px;color:var(--error)">Non si può applicare</strong>' + list(pv.blocking, 'block') : '');
+    document.getElementById('pc-btn').disabled = !pv.ok;
+}
+async function doApplyPlanChange() {
+    clearErr('pc-err');
+    if (!pcPreview || !pcPreview.ok) return;
+    const reason = document.getElementById('pc-reason').value.trim();
+    const totp = document.getElementById('pc-totp').value.trim();
+    if (reason.length < 5) { err('pc-err', 'Scrivi il motivo (almeno 5 caratteri)'); return; }
+    if (!/^\d{6}$/.test(totp)) { err('pc-err', 'Inserisci il codice 2FA a 6 cifre'); return; }
+    const btn = document.getElementById('pc-btn'); btn.disabled = true; btn.textContent = 'Applico...';
+    const body = { ...pcBody(), state_hash: pcPreview.state_hash, reason, payment_note: document.getElementById('pc-note').value.trim(), totp_code: totp };
+    const { ok, data } = await api('admin/plan-change-apply', body);
+    btn.textContent = 'Conferma e applica';
+    if (!ok) {
+        err('pc-err', data.error || 'Errore');
+        if (data.preview) renderPlanPreview(data.preview); else btn.disabled = false;
+        return;
+    }
+    let msg = 'Piano cambiato e registrato nello storico.';
+    if (data.stripe && data.stripe.action !== 'none') {
+        msg += String(data.stripe.result).startsWith('ok')
+            ? ' Abbonamento Stripe aggiornato.'
+            : ` ATTENZIONE: Stripe non ha risposto (${data.stripe.result}). Annulla l'abbonamento a mano nel Dashboard Stripe, altrimenti il cliente potrebbe essere addebitato.`;
+    }
+    const o = document.getElementById('pc-ok'); o.textContent = msg; o.classList.add('show');
+    if (data.stripe && data.stripe.dashboard_url && !String(data.stripe.result).startsWith('ok') && data.stripe.action !== 'none') {
+        o.insertAdjacentHTML('beforeend', ` <a href="${esc(data.stripe.dashboard_url)}" target="_blank" rel="noopener" style="color:var(--accent)">Apri il cliente in Stripe</a>`);
+    }
+    document.getElementById('pc-preview').innerHTML = '';
 }
 async function udCancelSub() {
     if (!confirm(`Cancellare la subscription Stripe per ${currentUserEmail}? (nessun rimborso)`)) return;
@@ -916,7 +1136,8 @@ async function udCancelSub() {
 async function udCleanup() {
     const conf = prompt(`PERMANENTE: scrivi "DELETE ${currentUserEmail}" per confermare cancellazione totale.`);
     if (conf !== `DELETE ${currentUserEmail}`) return;
-    const { ok, data } = await api('admin/cleanup-account', { session_token: session, target_email: currentUserEmail });
+    const totp = askTotp('eliminare l\'account ' + currentUserEmail); if (!totp) return;
+    const { ok, data } = await api('admin/cleanup-account', { session_token: session, target_email: currentUserEmail, confirm_email: currentUserEmail, totp_code: totp });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     closeUserModal();
     loadUsers(document.getElementById('users-search').value);
@@ -1011,7 +1232,7 @@ async function doActivate(ev, force) {
     const hint = hasCode
         ? `<br><span style="font-size:12px">L'app TV si attiva da sola entro pochi secondi (polling).</span>`
         : `<br><span style="font-size:12px">Comunica email+password al cliente. Aprirà l'app, farà login dalle Impostazioni Premium e il suo device si aggancerà da solo.</span>`;
-    o.innerHTML = `✓ Attivato!<br>Email: <strong>${email}</strong>${data.password?`<br>Password${customPwd?'':' temporanea'}: <strong style="font-family:monospace">${data.password}</strong>`:''}${hint}`;
+    o.innerHTML = `${esc(data.message || 'Attivato')}<br>Email: <strong>${esc(email)}</strong>${data.password?`<br>Password${customPwd?'':' temporanea'}: <strong style="font-family:monospace">${esc(data.password)}</strong>`:''}${hint}`;
     o.classList.add('show');
     document.getElementById('act-code').value = '';
     document.getElementById('act-email').value = '';
@@ -1069,14 +1290,14 @@ async function loadAdmins() {
         const last = a.last_login ? a.last_login.slice(0,19).replace('T',' ') : '—';
         const actions = isMe
             ? '<span style="color:var(--muted);font-size:12px">(tu)</span>'
-            : `<button class="secondary small" onclick='doResetAdminTotp(${JSON.stringify(a.id)}, ${JSON.stringify(a.email)})'>Reset 2FA</button>
-               <button class="danger small" onclick='doDeleteAdmin(${JSON.stringify(a.id)}, ${JSON.stringify(a.email)})'>Rimuovi</button>`;
+            : `<button class="secondary small" data-act="resetAdminTotp" data-id="${esc(a.id)}" data-email="${esc(a.email)}">Reset 2FA</button>
+               <button class="danger small" data-act="deleteAdmin" data-id="${esc(a.id)}" data-email="${esc(a.email)}">Rimuovi</button>`;
         return `<tr>
-            <td>${a.email}${isMe?' <span class="tag" style="font-size:10px">tu</span>':''}</td>
-            <td style="font-size:12px">${(a.created_at||'').slice(0,10)}</td>
-            <td style="font-size:12px">${last}</td>
+            <td>${esc(a.email)}${isMe?' <span class="tag" style="font-size:10px">tu</span>':''}</td>
+            <td style="font-size:12px">${esc((a.created_at||'').slice(0,10))}</td>
+            <td style="font-size:12px">${esc(last)}</td>
             <td>${totp}</td>
-            <td>${a.active_sessions||0}</td>
+            <td>${esc(a.active_sessions||0)}</td>
             <td style="display:flex;gap:6px;flex-wrap:wrap">${actions}</td>
         </tr>`;
     }).join('');
@@ -1087,25 +1308,30 @@ async function doCreateAdmin(ev) {
     const email = document.getElementById('adm-email').value.trim().toLowerCase();
     const password = document.getElementById('adm-password').value;
     if (password.length < 8) { err('adm-err','Min 8 caratteri'); return false; }
+    const totp = askTotp('creare l\'admin ' + email); if (!totp) return false;
     const btn = document.getElementById('adm-btn'); btn.disabled = true; btn.textContent = '…';
-    const { ok, data } = await api('admin/admin-create', { session_token: session, email, password });
+    const { ok, data } = await api('admin/admin-create', { session_token: session, email, password, totp_code: totp });
     btn.disabled = false; btn.textContent = 'Crea admin';
     if (!ok) { err('adm-err', data.error || 'Errore'); return false; }
-    const o = document.getElementById('adm-ok'); o.textContent = `✓ Admin ${email} creato. Comunica la password: ${password}`; o.classList.add('show');
+    const o = document.getElementById('adm-ok'); o.textContent = `Admin ${email} creato. Comunicagli la password di persona o per telefono: al primo accesso configurerà il 2FA.`; o.classList.add('show');
     document.getElementById('adm-email').value = '';
     document.getElementById('adm-password').value = '';
     loadAdmins();
     return false;
 }
+ACTIONS.deleteAdmin = d => doDeleteAdmin(d.id, d.email);
+ACTIONS.resetAdminTotp = d => doResetAdminTotp(d.id, d.email);
 async function doDeleteAdmin(adminId, email) {
     if (!confirm(`Rimuovere definitivamente l'admin ${email}? Le sue sessioni saranno terminate.`)) return;
-    const { ok, data } = await api('admin/admin-delete', { session_token: session, admin_id: adminId });
+    const totp = askTotp('rimuovere l\'admin ' + email); if (!totp) return;
+    const { ok, data } = await api('admin/admin-delete', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
     loadAdmins();
 }
 async function doResetAdminTotp(adminId, email) {
     if (!confirm(`Reset 2FA per ${email}? Dovrà ri-configurare l'authenticator al prossimo accesso e le sue sessioni verranno terminate.`)) return;
-    const { ok, data } = await api('admin/admin-reset-totp', { session_token: session, admin_id: adminId });
+    const totp = askTotp('azzerare il 2FA di ' + email); if (!totp) return;
+    const { ok, data } = await api('admin/admin-reset-totp', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
     loadAdmins();
 }
@@ -1117,7 +1343,7 @@ async function loadLog() {
     try {
         const { ok, data, status } = await api('admin/log', { session_token: session, limit: 100 });
         if (!ok) {
-            tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error);padding:20px;text-align:center">⚠ ${data.error || 'Errore caricamento log'} (HTTP ${status||'?'})${status===401?' — sessione scaduta, fai logout e rientra.':''}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error);padding:20px;text-align:center">${esc(data.error || 'Errore caricamento log')} (HTTP ${esc(status||'?')})${status===401?' — sessione scaduta, fai logout e rientra.':''}</td></tr>`;
             return;
         }
         const rows = data.rows || [];
@@ -1128,14 +1354,15 @@ async function loadLog() {
         tbody.innerHTML = rows.map(r=>`
           <tr>
             <td style="font-family:monospace;font-size:12px;white-space:nowrap">${(r.created_at||'').slice(0,19).replace('T',' ')}</td>
-            <td>${r.admin_email||'<span style="color:var(--muted)">(none)</span>'}</td>
-            <td><span class="tag">${r.action}</span></td>
-            <td>${r.target_email||'<span style="color:var(--muted)">—</span>'}</td>
-            <td style="font-family:monospace;font-size:12px">${r.ip||''}</td>
+            <td>${r.admin_email ? esc(r.admin_email) : '<span style="color:var(--muted)">(cliente / sistema)</span>'}</td>
+            <td><span class="tag">${esc(r.action)}</span></td>
+            <td>${r.target_email ? esc(r.target_email) : '<span style="color:var(--muted)">—</span>'}</td>
+            <td style="font-size:11px;color:var(--muted);max-width:320px;word-break:break-word">${r.details ? esc(JSON.stringify(r.details).slice(0,240)) : ''}</td>
+            <td style="font-family:monospace;font-size:12px">${esc(r.ip||'')}</td>
           </tr>
         `).join('');
     } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error);padding:20px;text-align:center">❌ Errore JS: ${e.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error);padding:20px;text-align:center">Errore JS: ${esc(e.message)}</td></tr>`;
         console.error('loadLog error:', e);
     }
 }
@@ -1264,7 +1491,7 @@ async function enrollPasskey() {
     try {
         const beginResp = await api('admin/webauthn-register-begin', { session_token: session });
         if (!beginResp.ok) {
-            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore: ${beginResp.data?.error || 'impossibile avviare'}</p>`;
+            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore: ${esc(beginResp.data?.error || 'impossibile avviare')}</p>`;
             return;
         }
         const opts = beginResp.data.options;
@@ -1309,7 +1536,7 @@ async function enrollPasskey() {
 
         const completeResp = await api('admin/webauthn-register-complete', { session_token: session, attestation, device_name: deviceName });
         if (!completeResp.ok) {
-            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore registrazione: ${completeResp.data?.error || 'verifica fallita'}</p>`;
+            elBox.innerHTML = `<p style="font-size:13px;color:var(--error)">Errore registrazione: ${esc(completeResp.data?.error || 'verifica fallita')}</p>`;
             return;
         }
         localStorage.setItem(BIO_HINT_KEY, myEmail);
@@ -1325,6 +1552,7 @@ async function enrollPasskey() {
     }
 }
 
+ACTIONS.deletePasskey = d => deletePasskey(d.id, d.name);
 async function deletePasskey(id, label) {
     if (!confirm(`Rimuovere la passkey "${label}"? Da quel dispositivo dovrai accedere con password + TOTP.`)) return;
     const { ok, data } = await api('admin/webauthn-delete', { session_token: session, id });
@@ -1356,7 +1584,7 @@ async function renderBioSettings(extraMsg) {
     }
     const creds = data.credentials || [];
     let html = '';
-    if (extraMsg) html += `<p style="font-size:12px;color:var(--success);margin-bottom:10px">${extraMsg}</p>`;
+    if (extraMsg) html += `<p style="font-size:12px;color:var(--success);margin-bottom:10px">${esc(extraMsg)}</p>`;
 
     if (creds.length === 0) {
         html += `<p style="font-size:13px;color:var(--muted);margin-bottom:10px">Nessuna passkey registrata. Aggiungi questo dispositivo per accedere senza password.</p>`;
@@ -1375,7 +1603,7 @@ async function renderBioSettings(extraMsg) {
                         <div style="font-size:11px;color:var(--muted)">Aggiunta ${created} · Ultimo accesso: ${lastUsed}</div>
                     </div>
                 </div>
-                <button class="danger small" onclick='deletePasskey(${JSON.stringify(c.id)}, ${JSON.stringify(c.device_name || "Dispositivo")})' style="width:auto">Rimuovi</button>
+                <button class="danger small" data-act="deletePasskey" data-id="${esc(c.id)}" data-name="${esc(c.device_name || 'Dispositivo')}" style="width:auto">Rimuovi</button>
             </div>`;
         }).join('');
     }
@@ -1422,7 +1650,7 @@ function renderCountryList(el, rows, valueKey='requests') {
         const pct = max > 0 ? (n/max*100) : 0;
         return `<div class="country-row">
             <span class="flag">${flagFor(r.country)}</span>
-            <span style="min-width:110px">${countryName(r.country)}</span>
+            <span style="min-width:110px">${esc(countryName(r.country))}</span>
             <span class="bar"><span class="bar-fill" style="width:${pct.toFixed(1)}%"></span></span>
             <span class="num">${fmtNum(n)}</span>
         </div>`;
@@ -1512,7 +1740,7 @@ function renderTraffic(t) {
         document.getElementById('an-traf-referrers').innerHTML = refs.slice(0, 12).map(r => {
             const n = Number(r.requests) || 0;
             const pct = max > 0 ? (n/max*100) : 0;
-            const label = r.referrer_host === '(direct)' ? '🔗 Diretto / app' : r.referrer_host;
+            const label = r.referrer_host === '(direct)' ? 'Diretto / app' : esc(r.referrer_host);
             return `<div class="country-row">
                 <span style="min-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${label}</span>
                 <span class="bar"><span class="bar-fill" style="width:${pct.toFixed(1)}%"></span></span>
@@ -1552,7 +1780,7 @@ function renderSales(s) {
     const revenue = (s.by_day || []).reduce((a,r) => a + Number(r.revenue_cents || 0), 0);
 
     const appleTotal = s.apple_total || 0;
-    const appleBreak = (s.apple || []).map(a => `${a.n} ${a.license_type}`).join(' + ') || '—';
+    const appleBreak = esc((s.apple || []).map(a => `${a.n} ${a.license_type}`).join(' + ') || '—');
     document.getElementById('an-sales-kpi').innerHTML = `
       <div class="stat"><div class="lbl">🍎 Vendite Apple (reali)</div><div class="val">${fmtNum(appleTotal)}</div><div class="sub">${appleBreak} · iOS</div></div>
       <div class="stat"><div class="lbl">MRR Stripe</div><div class="val">${fmtMoney(mrr)}</div><div class="sub">ricorrente mensile</div></div>
@@ -1744,7 +1972,7 @@ async function loadSystemStats() {
     document.getElementById('sys-db-tables').innerHTML = tables.length === 0
         ? '<p style="font-size:13px;color:var(--muted)">Nessun dato</p>'
         : tables.map(t => `<div style="display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg3);border-radius:6px;margin-bottom:4px;font-size:13px">
-            <span style="font-family:monospace">${t.name}</span>
+            <span style="font-family:monospace">${esc(t.name)}</span>
             <span style="color:var(--muted)">${fmtBytes(t.bytes)}</span>
           </div>`).join('');
 
@@ -1842,12 +2070,12 @@ async function loadSecurityEvents() {
         tb.innerHTML = data.rows.map(r => `<tr>
             <td style="font-size:12px;color:var(--muted)">${fmtDateTime(r.created_at)}</td>
             <td style="font-family:monospace">${escapeHtml(r.event_type)}</td>
-            <td><span class="sev-badge" style="background:${SEV_COLOR[r.severity]||'#666'};color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">${r.severity}</span></td>
-            <td style="font-family:monospace;font-size:11px">${truncate(r.device_id, 18)}</td>
+            <td><span class="sev-badge" style="background:${SEV_COLOR[r.severity]||'#666'};color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600">${esc(r.severity)}</span></td>
+            <td style="font-family:monospace;font-size:11px">${esc(truncate(r.device_id, 18))}</td>
             <td style="font-size:12px">${escapeHtml(r.email || '—')}</td>
             <td style="font-family:monospace;font-size:11px">${escapeHtml(r.ip || '—')}</td>
             <td>${r.resolved ? '✓' : '⏳'}</td>
-            <td><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:12px" onclick="openSecurityEvent(${r.id})">Dettagli</button></td>
+            <td><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:12px" data-act="openSecEvent" data-id="${esc(r.id)}">Dettagli</button></td>
         </tr>`).join('');
     }
     const total = data.total ?? 0;
@@ -1862,28 +2090,34 @@ async function loadSecurityEvents() {
 function secPagePrev() { secOffset = Math.max(0, secOffset - SEC_PAGE); loadSecurityEvents(); }
 function secPageNext() { secOffset += SEC_PAGE; loadSecurityEvents(); }
 
+ACTIONS.openSecEvent = d => openSecurityEvent(Number(d.id));
+ACTIONS.banDevice = d => banDeviceFromEvent(d.device, Number(d.event));
+ACTIONS.banIp = d => banIpFromEvent(d.ip, Number(d.event));
+ACTIONS.resolveEvent = d => resolveSecurityEvent(Number(d.event));
+ACTIONS.unbanDevice = d => unbanDevice(d.device);
+ACTIONS.unbanIp = d => unbanIp(d.ip);
 async function openSecurityEvent(id) {
     const { ok, data } = await api('admin/security-event-detail', { session_token: session, id });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     const e = data.event;
     const details = JSON.stringify(e.details, null, 2);
     const html = `
-        <h3 style="margin-top:0">🛡 Evento #${e.id}</h3>
+        <h3 style="margin-top:0">Evento #${esc(e.id)}</h3>
         <div style="font-size:13px;line-height:1.7">
             <div><b>Tipo</b>: <code>${escapeHtml(e.event_type)}</code></div>
-            <div><b>Severity</b>: <span class="sev-badge" style="background:${SEV_COLOR[e.severity]||'#666'};color:#fff;padding:2px 8px;border-radius:4px;font-weight:600">${e.severity}</span></div>
+            <div><b>Severity</b>: <span class="sev-badge" style="background:${SEV_COLOR[e.severity]||'#666'};color:#fff;padding:2px 8px;border-radius:4px;font-weight:600">${esc(e.severity)}</span></div>
             <div><b>Quando</b>: ${fmtDateTime(e.created_at)}</div>
             ${e.device_id ? `<div><b>Device</b>: <code>${escapeHtml(e.device_id)}</code></div>` : ''}
             ${e.email ? `<div><b>Email</b>: ${escapeHtml(e.email)}</div>` : ''}
-            ${e.ip ? `<div><b>IP</b>: <code>${escapeHtml(e.ip)}</code> ${e.country?`(${e.country})`:''}</div>` : ''}
+            ${e.ip ? `<div><b>IP</b>: <code>${escapeHtml(e.ip)}</code> ${e.country?`(${esc(e.country)})`:''}</div>` : ''}
             ${e.user_agent ? `<div><b>User-Agent</b>: <code style="font-size:11px">${escapeHtml(e.user_agent)}</code></div>` : ''}
             ${e.resolved ? `<div style="margin-top:8px;color:#10b981"><b>Risolto</b> ${fmtDateTime(e.resolved_at)} da ${escapeHtml(e.resolved_by||'')}${e.notes?` — "${escapeHtml(e.notes)}"`:''}</div>` : ''}
             <div style="margin-top:12px"><b>Dettagli JSON</b>:<pre style="background:var(--bg3);padding:10px;border-radius:6px;font-size:11px;max-height:200px;overflow:auto">${escapeHtml(details)}</pre></div>
         </div>
         <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
-            ${e.device_id && !e.resolved ? `<button type="button" class="primary" style="width:auto;margin:0;background:#dc2626" onclick="banDeviceFromEvent('${escapeHtml(e.device_id).replace(/'/g,"\\'")}', ${e.id})">🚫 Ban device</button>` : ''}
-            ${e.ip && !e.resolved ? `<button type="button" class="primary" style="width:auto;margin:0;background:#dc2626" onclick="banIpFromEvent('${escapeHtml(e.ip)}', ${e.id})">🚫 Ban IP (24h)</button>` : ''}
-            ${!e.resolved ? `<button type="button" class="secondary" style="width:auto;margin:0" onclick="resolveSecurityEvent(${e.id})">✓ Marca risolto</button>` : ''}
+            ${e.device_id && !e.resolved ? `<button type="button" class="primary" style="width:auto;margin:0;background:#dc2626" data-act="banDevice" data-device="${esc(e.device_id)}" data-event="${esc(e.id)}">Ban device</button>` : ''}
+            ${e.ip && !e.resolved ? `<button type="button" class="primary" style="width:auto;margin:0;background:#dc2626" data-act="banIp" data-ip="${esc(e.ip)}" data-event="${esc(e.id)}">Ban IP</button>` : ''}
+            ${!e.resolved ? `<button type="button" class="secondary" style="width:auto;margin:0" data-act="resolveEvent" data-event="${esc(e.id)}">Marca risolto</button>` : ''}
             <button type="button" class="secondary" style="width:auto;margin:0;margin-left:auto" onclick="closeModal()">Chiudi</button>
         </div>`;
     openModal(html);
@@ -1926,13 +2160,13 @@ async function openBlacklist() {
         ? '<p style="color:var(--muted);font-size:13px">Nessun device bannato.</p>'
         : `<table style="width:100%;font-size:13px;border-collapse:collapse">
              <tr style="background:var(--bg3)"><th style="text-align:left;padding:6px">Device ID</th><th style="text-align:left;padding:6px">Motivo</th><th style="text-align:left;padding:6px">Quando</th><th></th></tr>
-             ${data.devices.map(d => `<tr><td style="padding:6px;font-family:monospace;font-size:11px">${truncate(d.device_id,18)}</td><td style="padding:6px">${escapeHtml(d.reason||'')}</td><td style="padding:6px;color:var(--muted);font-size:11px">${fmtDateTime(d.banned_at)}</td><td style="padding:6px"><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="unbanDevice('${escapeHtml(d.device_id).replace(/'/g,"\\'")}')">Sblocca</button></td></tr>`).join('')}
+             ${data.devices.map(d => `<tr><td style="padding:6px;font-family:monospace;font-size:11px">${esc(truncate(d.device_id,18))}</td><td style="padding:6px">${escapeHtml(d.reason||'')}</td><td style="padding:6px;color:var(--muted);font-size:11px">${fmtDateTime(d.banned_at)}</td><td style="padding:6px"><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" data-act="unbanDevice" data-device="${esc(d.device_id)}">Sblocca</button></td></tr>`).join('')}
            </table>`;
     const ipsHtml = data.ips.length === 0
         ? '<p style="color:var(--muted);font-size:13px">Nessun IP bannato.</p>'
         : `<table style="width:100%;font-size:13px;border-collapse:collapse">
              <tr style="background:var(--bg3)"><th style="text-align:left;padding:6px">IP</th><th style="text-align:left;padding:6px">Motivo</th><th style="text-align:left;padding:6px">Scade</th><th></th></tr>
-             ${data.ips.map(d => `<tr><td style="padding:6px;font-family:monospace">${escapeHtml(d.ip)}</td><td style="padding:6px">${escapeHtml(d.reason||'')}</td><td style="padding:6px;color:var(--muted);font-size:11px">${d.expires_at?fmtDateTime(d.expires_at):'permanente'}</td><td style="padding:6px"><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="unbanIp('${escapeHtml(d.ip)}')">Sblocca</button></td></tr>`).join('')}
+             ${data.ips.map(d => `<tr><td style="padding:6px;font-family:monospace">${escapeHtml(d.ip)}</td><td style="padding:6px">${escapeHtml(d.reason||'')}</td><td style="padding:6px;color:var(--muted);font-size:11px">${d.expires_at?fmtDateTime(d.expires_at):'permanente'}</td><td style="padding:6px"><button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" data-act="unbanIp" data-ip="${esc(d.ip)}">Sblocca</button></td></tr>`).join('')}
            </table>`;
     openModal(`<h3 style="margin-top:0">🚫 Blacklist</h3>
         <h4 style="margin-top:16px;font-size:14px">Device bannati (${data.devices.length})</h4>${devicesHtml}

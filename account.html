@@ -491,7 +491,7 @@
                 const res = await fetch(`${SUPABASE_URL}/functions/v1/create-portal-session`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ANON_KEY}` },
-                    body: JSON.stringify({ email: s.email })
+                    body: JSON.stringify({ email: s.email, session_token: s.token })
                 });
                 const data = await res.json();
                 if (data.portal_url) {
