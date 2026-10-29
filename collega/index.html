@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="it" style="background:#0a0a0b">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Collega la TV - BurgTV</title>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <meta name="theme-color" content="#B94A8E">
+  <style>
+    @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:optional;src:url('/assets/fonts/inter-var.woff2') format('woff2')}
+    :root{--bg:#0a0a0b;--bg2:#111113;--text:#fff;--text2:#9ca3af;--accent:#B94A8E;--accent-dark:#7B4397;--ok:#10b981;--err:#ef4444;--border:rgba(255,255,255,.10);--card:rgba(255,255,255,.03)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',Arial,sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:1.5rem 1rem;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+    main{width:100%;max-width:460px}
+    .logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;font-weight:700;font-size:18px}
+    .logo img{width:36px;height:36px;border-radius:9px}
+    h1{font-size:22px;margin-bottom:.25rem}
+    p.sub{color:var(--text2);margin-bottom:1.25rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem;margin-bottom:1rem}
+    label{display:block;font-size:13px;color:var(--text2);margin:.75rem 0 .3rem}
+    input,select{width:100%;padding:12px 14px;font:inherit;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none}
+    input:focus,select:focus{border-color:var(--accent)}
+    #code{font-family:ui-monospace,Menlo,monospace;font-size:22px;letter-spacing:.2em;text-transform:uppercase;text-align:center}
+    button{width:100%;margin-top:1rem;padding:13px 16px;font:inherit;font-weight:600;border:none;border-radius:10px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-dark))}
+    button.sec{background:transparent;border:1px solid var(--border)}
+    button:disabled{opacity:.5;cursor:default}
+    .sas{font-family:ui-monospace,Menlo,monospace;font-size:30px;font-weight:700;letter-spacing:.08em;text-align:center;margin:.4rem 0;color:var(--ok)}
+    .msg{padding:.75rem .9rem;border-radius:10px;margin-top:.75rem;font-size:14px}
+    .msg.err{background:rgba(239,68,68,.12);color:#fca5a5}
+    .msg.ok{background:rgba(16,185,129,.12);color:#6ee7b7}
+    .msg.info{background:rgba(255,255,255,.05);color:var(--text2)}
+    .hidden{display:none!important}
+    .row{display:flex;gap:.5rem}
+    .row>*{flex:1}
+    .small{font-size:12px;color:var(--text2);margin-top:.6rem}
+    .lang{position:absolute;top:1rem;right:1rem;width:auto;padding:6px 10px;font-size:13px}
+    svg.i{width:18px;height:18px;vertical-align:-3px;margin-right:6px;fill:none;stroke:currentColor;stroke-width:2}
+  </style>
+</head>
+<body>
+<select class="lang" id="lang" aria-label="Lingua"><option value="it">Italiano</option><option value="en">English</option></select>
+<main>
+  <div class="logo"><img src="/logo.png" alt=""><span>BurgTV</span></div>
+  <h1 data-t="title">Collega la TV</h1>
+  <p class="sub" data-t="sub">Aggiungi una playlist o attiva Premium sulla TV, dal telefono.</p>
+
+  <!-- 1. codice -->
+  <section class="card" id="stepCode">
+    <label for="code" data-t="codeLabel">Codice che vedi sulla TV</label>
+    <input id="code" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="K7M-4QX">
+    <button id="btnCode" data-t="next">Continua</button>
+    <div id="codeMsg"></div>
+  </section>
+
+  <!-- 2. controllo -->
+  <section class="card hidden" id="stepCheck">
+    <div data-t="checkTitle">Sulla TV deve comparire lo stesso numero:</div>
+    <div class="sas" id="sas"></div>
+    <div class="small" data-t="checkHint">Se il numero è diverso, non continuare e chiudi questa pagina.</div>
+    <button class="sec" id="btnApp"><svg class="i" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg><span data-t="openApp">Apri nell'app BurgTV</span></button>
+  </section>
+
+  <!-- 3a. playlist -->
+  <section class="card hidden" id="stepPlaylist">
+    <strong data-t="plTitle">Aggiungi una playlist</strong>
+    <label for="kind" data-t="kind">Tipo</label>
+    <select id="kind">
+      <option value="xtream">Xtream Codes</option>
+      <option value="m3u">M3U</option>
+      <option value="jellyfin">Jellyfin</option>
+      <option value="portal">Portal (MAC)</option>
+    </select>
+    <label for="plName" data-t="name">Nome</label>
+    <input id="plName" maxlength="60" autocomplete="off">
+    <div data-k="xtream">
+      <label for="xServer" data-t="server">Server</label><input id="xServer" type="url" inputmode="url" autocomplete="off" placeholder="http://esempio.tv:8080">
+      <label for="xUser" data-t="user">Nome utente</label><input id="xUser" autocomplete="off" autocapitalize="off">
+      <label for="xPass" data-t="pass">Password</label><input id="xPass" type="password" autocomplete="off">
+    </div>
+    <div data-k="m3u" class="hidden">
+      <label for="mUrl" data-t="m3uUrl">Indirizzo M3U</label><input id="mUrl" type="url" inputmode="url" autocomplete="off">
+      <label for="mEpg" data-t="epgUrl">Indirizzo EPG (facoltativo)</label><input id="mEpg" type="url" inputmode="url" autocomplete="off">
+    </div>
+    <div data-k="jellyfin" class="hidden">
+      <label for="jServer" data-t="server">Server</label><input id="jServer" type="url" inputmode="url" autocomplete="off" placeholder="http://192.168.1.10:8096">
+      <label for="jUser" data-t="user">Nome utente</label><input id="jUser" autocomplete="off" autocapitalize="off">
+      <label for="jPass" data-t="pass">Password</label><input id="jPass" type="password" autocomplete="off">
+    </div>
+    <div data-k="portal" class="hidden">
+      <label for="pUrl" data-t="portalUrl">Indirizzo del portale</label><input id="pUrl" type="url" inputmode="url" autocomplete="off">
+      <label for="pMac" data-t="mac">Indirizzo MAC</label><input id="pMac" autocomplete="off" autocapitalize="characters" placeholder="00:1A:79:XX:XX:XX">
+    </div>
+    <button id="btnSend"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span data-t="send">Invia alla TV (cifrato)</span></button>
+    <div class="small" data-t="e2e">I dati vengono cifrati su questo telefono: solo la tua TV può leggerli. Il server di BurgTV vede solo dati cifrati e li cancella appena la TV li riceve.</div>
+    <div id="sendMsg"></div>
+  </section>
+
+  <!-- 3b. premium -->
+  <section class="card hidden" id="stepPremium">
+    <strong data-t="prTitle">Premium su questa TV</strong>
+    <p class="small" data-t="prText">Accedi o crea un account e scegli il piano. La TV si attiva da sola.</p>
+    <button id="btnPremium"><svg class="i" viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9 16.5 13.5 18.5 21 12 16.5 5.5 21 7.5 13.5 2 9 9 9 12 2"/></svg><span data-t="prBtn">Attiva Premium</span></button>
+  </section>
+</main>
+
+<script>
+"use strict";
+(function () {
+  // ---------- testi ----------
+  const T = {
+    it: {
+      title: "Collega la TV", sub: "Aggiungi una playlist o attiva Premium sulla TV, dal telefono.",
+      codeLabel: "Codice che vedi sulla TV", next: "Continua",
+      checkTitle: "Sulla TV deve comparire lo stesso numero:", checkHint: "Se il numero è diverso, non continuare e chiudi questa pagina.",
+      openApp: "Apri nell'app BurgTV", plTitle: "Aggiungi una playlist", kind: "Tipo", name: "Nome", server: "Server",
+      user: "Nome utente", pass: "Password", m3uUrl: "Indirizzo M3U", epgUrl: "Indirizzo EPG (facoltativo)",
+      portalUrl: "Indirizzo del portale", mac: "Indirizzo MAC", send: "Invia alla TV (cifrato)",
+      e2e: "I dati vengono cifrati su questo telefono: solo la tua TV può leggerli. Il server di BurgTV vede solo dati cifrati e li cancella appena la TV li riceve.",
+      prTitle: "Premium su questa TV", prText: "Accedi o crea un account e scegli il piano. La TV si attiva da sola.", prBtn: "Attiva Premium",
+      badCode: "Codice non valido o scaduto. Controlla la TV: il codice cambia ogni 10 minuti.",
+      tooMany: "Troppi tentativi. Riprova tra qualche minuto.", net: "Connessione non riuscita. Riprova.",
+      keyMismatch: "Il codice non corrisponde a questa TV. Inquadra di nuovo il QR.",
+      noCrypto: "Questo browser non supporta la cifratura necessaria. Aggiorna il browser o usa l'app BurgTV.",
+      missing: "Compila tutti i campi.", badUrl: "L'indirizzo deve iniziare con http:// o https://", badMac: "MAC non valido (es. 00:1A:79:12:34:56).",
+      sent: "Inviata. Conferma sulla TV.", accepted: "Fatto: la playlist è stata aggiunta sulla TV.",
+      rejected: "Sulla TV è stato scelto \"Annulla\".", expired: "Il collegamento è scaduto. Sulla TV apri di nuovo \"Collega dal telefono\".",
+      already: "Questa TV ha già ricevuto una playlist. Sulla TV apri di nuovo \"Collega dal telefono\" per inviarne un'altra.",
+    },
+    en: {
+      title: "Connect your TV", sub: "Add a playlist or activate Premium on your TV, from your phone.",
+      codeLabel: "Code shown on your TV", next: "Continue",
+      checkTitle: "Your TV must show the same number:", checkHint: "If the number is different, stop and close this page.",
+      openApp: "Open in the BurgTV app", plTitle: "Add a playlist", kind: "Type", name: "Name", server: "Server",
+      user: "Username", pass: "Password", m3uUrl: "M3U address", epgUrl: "EPG address (optional)",
+      portalUrl: "Portal address", mac: "MAC address", send: "Send to TV (encrypted)",
+      e2e: "Your details are encrypted on this phone: only your TV can read them. The BurgTV server only sees encrypted data and deletes it as soon as the TV receives it.",
+      prTitle: "Premium on this TV", prText: "Sign in or create an account and choose a plan. The TV activates by itself.", prBtn: "Activate Premium",
+      badCode: "Invalid or expired code. Check your TV: the code changes every 10 minutes.",
+      tooMany: "Too many attempts. Try again in a few minutes.", net: "Connection failed. Please try again.",
+      keyMismatch: "This code does not match the TV. Scan the QR code again.",
+      noCrypto: "This browser does not support the required encryption. Update your browser or use the BurgTV app.",
+      missing: "Please fill in all fields.", badUrl: "The address must start with http:// or https://", badMac: "Invalid MAC (e.g. 00:1A:79:12:34:56).",
+      sent: "Sent. Confirm on your TV.", accepted: "Done: the playlist has been added on your TV.",
+      rejected: "\"Cancel\" was chosen on the TV.", expired: "The link has expired. On your TV open \"Connect from phone\" again.",
+      already: "This TV already received a playlist. On your TV open \"Connect from phone\" again to send another one.",
+    },
+  };
+  let lang = (navigator.language || "it").slice(0, 2) === "it" ? "it" : "en";
+  try { const m = document.cookie.match(/burgtv_lang=([a-z]{2})/); if (m && T[m[1]]) lang = m[1]; } catch (_) {}
+  const t = (k) => (T[lang] && T[lang][k]) || T.it[k] || k;
+  const $ = (id) => document.getElementById(id);
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t(el.dataset.t); });
+    $("lang").value = lang;
+  }
+  $("lang").addEventListener("change", (e) => { lang = e.target.value; applyLang(); });
+  applyLang();
+
+  // Sul sito vero si parla con api.burgtv.com; servita dal server finto (prove) con lo stesso indirizzo della pagina.
+  const API = /(^|\.)burgtv\.com$/.test(location.hostname) ? "https://api.burgtv.com/functions/v1" : location.origin;
+
+  function show(el, cls, text) { el.innerHTML = ""; if (!text) return; const d = document.createElement("div"); d.className = "msg " + cls; d.textContent = text; el.appendChild(d); }
+
+  // ---------- crittografia BTVPAIR1 (copia di server/pair_crypto.ts) ----------
+  const te = new TextEncoder();
+  const P = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffffn;
+  const B = 0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604bn;
+  function b64uEncode(bytes) { let s = ""; for (const b of bytes) s += String.fromCharCode(b); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+  function b64uDecode(s) {
+    if (!/^[A-Za-z0-9_-]*$/.test(s) || s.length % 4 === 1) throw new Error("b64");
+    const bin = atob(s.replace(/-/g, "+").replace(/_/g, "/") + "===".slice((s.length + 3) % 4));
+    const out = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i); return out;
+  }
+  function onCurve(raw) {
+    if (raw.length !== 65 || raw[0] !== 4) return false;
+    const big = (a) => a.reduce((n, b) => (n << 8n) | BigInt(b), 0n);
+    const x = big(raw.subarray(1, 33)), y = big(raw.subarray(33, 65));
+    if (x >= P || y >= P) return false;
+    const m = (n) => ((n % P) + P) % P;
+    return m(y * y) === m(x * x * x - 3n * x + B);
+  }
+  async function sasOf(pubB64u) {
+    const h = new Uint8Array(await crypto.subtle.digest("SHA-256", b64uDecode(pubB64u)));
+    const n = ((h[0] << 24) >>> 0) + (h[1] << 16) + (h[2] << 8) + h[3];
+    const s = String(n % 1000000).padStart(6, "0"); return s.slice(0, 3) + " " + s.slice(3);
+  }
+  async function seal(tvPubB64u, code, plaintext) {
+    const tvPub = b64uDecode(tvPubB64u);
+    if (!onCurve(tvPub)) throw new Error("key");
+    const eph = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
+    const phonePub = new Uint8Array(await crypto.subtle.exportKey("raw", eph.publicKey));
+    const peer = await crypto.subtle.importKey("raw", tvPub, { name: "ECDH", namedCurve: "P-256" }, false, []);
+    const shared = await crypto.subtle.deriveBits({ name: "ECDH", public: peer }, eph.privateKey, 256);
+    const ikm = await crypto.subtle.importKey("raw", shared, "HKDF", false, ["deriveKey"]);
+    const salt = new Uint8Array(130); salt.set(tvPub, 0); salt.set(phonePub, 65);
+    const info = te.encode("BTVPAIR1|" + code);
+    const key = await crypto.subtle.deriveKey({ name: "HKDF", hash: "SHA-256", salt, info }, ikm, { name: "AES-GCM", length: 256 }, false, ["encrypt"]);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: info, tagLength: 128 }, key, te.encode(plaintext)));
+    return { epk: b64uEncode(phonePub), iv: b64uEncode(iv), ct: b64uEncode(ct) };
+  }
+
+  // ---------- stato ----------
+  const ALPH = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
+  const norm = (s) => { const c = String(s || "").toUpperCase().replace(/[\s-]/g, ""); return c.length === 6 && [...c].every((ch) => ALPH.includes(ch)) ? c : null; };
+  let code = null, qrKey = null, tvKey = null, info = null, pollTimer = null;
+
+  // Codice e chiave dal frammento (#c=...&k=...): poi li togliamo dall'indirizzo (cronologia, preferiti).
+  try {
+    const h = new URLSearchParams(location.hash.slice(1));
+    if (h.get("c")) { $("code").value = h.get("c"); qrKey = h.get("k") || null; }
+    if (location.hash) history.replaceState(null, "", location.pathname);
+  } catch (_) {}
+
+  if (!(window.crypto && crypto.subtle && typeof BigInt === "function")) { show($("codeMsg"), "err", t("noCrypto")); $("btnCode").disabled = true; }
+
+  async function api(path, opts) {
+    const r = await fetch(API + "/" + path, Object.assign({ cache: "no-store", referrerPolicy: "no-referrer", credentials: "omit" }, opts || {}));
+    let body = null; try { body = await r.json(); } catch (_) {}
+    return { status: r.status, body };
+  }
+  function errText(status, body) {
+    if (status === 404) return t("badCode");
+    if (status === 429) return t("tooMany");
+    if (status === 409 && body && body.error === "already_sent") return t("already");
+    return t("net");
+  }
+
+  async function loadInfo() {
+    const r = await api("pair/info", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ c: code }) });
+    if (r.status !== 200 || !r.body) throw { status: r.status, body: r.body };
+    return r.body;
+  }
+
+  $("btnCode").addEventListener("click", async () => {
+    show($("codeMsg"), "", "");
+    code = norm($("code").value);
+    if (!code) { show($("codeMsg"), "err", t("badCode")); return; }
+    $("btnCode").disabled = true;
+    try {
+      info = await loadInfo();
+      // La chiave del QR vince: se il server ne propone un'altra, ci fermiamo.
+      if (qrKey && qrKey !== info.pubkey) { show($("codeMsg"), "err", t("keyMismatch")); $("btnCode").disabled = false; return; }
+      tvKey = qrKey || info.pubkey;
+      if (!onCurve(b64uDecode(tvKey))) { show($("codeMsg"), "err", t("keyMismatch")); $("btnCode").disabled = false; return; }
+      $("sas").textContent = await sasOf(tvKey);          // calcolato qui, non preso dal server
+      $("stepCode").classList.add("hidden");
+      $("stepCheck").classList.remove("hidden");
+      if ((info.wants || []).includes("playlist")) $("stepPlaylist").classList.remove("hidden");
+      if ((info.wants || []).includes("premium") && /^TV-[A-Z0-9]{4}$/.test(info.activation_code || "")) $("stepPremium").classList.remove("hidden");
+      if (info.status && info.status !== "waiting") followStatus();
+    } catch (e) {
+      show($("codeMsg"), "err", e && e.status ? errText(e.status, e.body) : t("net"));
+      $("btnCode").disabled = false;
+    }
+  });
+  $("code").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btnCode").click(); });
+  if ($("code").value) $("btnCode").click();
+
+  $("btnApp").addEventListener("click", () => { location.href = "burgtv://collega?c=" + encodeURIComponent(code) + "&k=" + encodeURIComponent(tvKey); });
+  $("btnPremium").addEventListener("click", () => {
+    location.href = "https://app.burgtv.com/register.html?code=" + encodeURIComponent(info.activation_code);
+  });
+
+  $("kind").addEventListener("change", () => {
+    document.querySelectorAll("[data-k]").forEach((el) => el.classList.toggle("hidden", el.dataset.k !== $("kind").value));
+  });
+
+  const isUrl = (s) => /^https?:\/\/[^\s/]+/i.test(s);
+  function buildPlaylist() {
+    const kind = $("kind").value, name = $("plName").value.trim() || ({ xtream: "Xtream", m3u: "M3U", jellyfin: "Jellyfin", portal: "Portal" })[kind];
+    const v = (id) => $(id).value.trim();
+    if (kind === "xtream") {
+      if (!v("xServer") || !v("xUser") || !$("xPass").value) return { err: t("missing") };
+      if (!isUrl(v("xServer"))) return { err: t("badUrl") };
+      return { kind, name, server: v("xServer"), username: v("xUser"), password: $("xPass").value };
+    }
+    if (kind === "m3u") {
+      if (!v("mUrl")) return { err: t("missing") };
+      if (!isUrl(v("mUrl")) || (v("mEpg") && !isUrl(v("mEpg")))) return { err: t("badUrl") };
+      return Object.assign({ kind, name, url: v("mUrl") }, v("mEpg") ? { epg_url: v("mEpg") } : {});
+    }
+    if (kind === "jellyfin") {
+      if (!v("jServer") || !v("jUser")) return { err: t("missing") };
+      if (!isUrl(v("jServer"))) return { err: t("badUrl") };
+      return { kind, name, server: v("jServer"), username: v("jUser"), password: $("jPass").value };
+    }
+    if (!v("pUrl") || !v("pMac")) return { err: t("missing") };
+    if (!isUrl(v("pUrl"))) return { err: t("badUrl") };
+    const mac = v("pMac").toUpperCase().replace(/-/g, ":");
+    if (!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)) return { err: t("badMac") };
+    return { kind, name, portal_url: v("pUrl"), mac };
+  }
+  function clearSecrets() { ["xPass", "jPass"].forEach((id) => { $(id).value = ""; }); }
+
+  $("btnSend").addEventListener("click", async () => {
+    show($("sendMsg"), "", "");
+    const pl = buildPlaylist();
+    if (pl.err) { show($("sendMsg"), "err", pl.err); return; }
+    $("btnSend").disabled = true;
+    try {
+      const sealed = await seal(tvKey, code, JSON.stringify({ v: 1, type: "playlist", sent_at: new Date().toISOString(), playlist: pl }));
+      const r = await api("pair/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.assign({ c: code }, sealed)) });
+      if (r.status !== 200) { show($("sendMsg"), "err", errText(r.status, r.body)); $("btnSend").disabled = false; return; }
+      clearSecrets();
+      show($("sendMsg"), "info", t("sent"));
+      followStatus();
+    } catch (_) { show($("sendMsg"), "err", t("net")); $("btnSend").disabled = false; }
+  });
+
+  function followStatus() {
+    clearInterval(pollTimer);
+    pollTimer = setInterval(async () => {
+      try {
+        const i = await loadInfo();
+        if (i.status === "accepted") { clearInterval(pollTimer); show($("sendMsg"), "ok", t("accepted")); }
+        else if (i.status === "rejected") { clearInterval(pollTimer); show($("sendMsg"), "err", t("rejected")); }
+        else if (i.status === "waiting") { show($("sendMsg"), "info", ""); $("btnSend").disabled = false; clearInterval(pollTimer); } // la TV ha chiesto di reinviare
+        else show($("sendMsg"), "info", t("sent"));
+      } catch (e) { clearInterval(pollTimer); show($("sendMsg"), "err", e && e.status === 404 ? t("expired") : t("net")); }
+    }, 2000);
+  }
+})();
+</script>
+</body>
+</html>

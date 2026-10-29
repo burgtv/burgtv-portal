@@ -1,0 +1,26 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "472ABZFHSC.com.burgtv.mobile.ios"
+        ],
+        "components": [
+          {
+            "/": "/collega",
+            "comment": "Collega la TV dal telefono"
+          },
+          {
+            "/": "/collega/",
+            "comment": "Collega la TV dal telefono"
+          }
+        ],
+        "appID": "472ABZFHSC.com.burgtv.mobile.ios",
+        "paths": [
+          "/collega",
+          "/collega/"
+        ]
+      }
+    ]
+  }
+}

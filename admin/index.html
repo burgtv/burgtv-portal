@@ -263,6 +263,7 @@
             <a id="tab-system" onclick="showTab('system')">🖥 Sistema</a>
             <a id="tab-admins" onclick="showTab('admins')">Admin</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
+            <a id="tab-reports" onclick="showTab('reports')">Segnalazioni</a>
         </div>
         <div class="me">
             <span id="me-email"></span>
@@ -383,6 +384,38 @@
                     <thead><tr><th>Quando</th><th>Admin</th><th>Azione</th><th>Target</th><th>Dettagli</th><th>IP</th></tr></thead>
                     <tbody id="log-tbody"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Segnalazioni dalle app (30/10/2026): registri anonimi, cancellati dopo 30 giorni -->
+        <div id="panel-reports" style="display:none">
+            <h2 style="margin-bottom:6px">Segnalazioni dalle app</h2>
+            <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Registri mandati dagli utenti con "Segnala un problema". Senza IP, account o dispositivo: si cerca con il codice che il cliente legge dall'app (es. R7K2-9QXM). Si cancellano da soli dopo 30 giorni.</p>
+            <div class="err" id="rep-err"></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+                <input id="rep-q" placeholder="Codice o testo nella nota" style="flex:1;min-width:200px;margin:0">
+                <select id="rep-app" style="margin:0;width:auto"><option value="">Tutte le app</option><option value="tv">TV</option><option value="android">Android</option><option value="ios">iPhone/iPad</option><option value="appletv">Apple TV</option></select>
+                <select id="rep-cat" style="margin:0;width:auto"><option value="">Tutti i tipi</option><option value="playback">Riproduzione</option><option value="crash">Chiusura improvvisa</option><option value="epg">Guida TV</option><option value="playlist">Playlist</option><option value="premium">Premium</option><option value="ui">Schermate</option><option value="other">Altro</option></select>
+                <button id="rep-search" style="width:auto;margin:0">Cerca</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Codice</th><th>Quando</th><th>App</th><th>Versione</th><th>Dispositivo</th><th>Tipo</th><th>Nota</th><th>Registro</th></tr></thead>
+                    <tbody id="rep-tbody"></tbody>
+                </table>
+            </div>
+            <div id="rep-pages" style="display:flex;gap:8px;justify-content:center;margin-top:12px;font-size:13px"></div>
+            <div class="card" id="rep-detail" style="display:none;margin-top:16px;max-width:none;width:100%">
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+                    <h3 style="margin:0;font-size:15px" class="grow" id="rep-d-title"></h3>
+                    <button class="secondary small" id="rep-d-copy" style="width:auto;margin:0">Copia registro</button>
+                    <button class="secondary small" id="rep-d-dl" style="width:auto;margin:0">Scarica .txt</button>
+                    <button class="danger small" id="rep-d-del" style="width:auto;margin:0">Elimina</button>
+                    <button class="secondary small" id="rep-d-close" style="width:auto;margin:0">Chiudi</button>
+                </div>
+                <div id="rep-d-meta" style="font-size:12px;color:var(--muted);margin-bottom:8px;white-space:pre-line"></div>
+                <div id="rep-d-warn" class="err"></div>
+                <pre id="rep-d-log" style="white-space:pre-wrap;word-break:break-word;font-size:11px;line-height:1.45;max-height:60vh;overflow:auto;background:rgba(0,0,0,.3);padding:10px;border-radius:8px;border:1px solid var(--border)"></pre>
             </div>
         </div>
 
@@ -780,14 +813,14 @@ function showPanel(){
     // Restore last-viewed tab so a page reload doesn't bounce the admin back
     // to Dashboard. sessionStorage clears on logout, so a fresh login still
     // starts at Dashboard naturally.
-    const validTabs = ['dashboard','users','activate','admins','log','analytics','security','system'];
+    const validTabs = ['dashboard','users','activate','admins','log','reports','analytics','security','system'];
     const saved = sessionStorage.getItem('admin_tab');
     showTab(validTabs.includes(saved) ? saved : 'dashboard');
 }
 
 let sysRefreshTimer = null;
 function showTab(name) {
-    ['dashboard','users','activate','admins','log','analytics','security','system'].forEach(t=>{
+    ['dashboard','users','activate','admins','log','reports','analytics','security','system'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
@@ -798,6 +831,7 @@ function showTab(name) {
     if (name==='users') loadUsers('');
     if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
+    if (name==='reports') loadReports(0);
     if (name==='analytics') loadAnalytics();
     if (name==='security') loadSecurity();
     if (name==='system') {
@@ -1406,6 +1440,81 @@ async function doResetAdminTotp(adminId, email) {
     alert(`2FA di ${email} azzerato.\n\nCODICE DI ATTIVAZIONE: ${data.enroll_code || '(non ricevuto)'}\n\nComunicalo di persona o per telefono: vale 72 ore e una volta sola. Non lo rivedrai.`);
     loadAdmins();
 }
+
+// ===== segnalazioni dalle app (30/10/2026) =====
+// Il registro si mostra SOLO con textContent (mai innerHTML): arriva dalle app, va trattato come testo non fidato.
+const REP_PAGE = 25;
+const REP_APP = { tv: 'TV', android: 'Android', ios: 'iPhone/iPad', appletv: 'Apple TV' };
+const REP_CAT = { playback: 'Riproduzione', crash: 'Chiusura improvvisa', epg: 'Guida TV', playlist: 'Playlist', premium: 'Premium', ui: 'Schermate', other: 'Altro' };
+let repCurrent = null;
+function repWhen(v) { return (v ? String(v) : '').slice(0, 16).replace('T', ' '); }
+async function loadReports(offset) {
+    const tbody = document.getElementById('rep-tbody');
+    const errEl = document.getElementById('rep-err'); errEl.classList.remove('show');
+    tbody.innerHTML = '<tr><td colspan="8">Caricamento…</td></tr>';
+    const { ok, data, status } = await api('admin/reports-list', {
+        session_token: session, q: document.getElementById('rep-q').value.trim(),
+        app: document.getElementById('rep-app').value, category: document.getElementById('rep-cat').value,
+        limit: REP_PAGE, offset,
+    });
+    if (!ok) { tbody.innerHTML = ''; errEl.textContent = (data.error || 'Errore') + ` (HTTP ${status})`; errEl.classList.add('show'); return; }
+    const items = data.items || [];
+    if (!items.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--muted)">Nessuna segnalazione</td></tr>'; }
+    else tbody.innerHTML = items.map(r => `
+      <tr>
+        <td><a href="#" data-rep="${esc(r.code)}" style="font-family:monospace">${esc(r.code)}</a></td>
+        <td style="font-family:monospace;font-size:12px;white-space:nowrap">${esc(repWhen(r.created_at))}</td>
+        <td>${esc(REP_APP[r.app] || r.app)}${r.platform ? ' <span style="color:var(--muted)">' + esc(r.platform) + '</span>' : ''}</td>
+        <td style="font-size:12px">${esc(r.app_version || '')}${r.build ? ' (' + esc(r.build) + ')' : ''}</td>
+        <td style="font-size:12px">${esc(r.device_model || '')}<br><span style="color:var(--muted)">${esc(r.os_version || '')}</span></td>
+        <td><span class="tag">${esc(REP_CAT[r.category] || r.category)}</span></td>
+        <td style="font-size:12px;max-width:260px;word-break:break-word">${esc((r.note || '').slice(0, 160))}</td>
+        <td style="font-size:12px;white-space:nowrap">${Math.ceil((r.log_bytes || 0) / 1024)} KB${r.scrubbed ? ' <span class="tag" title="Il server ha dovuto togliere dati personali che l\'app aveva lasciato">ripulito ' + esc(r.scrubbed) + '</span>' : ''}</td>
+      </tr>`).join('');
+    tbody.querySelectorAll('a[data-rep]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); openReport(a.dataset.rep); }));
+    const pages = document.getElementById('rep-pages'); pages.innerHTML = '';
+    const total = data.total || 0;
+    const info = document.createElement('span'); info.textContent = total ? `${offset + 1}–${Math.min(offset + REP_PAGE, total)} di ${total}` : ''; info.style.alignSelf = 'center';
+    const mk = (label, off, dis) => { const b = document.createElement('button'); b.className = 'secondary small'; b.style.width = 'auto'; b.style.margin = '0'; b.textContent = label; b.disabled = dis; b.addEventListener('click', () => loadReports(off)); return b; };
+    pages.append(mk('‹ Precedenti', Math.max(0, offset - REP_PAGE), offset === 0), info, mk('Successive ›', offset + REP_PAGE, offset + REP_PAGE >= total));
+}
+async function openReport(code) {
+    const box = document.getElementById('rep-detail');
+    const { ok, data } = await api('admin/report-detail', { session_token: session, code });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    const r = data.report; repCurrent = r;
+    document.getElementById('rep-d-title').textContent = `Segnalazione ${r.code}`;
+    document.getElementById('rep-d-meta').textContent =
+        `${REP_APP[r.app] || r.app} ${r.platform || ''} · versione ${r.app_version || '?'}${r.build ? ' (' + r.build + ')' : ''} · ${r.device_model || '?'} · ${r.os_version || '?'} · lingua ${r.lang || '?'} · ${REP_CAT[r.category] || r.category} · ricevuta ${repWhen(r.created_at)} · si cancella il ${repWhen(r.expires_at).slice(0, 10)}` +
+        (r.note ? `\nNota dell'utente: ${r.note}` : '');
+    const w = document.getElementById('rep-d-warn');
+    if (r.scrubbed) { w.textContent = `Il server ha tolto ${r.scrubbed} dati personali che l'app aveva lasciato nel registro: da segnalare per correggere il filtro dell'app (versione ${r.app_version || '?'}).`; w.classList.add('show'); }
+    else w.classList.remove('show');
+    document.getElementById('rep-d-log').textContent = r.log || '';
+    box.style.display = '';
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+document.getElementById('rep-search').addEventListener('click', () => loadReports(0));
+document.getElementById('rep-q').addEventListener('keydown', e => { if (e.key === 'Enter') loadReports(0); });
+document.getElementById('rep-d-close').addEventListener('click', () => { document.getElementById('rep-detail').style.display = 'none'; document.getElementById('rep-d-log').textContent = ''; repCurrent = null; });
+document.getElementById('rep-d-copy').addEventListener('click', async () => {
+    if (!repCurrent) return;
+    try { await navigator.clipboard.writeText(repCurrent.log || ''); } catch (_) { alert('Copia non riuscita: seleziona il testo e copialo a mano.'); }
+});
+document.getElementById('rep-d-dl').addEventListener('click', () => {
+    if (!repCurrent) return;
+    const head = `BurgTV segnalazione ${repCurrent.code}\n${document.getElementById('rep-d-meta').textContent}\n\n`;
+    const url = URL.createObjectURL(new Blob([head + (repCurrent.log || '')], { type: 'text/plain;charset=utf-8' }));
+    const a = document.createElement('a'); a.href = url; a.download = `burgtv-${repCurrent.code}.txt`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+document.getElementById('rep-d-del').addEventListener('click', async () => {
+    if (!repCurrent || !confirm(`Eliminare subito la segnalazione ${repCurrent.code}?`)) return;
+    const { ok, data } = await api('admin/report-delete', { session_token: session, code: repCurrent.code });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    document.getElementById('rep-d-close').click();
+    loadReports(0);
+});
 
 // ===== log =====
 async function loadLog() {
