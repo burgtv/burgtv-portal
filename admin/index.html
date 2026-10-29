@@ -1046,7 +1046,8 @@ async function udResetPassword() {
     const pwd = prompt(`Nuova password per ${currentUserEmail} (min 8 caratteri):`);
     if (!pwd) return;
     if (pwd.length < 8) return alert('Min 8 caratteri');
-    const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd });
+    const totp = askTotp('scegliere la password di ' + currentUserEmail); if (!totp) return;
+    const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd, totp_code: totp });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     const o = document.getElementById('ud-ok'); o.textContent = 'Password aggiornata e sessioni del cliente chiuse. Comunicagliela a voce o per telefono, non per e-mail.'; o.classList.add('show');
 }
@@ -1192,10 +1193,14 @@ async function doApplyPlanChange() {
     document.getElementById('pc-preview').innerHTML = '';
 }
 async function udCancelSub() {
-    if (!confirm(`Cancellare la subscription Stripe per ${currentUserEmail}? (nessun rimborso)`)) return;
-    const { ok, data } = await api('admin/cancel-sub', { session_token: session, target_email: currentUserEmail });
+    // revisione 29/10: predefinito "a fine periodo" (il cliente tiene cio' che ha pagato); "subito" con 2FA
+    const now = confirm(`Abbonamento Stripe di ${currentUserEmail}.\n\nOK = annulla SUBITO (la licenza si spegne ora, nessun rimborso, serve il 2FA)\nAnnulla = chiudi a FINE PERIODO (nessun rinnovo, licenza attiva fino alla scadenza)`);
+    const body = { session_token: session, target_email: currentUserEmail, mode: now ? 'now' : 'period_end' };
+    if (now) { const t = askTotp('annullare SUBITO l\'abbonamento di ' + currentUserEmail); if (!t) return; body.totp_code = t; }
+    else if (!confirm('Confermi la chiusura a fine periodo?')) return;
+    const { ok, data } = await api('admin/cancel-sub', body);
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
-    const o = document.getElementById('ud-ok'); o.textContent = '✓ Subscription cancellata su Stripe'; o.classList.add('show');
+    const o = document.getElementById('ud-ok'); o.textContent = data.message || 'Abbonamento aggiornato su Stripe'; o.classList.add('show');
     openUser(currentUserEmail);
 }
 async function udCleanup() {

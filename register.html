@@ -317,7 +317,8 @@
                 localStorage.setItem('user_id', regData.user.id);
 
                 // 2. Vai al checkout Stripe — code solo se presente
-                const checkoutBody = {email, plan:selectedPlan};
+                // revisione 29/10: la sessione appena creata serve al server per agganciare il TV a una licenza esistente
+                const checkoutBody = {email, plan:selectedPlan, session_token: regData.session_token};
                 if (activeCode) checkoutBody.code = activeCode;
                 const r=await fetch(`${SUPABASE_URL}/functions/v1/create-checkout-session`,{
                     method:'POST',
