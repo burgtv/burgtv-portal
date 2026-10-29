@@ -1359,7 +1359,7 @@ async function loadAdmins() {
         const totp = a.totp_enabled ? '<span class="tag success">attivo</span>' : '<span class="tag warn">non config.</span>';
         const last = a.last_login ? a.last_login.slice(0,19).replace('T',' ') : '—';
         const actions = isMe
-            ? '<span style="color:var(--muted);font-size:12px">(tu)</span>'
+            ? `<button class="secondary small" data-act="resetAdminTotp" data-id="${esc(a.id)}" data-email="${esc(a.email)}" title="Nuovo QR 2FA: ti mostra un codice di attivazione, poi rifai l'accesso">Rifai il mio 2FA</button>`
             : `<button class="secondary small" data-act="resetAdminTotp" data-id="${esc(a.id)}" data-email="${esc(a.email)}">Reset 2FA</button>
                <button class="danger small" data-act="deleteAdmin" data-id="${esc(a.id)}" data-email="${esc(a.email)}">Rimuovi</button>`;
         return `<tr>
