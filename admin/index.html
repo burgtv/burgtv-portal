@@ -615,6 +615,23 @@
             <button type="button" class="secondary" onclick="closeResetLink()">Chiudi</button>
             <button type="button" id="rl-btn" onclick="doSendResetLink()">Invia link</button>
         </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
+        <h3 style="margin:0 0 8px;font-size:15px">Oppure: copia il link (senza e-mail)</h3>
+        <p class="warn-box" style="font-size:13px;line-height:1.5;color:var(--warn);margin:0 0 10px">Mandalo SOLO a un contatto verificato del cliente (numero già noto, chat già usata con lui). Chi ha il link può scegliere la password dell'account. Stesse regole: 60 minuti, una sola volta, annulla i link precedenti.</p>
+        <label for="rl-reason" style="font-size:13px;color:var(--muted)">Motivo (obbligatorio)</label>
+        <input type="text" id="rl-reason" maxlength="200" placeholder="es. cliente al telefono, e-mail non arriva" autocomplete="off">
+        <label for="rl-totp" style="font-size:13px;color:var(--muted)">Codice 2FA</label>
+        <input type="text" id="rl-totp" inputmode="numeric" maxlength="6" placeholder="6 cifre" autocomplete="one-time-code">
+        <div class="err" id="rl-cerr"></div>
+        <div id="rl-copybox" style="display:none;margin-top:8px">
+            <label for="rl-link" style="font-size:13px;color:var(--muted)">Link (mostrato una sola volta: chiudendo la finestra sparisce)</label>
+            <input type="text" id="rl-link" readonly style="font-family:monospace;font-size:12px">
+            <div class="ok" id="rl-cok"></div>
+        </div>
+        <div class="actions-grid">
+            <button type="button" class="secondary" id="rl-cbtn2" onclick="copyResetLinkAgain()" style="display:none">Copia di nuovo</button>
+            <button type="button" id="rl-cbtn" onclick="doCopyResetLink()">Crea e copia link</button>
+        </div>
     </div>
 </div>
 
@@ -1006,7 +1023,7 @@ async function openUser(email) {
     const fmt = v => v ? esc(String(v).slice(0,16).replace('T',' ')) : '—';
     const links = (data.reset_links||[]).map(r => {
         const st = r.used_at ? `usato ${fmt(r.used_at)}` : r.invalidated_at ? 'annullato' : (new Date(r.expires_at) < new Date() ? 'scaduto' : `valido fino ${fmt(r.expires_at)}`);
-        return `<div>Link password ${fmt(r.created_at)} · ${r.initiated_by==='admin' ? 'da '+esc(r.admin_email||'admin') : 'chiesto dal cliente'} · ${esc(st)} · e-mail ${esc(r.email_status||'?')}</div>`;
+        return `<div>Link password ${fmt(r.created_at)} · ${r.initiated_by==='admin' ? 'da '+esc(r.admin_email||'admin') : 'chiesto dal cliente'} · ${esc(st)} · ${r.email_status==='copied' ? 'copiato dal pannello (senza e-mail)' : 'e-mail '+esc(r.email_status||'?')}</div>`;
     }).join('');
     const plans = (data.plan_changes||[]).map(c => `<div>Piano ${fmt(c.created_at)}: ${esc(c.from_type)} -> ${esc(c.to_type)}${c.to_expires_at?' (scade '+fmt(c.to_expires_at).slice(0,10)+')':''} · ${esc(c.admin_email||'')} · "${esc(c.reason)}"${c.payment_note?' · pagamento: '+esc(c.payment_note):''}${c.stripe_action && c.stripe_action!=='none'?' · Stripe '+esc(c.stripe_action)+': '+esc(c.stripe_result||''):''}</div>`).join('');
     document.getElementById('ud-history').innerHTML = (plans + links) || 'Nessun cambio piano o link password registrato.';
@@ -1031,12 +1048,55 @@ async function udResetPassword() {
 
 // ===== A) link per nuova password =====
 function openResetLink() {
+    clearCopiedLink();
     document.getElementById('rl-email').textContent = currentUserEmail;
     clearErr('rl-err'); document.getElementById('rl-ok').classList.remove('show');
     document.getElementById('rl-btn').disabled = false;
     document.getElementById('rl-modal').classList.add('show');
 }
-function closeResetLink(){ document.getElementById('rl-modal').classList.remove('show'); openUser(currentUserEmail); }
+function clearCopiedLink() {
+    // il link si vede una sola volta: tolto dal campo e dalla pagina alla chiusura/riapertura
+    document.getElementById('rl-link').value = '';
+    document.getElementById('rl-copybox').style.display = 'none';
+    document.getElementById('rl-cbtn2').style.display = 'none';
+    document.getElementById('rl-cok').classList.remove('show');
+    ['rl-reason','rl-totp'].forEach(id => document.getElementById(id).value = '');
+    clearErr('rl-cerr');
+    document.getElementById('rl-cbtn').disabled = false;
+}
+function closeResetLink(){ clearCopiedLink(); document.getElementById('rl-modal').classList.remove('show'); openUser(currentUserEmail); }
+async function copyText(t) {
+    try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+        const i = document.getElementById('rl-link'); i.focus(); i.select();
+        try { return document.execCommand('copy'); } catch (e2) { return false; }
+    }
+}
+async function copyResetLinkAgain() {
+    const v = document.getElementById('rl-link').value; if (!v) return;
+    const ok = await copyText(v);
+    const o = document.getElementById('rl-cok'); o.textContent = ok ? 'Copiato di nuovo.' : 'Copia non riuscita: seleziona il testo e copialo a mano.'; o.classList.add('show');
+}
+async function doCopyResetLink() {
+    clearErr('rl-cerr');
+    const reason = document.getElementById('rl-reason').value.trim();
+    const totp = document.getElementById('rl-totp').value.trim();
+    if (reason.length < 5) { err('rl-cerr', 'Scrivi il motivo (almeno 5 caratteri)'); return; }
+    if (!/^\d{6}$/.test(totp)) { err('rl-cerr', 'Inserisci il codice 2FA a 6 cifre'); return; }
+    if (!confirm(`Creare un link per ${currentUserEmail} da mandare a mano? Il link precedente (anche quello via e-mail) smette di valere.`)) return;
+    const btn = document.getElementById('rl-cbtn'); btn.disabled = true;
+    const { ok, data } = await api('admin/copy-reset-link', { session_token: session, target_email: currentUserEmail, reason, totp_code: totp });
+    document.getElementById('rl-totp').value = '';
+    if (!ok) { btn.disabled = false; err('rl-cerr', data.error || 'Errore'); return; }
+    const link = String(data.link || '');
+    document.getElementById('rl-link').value = link;
+    document.getElementById('rl-copybox').style.display = '';
+    document.getElementById('rl-cbtn2').style.display = '';
+    const copied = await copyText(link);
+    const until = new Date(data.expires_at).toLocaleTimeString('it-CH', { hour:'2-digit', minute:'2-digit' });
+    const o = document.getElementById('rl-cok');
+    o.textContent = (copied ? 'Link copiato. ' : 'Copia automatica non riuscita: copialo dal campo. ') + `Vale fino alle ${until}, una sola volta. Mandalo solo a un contatto verificato del cliente.`;
+    o.classList.add('show');
+}
 async function doSendResetLink() {
     clearErr('rl-err'); document.getElementById('rl-ok').classList.remove('show');
     const btn = document.getElementById('rl-btn'); btn.disabled = true; btn.textContent = 'Invio...';
