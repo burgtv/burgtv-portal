@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.burgtv.mobile",
       "sha256_cert_fingerprints": [
-        "E1:F3:81:94:C1:5C:DC:B0:77:90:19:A2:41:EB:6F:AB:0F:59:05:22:61:BF:C5:EF:4C:A3:3F:7D:79:5E:29:77"
+        "E1:F3:81:94:C1:5C:DC:B0:77:90:19:A2:41:EB:6F:AB:0F:59:05:22:61:BF:C5:EF:4C:A3:3F:7D:79:5E:29:77",
+        "SOSTITUIRE_CON_IMPRONTA_SHA256_PLAY_APP_SIGNING"
       ]
     }
   }
