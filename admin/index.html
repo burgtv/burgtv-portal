@@ -821,7 +821,12 @@ async function doLogin(ev) {
     const email = document.getElementById('li-email').value.trim();
     const password = document.getElementById('li-password').value;
     const btn = document.getElementById('li-btn'); btn.disabled = true; btn.textContent = '…';
-    const { ok, data } = await api('admin/login', { email, password });
+    let { ok, data } = await api('admin/login', { email, password });
+    // aperti2 (M8): primo accesso o 2FA azzerato -> serve il codice di attivazione dato da un altro admin
+    if (!ok && data && data.needs_enroll_code) {
+        const code = prompt((data.error || 'Codice di attivazione') + '\n\nCodice (formato XXXXX-XXXXX):');
+        if (code) ({ ok, data } = await api('admin/login', { email, password, enroll_code: code.trim() }));
+    }
     btn.disabled = false; btn.textContent = 'Accedi';
     if (!ok) { err('login-err', data.error || 'Errore'); return false; }
     pendingLogin = data.login_token;
@@ -1373,7 +1378,7 @@ async function doCreateAdmin(ev) {
     const { ok, data } = await api('admin/admin-create', { session_token: session, email, password, totp_code: totp });
     btn.disabled = false; btn.textContent = 'Crea admin';
     if (!ok) { err('adm-err', data.error || 'Errore'); return false; }
-    const o = document.getElementById('adm-ok'); o.textContent = `Admin ${email} creato. Comunicagli la password di persona o per telefono: al primo accesso configurerà il 2FA.`; o.classList.add('show');
+    const o = document.getElementById('adm-ok'); o.textContent = `Admin ${email} creato. Comunicagli di persona o per telefono la password e il CODICE DI ATTIVAZIONE ${data.enroll_code || ''} (vale 72 ore, una volta sola, non lo rivedrai): al primo accesso servirà per configurare il 2FA.`; o.classList.add('show');
     document.getElementById('adm-email').value = '';
     document.getElementById('adm-password').value = '';
     loadAdmins();
@@ -1393,6 +1398,7 @@ async function doResetAdminTotp(adminId, email) {
     const totp = askTotp('azzerare il 2FA di ' + email); if (!totp) return;
     const { ok, data } = await api('admin/admin-reset-totp', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
+    alert(`2FA di ${email} azzerato.\n\nCODICE DI ATTIVAZIONE: ${data.enroll_code || '(non ricevuto)'}\n\nComunicalo di persona o per telefono: vale 72 ore e una volta sola. Non lo rivedrai.`);
     loadAdmins();
 }
 
