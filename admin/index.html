@@ -33,6 +33,11 @@
         input,select{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;outline:none;margin-bottom:10px}
         input:focus,select:focus{border-color:var(--accent)}
         input.code{text-align:center;letter-spacing:6px;font-size:22px;font-weight:600}
+        input.code.enroll{letter-spacing:3px;font-size:20px;text-transform:uppercase;font-family:ui-monospace,Menlo,monospace}
+        .field-hint{font-size:12px;color:var(--muted);margin:-4px 0 12px;line-height:1.45}
+        .field-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:8px 12px;border-radius:8px;font-size:13px;margin:-4px 0 12px;display:none}
+        .field-err.show{display:block}
+        .code-show{font-family:ui-monospace,Menlo,monospace;font-size:26px;font-weight:700;letter-spacing:3px;text-align:center;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin:10px 0;user-select:all;color:var(--text)}
         button{padding:12px 20px;background:var(--accent);color:white;border:none;border-radius:8px;font:inherit;font-weight:600;cursor:pointer;transition:.2s;width:100%;margin-bottom:8px}
         button:hover{background:#c95a9e}
         button:disabled{opacity:.5;cursor:not-allowed}
@@ -229,6 +234,23 @@
         <form onsubmit="return doSetup(event)">
             <input type="text" id="setup-code" class="code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" required autocomplete="off" inputmode="numeric">
             <button type="submit" id="setup-btn">Conferma e attiva</button>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== CODICE DI ATTIVAZIONE (primo accesso o 2FA azzerato) ==================== -->
+<div class="center" id="screen-enroll" style="display:none">
+    <div class="card">
+        <div class="logo"><img src="/logo.png" alt="BurgTV"></div>
+        <h1>Codice di attivazione</h1>
+        <p>Primo accesso o 2FA azzerato per <strong id="enroll-email"></strong>: serve il codice di attivazione prima di configurare l'app di autenticazione.</p>
+        <form onsubmit="return doEnroll(event)" style="margin-top:14px" novalidate>
+            <label for="enroll-code" style="display:block;font-size:13px;margin-bottom:6px">Codice di attivazione</label>
+            <input type="text" id="enroll-code" class="code enroll" maxlength="11" placeholder="XXXXX-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" aria-describedby="enroll-hint enroll-err">
+            <p class="field-hint" id="enroll-hint">È il codice nel formato XXXXX-XXXXX ricevuto quando l'account è stato creato o il 2FA azzerato. Non sono le 6 cifre dell'app di autenticazione.</p>
+            <div class="field-err" id="enroll-err" role="alert"></div>
+            <button type="submit" id="enroll-btn">Continua</button>
+            <button type="button" class="secondary" id="enroll-back">Indietro</button>
         </form>
     </div>
 </div>
@@ -589,6 +611,36 @@
 </div>
 
 <!-- ==================== USER DETAIL MODAL ==================== -->
+<!-- Richiesta di un valore (codice 2FA, password): al posto di window.prompt -->
+<div class="modal-overlay" id="ask-modal" role="dialog" aria-modal="true" aria-labelledby="ask-title">
+    <div class="modal" style="max-width:420px">
+        <h3 id="ask-title" style="margin-bottom:8px"></h3>
+        <p id="ask-text" style="color:var(--muted);font-size:13px;margin-bottom:12px"></p>
+        <form id="ask-form" novalidate>
+            <input id="ask-input" autocomplete="off">
+            <div class="field-err" id="ask-err" role="alert"></div>
+            <div style="display:flex;gap:8px">
+                <button type="button" class="secondary" id="ask-cancel" style="flex:1">Annulla</button>
+                <button type="submit" id="ask-ok" style="flex:1">Conferma</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Codice di attivazione appena creato: mostrato UNA volta, con Copia (al posto di alert) -->
+<div class="modal-overlay" id="code-modal" role="dialog" aria-modal="true" aria-labelledby="code-title">
+    <div class="modal" style="max-width:460px">
+        <h3 id="code-title" style="margin-bottom:8px"></h3>
+        <p id="code-text" style="font-size:13px;margin-bottom:4px"></p>
+        <div class="code-show" id="code-value"></div>
+        <div class="ok" id="code-copied"></div>
+        <p style="font-size:12px;color:#fca5a5;margin-bottom:12px"><strong>Non lo rivedrai:</strong> chiudendo questa finestra il codice non si può più mostrare. Comunicalo di persona o per telefono, mai per e-mail o chat. Vale 72 ore e una volta sola.</p>
+        <div style="display:flex;gap:8px">
+            <button type="button" class="secondary" id="code-copy" style="flex:1">Copia</button>
+            <button type="button" id="code-close" style="flex:1">Ho annotato il codice</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="user-modal">
     <div class="modal">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -767,12 +819,40 @@ document.addEventListener('click', ev => {
     ev.preventDefault();
     ACTIONS[el.dataset.act](el.dataset, el);
 });
+// 30/10: niente window.prompt per dati sensibili (codice 2FA, password): finestra dedicata. Restituisce una Promise.
+function askInput({ title, text, type = 'text', placeholder = '', inputmode = '', autocomplete = 'off', className = '', validate }) {
+    return new Promise(resolve => {
+        const m = document.getElementById('ask-modal'), inp = document.getElementById('ask-input'), e = document.getElementById('ask-err');
+        document.getElementById('ask-title').textContent = title;
+        document.getElementById('ask-text').textContent = text || '';
+        inp.type = type; inp.value = ''; inp.placeholder = placeholder; inp.className = className; inp.autocomplete = autocomplete;
+        if (inputmode) inp.setAttribute('inputmode', inputmode); else inp.removeAttribute('inputmode');
+        e.classList.remove('show'); m.classList.add('show'); setTimeout(() => inp.focus(), 30);
+        const done = v => { m.classList.remove('show'); inp.value = ''; f.onsubmit = null; c.onclick = null; resolve(v); };
+        const f = document.getElementById('ask-form'), c = document.getElementById('ask-cancel');
+        c.onclick = () => done(null);
+        f.onsubmit = ev => { ev.preventDefault(); const v = inp.value.trim(); const msg = validate ? validate(v) : null;
+            if (msg) { e.textContent = msg; e.classList.add('show'); inp.focus(); return; } done(v); };
+    });
+}
 function askTotp(what) {
-    const c = prompt(`Conferma con il codice 2FA (6 cifre) per: ${what}`);
-    if (c === null) return null;
-    const t = c.trim();
-    if (!/^\d{6}$/.test(t)) { alert('Il codice deve avere 6 cifre'); return null; }
-    return t;
+    return askInput({ title: 'Conferma con il codice 2FA', text: `Le 6 cifre dell'app di autenticazione, per: ${what}`, placeholder: '000000',
+        inputmode: 'numeric', autocomplete: 'one-time-code', className: 'code',
+        validate: v => /^\d{6}$/.test(v) ? null : 'Il codice deve avere 6 cifre' });
+}
+function showEnrollCode(title, text, code) {
+    const m = document.getElementById('code-modal');
+    document.getElementById('code-title').textContent = title;
+    document.getElementById('code-text').textContent = text;
+    document.getElementById('code-value').textContent = code || '(non ricevuto)';
+    const okEl = document.getElementById('code-copied'); okEl.classList.remove('show');
+    document.getElementById('code-copy').onclick = async () => {
+        try { await navigator.clipboard.writeText(code || ''); okEl.textContent = 'Copiato.'; }
+        catch (_) { okEl.textContent = 'Copia non riuscita: seleziona il codice e copialo a mano.'; }
+        okEl.classList.add('show');
+    };
+    document.getElementById('code-close').onclick = () => { m.classList.remove('show'); document.getElementById('code-value').textContent = ''; };
+    m.classList.add('show');
 }
 
 let session = sessionStorage.getItem('admin_session');
@@ -800,7 +880,7 @@ async function api(path, body) {
 
 // ===== screen routing =====
 function show(id) {
-    ['screen-login','screen-setup','screen-totp','screen-panel'].forEach(s=>{
+    ['screen-login','screen-setup','screen-totp','screen-enroll','screen-panel'].forEach(s=>{
         document.getElementById(s).style.display = (s===id) ? '' : 'none';
     });
 }
@@ -855,14 +935,52 @@ async function doLogin(ev) {
     const email = document.getElementById('li-email').value.trim();
     const password = document.getElementById('li-password').value;
     const btn = document.getElementById('li-btn'); btn.disabled = true; btn.textContent = '…';
-    let { ok, data } = await api('admin/login', { email, password });
-    // aperti2 (M8): primo accesso o 2FA azzerato -> serve il codice di attivazione dato da un altro admin
-    if (!ok && data && data.needs_enroll_code) {
-        const code = prompt((data.error || 'Codice di attivazione') + '\n\nCodice (formato XXXXX-XXXXX):');
-        if (code) ({ ok, data } = await api('admin/login', { email, password, enroll_code: code.trim() }));
-    }
+    const { ok, data } = await api('admin/login', { email, password });
     btn.disabled = false; btn.textContent = 'Accedi';
+    // aperti2 (M8): primo accesso o 2FA azzerato -> serve il codice di attivazione (campo dedicato, non prompt)
+    if (!ok && data && data.needs_enroll_code) { showEnroll(email, password); return false; }
     if (!ok) { err('login-err', data.error || 'Errore'); return false; }
+    afterLogin(data, email);
+    return false;
+}
+// Credenziali tenute solo in memoria mentre si chiede il codice di attivazione; azzerate con Indietro o a fine accesso.
+let enrollCreds = null;
+const ENROLL_CHARS = /[^ABCDEFGHJKLMNPQRSTUVWXYZ23456789]/g;   // stesso alfabeto del server (niente I, O, 0, 1)
+function enrollRaw(v) { return String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+function showEnroll(email, password) {
+    enrollCreds = { email, password };
+    document.getElementById('enroll-email').textContent = email;
+    const inp = document.getElementById('enroll-code'); inp.value = '';
+    clearErr('enroll-err');
+    show('screen-enroll'); inp.focus();
+}
+document.getElementById('enroll-code').addEventListener('input', e => {
+    const raw = enrollRaw(e.target.value).slice(0, 10);
+    e.target.value = raw.length > 5 ? raw.slice(0, 5) + '-' + raw.slice(5) : raw;
+    clearErr('enroll-err');
+});
+document.getElementById('enroll-back').addEventListener('click', () => {
+    enrollCreds = null; document.getElementById('enroll-code').value = '';
+    document.getElementById('li-password').value = ''; clearErr('enroll-err'); showLogin();
+});
+async function doEnroll(ev) {
+    ev.preventDefault();
+    clearErr('enroll-err');
+    if (!enrollCreds) { showLogin(); return false; }
+    const raw = enrollRaw(document.getElementById('enroll-code').value);
+    if (/^\d{6}$/.test(raw)) { err('enroll-err', 'Queste sono le 6 cifre dell\'app: qui serve il codice di attivazione (formato XXXXX-XXXXX).'); return false; }
+    if (raw.length !== 10 || raw.replace(ENROLL_CHARS, '').length !== 10) {
+        err('enroll-err', 'Il codice di attivazione ha 10 caratteri, nel formato XXXXX-XXXXX (lettere e numeri, senza I, O, 0 e 1).'); return false;
+    }
+    const btn = document.getElementById('enroll-btn'); btn.disabled = true; btn.textContent = '…';
+    const { ok, data } = await api('admin/login', { email: enrollCreds.email, password: enrollCreds.password, enroll_code: raw.slice(0, 5) + '-' + raw.slice(5) });
+    btn.disabled = false; btn.textContent = 'Continua';
+    if (!ok) { err('enroll-err', (data && data.error) || 'Codice di attivazione non valido'); return false; }
+    const email = enrollCreds.email; enrollCreds = null; document.getElementById('enroll-code').value = '';
+    afterLogin(data, email);
+    return false;
+}
+function afterLogin(data, email) {
     pendingLogin = data.login_token;
     myEmail = email;
     if (data.needs_setup) {
@@ -878,7 +996,6 @@ async function doLogin(ev) {
         document.getElementById('totp-email').textContent = email;
         showTotp();
     }
-    return false;
 }
 async function doSetup(ev) {
     ev.preventDefault();
@@ -1077,10 +1194,10 @@ async function udRemoveDevice(deviceId, name) {
 }
 async function udResetPassword() {
     if (!confirm('Sconsigliato: con "Invia link per nuova password" il cliente sceglie la password da solo e tu non la vedi mai. Continuare comunque?')) return;
-    const pwd = prompt(`Nuova password per ${currentUserEmail} (min 8 caratteri):`);
+    const pwd = await askInput({ title: 'Nuova password', text: `Per ${currentUserEmail} (almeno 8 caratteri)`, type: 'password', autocomplete: 'new-password',
+        validate: v => v.length >= 8 ? null : 'Almeno 8 caratteri' });
     if (!pwd) return;
-    if (pwd.length < 8) return alert('Min 8 caratteri');
-    const totp = askTotp('scegliere la password di ' + currentUserEmail); if (!totp) return;
+    const totp = await askTotp('scegliere la password di ' + currentUserEmail); if (!totp) return;
     const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd, totp_code: totp });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     const o = document.getElementById('ud-ok'); o.textContent = 'Password aggiornata e sessioni del cliente chiuse. Comunicagliela a voce o per telefono, non per e-mail.'; o.classList.add('show');
@@ -1230,7 +1347,7 @@ async function udCancelSub() {
     // revisione 29/10: predefinito "a fine periodo" (il cliente tiene cio' che ha pagato); "subito" con 2FA
     const now = confirm(`Abbonamento Stripe di ${currentUserEmail}.\n\nOK = annulla SUBITO (la licenza si spegne ora, nessun rimborso, serve il 2FA)\nAnnulla = chiudi a FINE PERIODO (nessun rinnovo, licenza attiva fino alla scadenza)`);
     const body = { session_token: session, target_email: currentUserEmail, mode: now ? 'now' : 'period_end' };
-    if (now) { const t = askTotp('annullare SUBITO l\'abbonamento di ' + currentUserEmail); if (!t) return; body.totp_code = t; }
+    if (now) { const t = await askTotp('annullare SUBITO l\'abbonamento di ' + currentUserEmail); if (!t) return; body.totp_code = t; }
     else if (!confirm('Confermi la chiusura a fine periodo?')) return;
     const { ok, data } = await api('admin/cancel-sub', body);
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
@@ -1240,7 +1357,7 @@ async function udCancelSub() {
 async function udCleanup() {
     const conf = prompt(`PERMANENTE: scrivi "DELETE ${currentUserEmail}" per confermare cancellazione totale.`);
     if (conf !== `DELETE ${currentUserEmail}`) return;
-    const totp = askTotp('eliminare l\'account ' + currentUserEmail); if (!totp) return;
+    const totp = await askTotp('eliminare l\'account ' + currentUserEmail); if (!totp) return;
     const { ok, data } = await api('admin/cleanup-account', { session_token: session, target_email: currentUserEmail, confirm_email: currentUserEmail, totp_code: totp });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     closeUserModal();
@@ -1412,12 +1529,13 @@ async function doCreateAdmin(ev) {
     const email = document.getElementById('adm-email').value.trim().toLowerCase();
     const password = document.getElementById('adm-password').value;
     if (password.length < 8) { err('adm-err','Min 8 caratteri'); return false; }
-    const totp = askTotp('creare l\'admin ' + email); if (!totp) return false;
+    const totp = await askTotp('creare l\'admin ' + email); if (!totp) return false;
     const btn = document.getElementById('adm-btn'); btn.disabled = true; btn.textContent = '…';
     const { ok, data } = await api('admin/admin-create', { session_token: session, email, password, totp_code: totp });
     btn.disabled = false; btn.textContent = 'Crea admin';
     if (!ok) { err('adm-err', data.error || 'Errore'); return false; }
-    const o = document.getElementById('adm-ok'); o.textContent = `Admin ${email} creato. Comunicagli di persona o per telefono la password e il CODICE DI ATTIVAZIONE ${data.enroll_code || ''} (vale 72 ore, una volta sola, non lo rivedrai): al primo accesso servirà per configurare il 2FA.`; o.classList.add('show');
+    const o = document.getElementById('adm-ok'); o.textContent = `Admin ${email} creato.`; o.classList.add('show');
+    showEnrollCode('Admin creato', `Codice di attivazione per ${email}: comunicaglielo insieme alla password. Al primo accesso servirà per configurare il 2FA.`, data.enroll_code);
     document.getElementById('adm-email').value = '';
     document.getElementById('adm-password').value = '';
     loadAdmins();
@@ -1427,17 +1545,17 @@ ACTIONS.deleteAdmin = d => doDeleteAdmin(d.id, d.email);
 ACTIONS.resetAdminTotp = d => doResetAdminTotp(d.id, d.email);
 async function doDeleteAdmin(adminId, email) {
     if (!confirm(`Rimuovere definitivamente l'admin ${email}? Le sue sessioni saranno terminate.`)) return;
-    const totp = askTotp('rimuovere l\'admin ' + email); if (!totp) return;
+    const totp = await askTotp('rimuovere l\'admin ' + email); if (!totp) return;
     const { ok, data } = await api('admin/admin-delete', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
     loadAdmins();
 }
 async function doResetAdminTotp(adminId, email) {
     if (!confirm(`Reset 2FA per ${email}? Dovrà ri-configurare l'authenticator al prossimo accesso e le sue sessioni verranno terminate.`)) return;
-    const totp = askTotp('azzerare il 2FA di ' + email); if (!totp) return;
+    const totp = await askTotp('azzerare il 2FA di ' + email); if (!totp) return;
     const { ok, data } = await api('admin/admin-reset-totp', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
-    alert(`2FA di ${email} azzerato.\n\nCODICE DI ATTIVAZIONE: ${data.enroll_code || '(non ricevuto)'}\n\nComunicalo di persona o per telefono: vale 72 ore e una volta sola. Non lo rivedrai.`);
+    showEnrollCode('2FA azzerato', `Codice di attivazione per ${email}: gli servirà al prossimo accesso, prima di configurare l'app di autenticazione.`, data.enroll_code);
     loadAdmins();
 }
 
