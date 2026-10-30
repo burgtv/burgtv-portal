@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="noindex">
   <meta name="referrer" content="no-referrer">
@@ -13,22 +13,30 @@
     @font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:optional;src:url('/assets/fonts/inter-var.woff2') format('woff2')}
     :root{--bg:#0a0a0b;--bg2:#111113;--text:#fff;--text2:#9ca3af;--accent:#B94A8E;--accent-dark:#7B4397;--ok:#10b981;--err:#ef4444;--border:rgba(255,255,255,.10);--card:rgba(255,255,255,.03)}
     *{box-sizing:border-box;margin:0;padding:0}
-    html{background:#0a0a0b}
-    body{font-family:'Inter',Arial,sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;display:flex;justify-content:center;padding:1.5rem 1rem;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
-    main{width:100%;max-width:460px}
-    .logo{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;font-weight:700;font-size:18px}
-    .logo img{width:36px;height:36px;border-radius:9px}
-    h1{font-size:22px;margin-bottom:.25rem}
+    html{background:#0a0a0b;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    /* Margine laterale sempre >= 20px (anche con notch/isola: safe-area). Niente flex sul body: in Safari un
+       elemento flex con min-width:auto si allargava oltre lo schermo (larghezza naturale del campo codice). */
+    body{font-family:'Inter',Arial,sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;min-height:100dvh;
+      padding:max(16px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
+      font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+    main{width:100%;max-width:480px;min-width:0;margin:0 auto}
+    @media (min-width:768px){body{padding-top:48px}main{max-width:520px}}
+    .top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:1.5rem}
+    .logo{display:flex;align-items:center;min-width:0}
+    .logo img{display:block;height:40px;width:auto;aspect-ratio:1200/630;object-fit:contain;max-width:100%}
+    h1{font-size:clamp(22px,6vw,28px);line-height:1.2;margin-bottom:.4rem;hyphens:auto;-webkit-hyphens:auto}
     p.sub{color:var(--text2);margin-bottom:1.25rem}
     .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.1rem;margin-bottom:1rem}
     label{display:block;font-size:13px;color:var(--text2);margin:.75rem 0 .3rem}
-    input,select{width:100%;padding:12px 14px;font:inherit;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none}
+    input,select{width:100%;min-width:0;max-width:100%;padding:12px 14px;font:inherit;background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none}
     input:focus,select:focus{border-color:var(--accent)}
-    #code{font-family:ui-monospace,Menlo,monospace;font-size:22px;letter-spacing:.2em;text-transform:uppercase;text-align:center}
+    #stepCode{container-type:inline-size}
+    /* il codice si adatta alla larghezza del riquadro (anche con testo grande): mai tagliato */
+    #code{font-family:ui-monospace,Menlo,monospace;font-size:20px;font-size:clamp(15px,9cqi,24px);letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:14px 6px;text-overflow:clip}
     button{width:100%;margin-top:1rem;padding:13px 16px;font:inherit;font-weight:600;border:none;border-radius:10px;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-dark))}
     button.sec{background:transparent;border:1px solid var(--border)}
     button:disabled{opacity:.5;cursor:default}
-    .sas{font-family:ui-monospace,Menlo,monospace;font-size:30px;font-weight:700;letter-spacing:.08em;text-align:center;margin:.4rem 0;color:var(--ok)}
+    .sas{font-family:ui-monospace,Menlo,monospace;font-size:clamp(26px,8vw,32px);font-weight:700;letter-spacing:.08em;text-align:center;margin:.4rem 0;color:var(--ok)}
     .msg{padding:.75rem .9rem;border-radius:10px;margin-top:.75rem;font-size:14px}
     .msg.err{background:rgba(239,68,68,.12);color:#fca5a5}
     .msg.ok{background:rgba(16,185,129,.12);color:#6ee7b7}
@@ -37,8 +45,7 @@
     .row{display:flex;gap:.5rem}
     .row>*{flex:1}
     .small{font-size:12px;color:var(--text2);margin-top:.6rem}
-    .lang{position:absolute;top:1rem;right:1rem;width:auto;padding:6px 10px;font-size:13px}
-    [dir=rtl] .lang{right:auto;left:1rem}
+    .lang{width:auto;flex:none;padding:8px 10px;font-size:14px;max-width:100%}
     [dir=rtl] svg.i{margin-right:0;margin-left:6px}
     #code,#sas,input[type=url],#pMac,#xUser,#jUser{direction:ltr}
     [dir=rtl] input[type=url],[dir=rtl] #pMac{text-align:left}
@@ -46,16 +53,18 @@
   </style>
 </head>
 <body>
-<select class="lang" id="lang" aria-label="Language / Lingua"><option value="it">Italiano</option><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="ru">Русский</option><option value="ar">العربية</option></select>
 <main>
-  <div class="logo"><img src="/logo.png" alt=""><span>BurgTV</span></div>
+  <header class="top">
+  <div class="logo"><img src="/logo.png" alt="BurgTV" width="76" height="40"></div>
+  <select class="lang" id="lang" aria-label="Language / Lingua"><option value="it">Italiano</option><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option><option value="fr">Français</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="ru">Русский</option><option value="ar">العربية</option></select>
+  </header>
   <h1 data-t="title">Collega la TV</h1>
   <p class="sub" data-t="sub">Aggiungi una playlist o attiva Premium sulla TV, dal telefono.</p>
 
   <!-- 1. codice -->
   <section class="card" id="stepCode">
     <label for="code" data-t="codeLabel">Codice che vedi sulla TV</label>
-    <input id="code" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="K7M-4QX">
+    <input id="code" size="8" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="8" placeholder="K7M-4QX">
     <button id="btnCode" data-t="next">Continua</button>
     <div id="codeMsg"></div>
   </section>
