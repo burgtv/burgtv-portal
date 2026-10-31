@@ -388,7 +388,7 @@
                     </select>
                     <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:12px">
                         <input type="checkbox" id="act-reset" style="width:auto;margin:2px 0 0">
-                        <span>Se il cliente ha gia' una password: mandagli un link per sceglierne una nuova (chiude le sue sessioni, serve il codice 2FA)</span>
+                        <span>Se il cliente ha gia' una password: annullala e mandagli un link per sceglierne una nuova (chiude le sue sessioni, serve il codice 2FA)</span>
                     </label>
                     <p style="font-size:12px;color:var(--muted);margin:-4px 0 12px">Il pannello non mostra mai password: il cliente la sceglie da solo con il link ricevuto per e-mail.</p>
                     <button type="submit" id="act-btn">Attiva</button>
@@ -1547,7 +1547,7 @@ async function doActivate(ev, force, totpCode) {
     }
     const o = document.getElementById('act-ok');
     const hint = hasCode ? "L'app TV si attiva da sola entro pochi secondi." : "Il cliente accede dall'app con email e password; il suo dispositivo si aggancia da solo.";
-    o.textContent = `${data.message || 'Attivato'} — ${email}. ${data.link_message || ''} ${hint}`;
+    o.textContent = `${data.message || 'Attivato'} — ${email}. ${data.old_password_disabled ? 'La vecchia password non vale piu\'. ' : ''}${data.link_message || ''} ${hint}`;
     o.classList.add('show');
     document.getElementById('act-code').value = '';
     document.getElementById('act-email').value = '';
@@ -2527,7 +2527,9 @@ async function openSecurityEvent(id) {
 async function banDeviceFromEvent(device_id, eventId) {
     const reason = prompt('Motivo del ban (opzionale):', 'Banned via Security Panel') ?? null;
     if (reason === null) return;
-    const { ok, data } = await api('admin/security-action-ban-device', { session_token: session, device_id, reason });
+    const totpBan = await askTotp('bloccare il dispositivo (toglie il Premium al cliente)');
+    if (!totpBan) return;
+    const { ok, data } = await api('admin/security-action-ban-device', { session_token: session, device_id, reason, totp_code: totpBan });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     await api('admin/security-event-resolve', { session_token: session, id: eventId, notes: `Banned device: ${reason}` });
     alert('Dispositivo bloccato: non ha piu\' il Premium (TV, iPhone e Android) e non puo\' piu\' essere aggiunto a una licenza.');
@@ -2543,7 +2545,7 @@ async function banIpFromEvent(ip, eventId) {
     const { ok, data } = await api('admin/security-action-ban-ip', { session_token: session, ip, expires_hours: hours });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     await api('admin/security-event-resolve', { session_token: session, id: eventId, notes: `Banned IP for ${hours}h` });
-    alert(hours > 0 ? `IP bloccato per ${hours} ore (il pannello admin resta raggiungibile).` : 'IP bloccato senza scadenza (il pannello admin resta raggiungibile).');
+    alert((hours > 0 ? `IP bloccato per ${hours} ore` : 'IP bloccato senza scadenza') + (String(ip).includes(':') ? ' (indirizzo IPv6: bloccata tutta la sua rete /64)' : '') + '. Il pannello admin resta raggiungibile.');
     closeModal();
     loadSecurity();
 }
@@ -2565,7 +2567,9 @@ async function resolveSecurityBulk() {
     const what = type ? `tutti gli eventi aperti di tipo "${type}"` : `${ids.length} eventi aperti mostrati`;
     const notes = prompt(`Segnare come risolti ${what}? Nota (facoltativa):`, '');
     if (notes === null) return;
-    const { ok, data } = await api('admin/security-events-resolve-bulk', { session_token: session, ids, event_type: type || undefined, notes });
+    let totpBulk;
+    if (type || ids.length > 20) { totpBulk = await askTotp('segnare come risolti ' + what); if (!totpBulk) return; }
+    const { ok, data } = await api('admin/security-events-resolve-bulk', { session_token: session, ids, event_type: type || undefined, notes, totp_code: totpBulk });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     alert(`${data.resolved} eventi segnati come risolti.`);
     loadSecurity();
