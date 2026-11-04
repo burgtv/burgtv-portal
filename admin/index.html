@@ -2729,6 +2729,9 @@ async function openPremiumBans() {
     const migs = (data.migrations || []).length ? `<div style="overflow-x:auto"><table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:var(--bg3)">${th('TV vecchia')}${th('Cliente')}${th('Come')}${th('Quando')}<th></th></tr>
         ${data.migrations.map(m => `<tr>${td('…' + esc(String(m.legacy_device_id || '').slice(-6)), 'font-family:monospace;font-size:12px')}${td(esc(m.email || ''), 'word-break:break-all')}${td(esc(MIG_HOW[m.how] || m.how), 'font-size:11px')}${td(esc(fmtDateTime(m.migrated_at)), 'color:var(--muted);font-size:11px')}${td(m.undone_at ? `<span class="tag">annullata</span>` : `<button type="button" class="danger" style="${small}" data-act="undoMigration" data-id="${esc(m.id)}" data-email="${esc(m.email || '')}">Annulla migrazione</button>`)}</tr>`).join('')}</table></div>`
         : '<p style="color:var(--muted);font-size:13px">Nessuna TV aggiornata finora.</p>';
+    // REVISIONE 2b 04/11: e-mail ai clienti (solo eventi sospetti) di oggi e tetto giornaliero del piano Resend
+    const nt = data.notices || {};
+    const notices = `<div id="pb-notices" style="font-size:13px;margin:6px 0">${nt.disabled ? 'E-mail ai clienti <strong>spente</strong> (NOTIFY_DEVICE_CHANGES=0).' : `E-mail ai clienti oggi (solo eventi sospetti): <strong>${esc(nt.tried ?? 0)}</strong> su ${esc(nt.cap ?? 40)}`}${nt.capped ? ` · <span class="tag err">tetto raggiunto: ${esc(nt.capped)} non inviate</span> <span style="color:var(--muted);font-size:11px">(ultima ${esc(fmtDateTime(nt.last_capped_at))}): se succede spesso serve il piano Resend a pagamento</span>` : ''}</div>`;
     const cfg = Object.fromEntries((data.config || []).map(c => [c.key, c]));
     const dates = Object.keys(PCFG).map(k => `<div style="display:flex;gap:8px;align-items:center;margin:6px 0;font-size:13px"><div style="flex:1">${esc(PCFG[k])}: <strong>${cfg[k] && cfg[k].value ? esc(fmtDateTime(cfg[k].value)) : 'nessuna data'}</strong></div><button type="button" class="secondary" style="${small}" onclick="setPremiumDate('${k}')">Cambia</button></div>`).join('');
     openModal(`<h3 style="margin-top:0">Premium e ban</h3>
@@ -2738,6 +2741,7 @@ async function openPremiumBans() {
         <h4 style="margin-top:20px;font-size:14px">Collegamento TV vecchie</h4>${grants}
         <button type="button" class="secondary" style="width:auto;margin:8px 0 0" onclick="grantTvBind()">Consenti il collegamento di questa TV…</button>
         <h4 style="margin-top:20px;font-size:14px">TV aggiornate (vecchio codice passato alla TV nuova)</h4>${migs}
+        <h4 style="margin-top:20px;font-size:14px">E-mail ai clienti</h4>${notices}
         <h4 style="margin-top:20px;font-size:14px">Date per le app vecchie</h4>${dates}
         <p style="color:var(--muted);font-size:12px">Ogni azione chiede il codice 2FA e finisce nel Log.</p>
         <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
