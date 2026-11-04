@@ -2714,20 +2714,47 @@ async function setPremiumDate(key) {
     if (!r.ok) { alert(r.data.error || 'Errore'); return; }
     openPremiumBans();
 }
+// 05/11: stile delle tabelle della finestra Premium e ban (una volta). Desktop: tabella; telefono (<= 640px): schede.
+function pbStyle() {
+    if (document.getElementById('pbt-style')) return;
+    const st = document.createElement('style'); st.id = 'pbt-style';
+    st.textContent = `.pbt{width:100%;font-size:13px;border-collapse:collapse}
+.pbt th{text-align:left;padding:6px;background:var(--bg3);font-weight:600}
+.pbt td{padding:6px;vertical-align:middle;overflow-wrap:break-word;word-break:normal}
+.pbt td.pbt-nw{white-space:nowrap}
+.pbt td.pbt-act{text-align:right}
+.pbt td.pbt-act .tag{white-space:nowrap}
+@media (max-width:640px){
+  #sec-modal-overlay{padding:8px!important}
+  #sec-modal-overlay>div{padding:16px!important}
+  .pbt,.pbt tbody,.pbt tr,.pbt td{display:block;width:100%;box-sizing:border-box}
+  .pbt{background:none!important;border:0!important}
+  .pbt td{border:0!important;white-space:normal!important;overflow-wrap:anywhere}
+  .pbt tr.pbt-h{display:none}
+  .pbt tr{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;margin:0 0 8px}
+  .pbt td{display:flex;gap:10px;align-items:baseline;padding:3px 0;text-align:left}
+  .pbt td[data-l]::before{content:attr(data-l);flex:0 0 84px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+  .pbt td.pbt-act{white-space:normal;flex-wrap:wrap;justify-content:flex-start;padding-top:8px}
+  .pbt td.pbt-act button{min-height:36px}
+}`;
+    document.head.appendChild(st);
+}
 async function openPremiumBans() {
     const { ok, data } = await api('admin/premium-bans-list', { session_token: session });
     if (!ok) { alert(data?.error || 'Errore'); return; }
-    const th = t => `<th style="text-align:left;padding:6px">${t}</th>`, td = (t, st = '') => `<td style="padding:6px;${st}">${t}</td>`;
+    pbStyle();
+    // 05/11: tabelle "pbt": su schermo stretto (telefono) ogni riga diventa una scheda con l'etichetta accanto al valore
+    const th = t => `<th>${t}</th>`, td = (t, st = '', l = '') => `<td${l ? ` data-l="${esc(l)}"` : ' class="pbt-act"'} style="${st}">${t}</td>`;
     const small = 'width:auto;margin:0;padding:4px 10px;font-size:11px';
-    const acc = (data.accounts || []).length ? `<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:var(--bg3)">${th('Email')}${th('Motivo')}${th('Quando')}<th></th></tr>
-        ${data.accounts.map(a => `<tr>${td(esc(a.email) + (a.scaduto ? ' <span class="tag">scaduto</span>' : ''))}${td(esc(a.reason || ''))}${td(esc(fmtDateTime(a.banned_at)), 'color:var(--muted);font-size:11px')}${td(`<button type="button" class="secondary" style="${small}" data-act="unbanAccount" data-email="${esc(a.email)}">Sblocca</button>`)}</tr>`).join('')}</table>`
+    const acc = (data.accounts || []).length ? `<table class="pbt"><tr class="pbt-h">${th('Email')}${th('Motivo')}${th('Quando')}<th></th></tr>
+        ${data.accounts.map(a => `<tr>${td(esc(a.email) + (a.scaduto ? ' <span class="tag">scaduto</span>' : ''), 'overflow-wrap:anywhere', 'Email')}${td(esc(a.reason || ''), '', 'Motivo')}${td(esc(fmtDateTime(a.banned_at)), 'color:var(--muted);font-size:11px;white-space:nowrap', 'Quando')}${td(`<button type="button" class="secondary" style="${small}" data-act="unbanAccount" data-email="${esc(a.email)}">Sblocca</button>`)}</tr>`).join('')}</table>`
         : '<p style="color:var(--muted);font-size:13px">Nessun cliente bannato. Per bannare: scheda del cliente, "Ban cliente".</p>';
-    const apple = (data.apple || []).length ? `<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:var(--bg3)">${th('Acquisto')}${th('Motivo')}${th('iPhone')}<th></th></tr>
-        ${data.apple.map(a => `<tr>${td(esc(a.original_transaction_id), 'font-family:monospace;font-size:12px')}${td(esc(a.reason || ''))}${td(esc(a.iphone))}${td(`<button type="button" class="secondary" style="${small}" data-act="unbanApple" data-tx="${esc(a.original_transaction_id)}">Sblocca</button>`)}</tr>`).join('')}</table>`
+    const apple = (data.apple || []).length ? `<table class="pbt"><tr class="pbt-h">${th('Acquisto')}${th('Motivo')}${th('iPhone')}<th></th></tr>
+        ${data.apple.map(a => `<tr>${td(esc(a.original_transaction_id), 'font-family:monospace;font-size:12px', 'Acquisto')}${td(esc(a.reason || ''), '', 'Motivo')}${td(esc(a.iphone), '', 'iPhone')}${td(`<button type="button" class="secondary" style="${small}" data-act="unbanApple" data-tx="${esc(a.original_transaction_id)}">Sblocca</button>`)}</tr>`).join('')}</table>`
         : '<p style="color:var(--muted);font-size:13px">Nessun acquisto Apple bannato.</p>';
-    const grants = (data.grants || []).length ? data.grants.map(g => `<div style="font-size:12px">${esc(g.legacy_device_id)} · ${esc(g.email || '')} · ${g.used_at ? 'usato ' + esc(fmtDateTime(g.used_at)) : (new Date(g.expires_at) < new Date() ? 'scaduto' : 'valido fino ' + esc(fmtDateTime(g.expires_at)))} · da ${esc(g.granted_by || '')}</div>`).join('') : '<p style="color:var(--muted);font-size:13px">Nessun permesso.</p>';
-    const migs = (data.migrations || []).length ? `<div style="overflow-x:auto"><table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:var(--bg3)">${th('TV vecchia')}${th('Cliente')}${th('Come')}${th('Quando')}<th></th></tr>
-        ${data.migrations.map(m => `<tr>${td('…' + esc(String(m.legacy_device_id || '').slice(-6)), 'font-family:monospace;font-size:12px')}${td(esc(m.email || ''), 'word-break:break-all')}${td(esc(MIG_HOW[m.how] || m.how), 'font-size:11px')}${td(esc(fmtDateTime(m.migrated_at)), 'color:var(--muted);font-size:11px')}${td((m.conflict_at && !m.undone_at ? `<span class="tag err" title="Dopo la migrazione senza accesso la TV vecchia era ancora attiva, o un'altra TV ha riprovato con lo stesso codice (${esc(fmtDateTime(m.conflict_at))}): forse non e' stato il cliente" style="display:inline-block;margin:0 6px 4px 0">TV vecchia ancora attiva</span>` : '') + (m.undone_at ? `<span class="tag">annullata</span>` : `<button type="button" class="danger" style="${small}" data-act="undoMigration" data-id="${esc(m.id)}" data-email="${esc(m.email || '')}">Annulla migrazione</button>`))}</tr>`).join('')}</table></div>`
+    const grants = (data.grants || []).length ? data.grants.map(g => `<div style="font-size:12px;overflow-wrap:anywhere;margin:2px 0">${esc(g.legacy_device_id)} · ${esc(g.email || '')} · ${g.used_at ? 'usato ' + esc(fmtDateTime(g.used_at)) : (new Date(g.expires_at) < new Date() ? 'scaduto' : 'valido fino ' + esc(fmtDateTime(g.expires_at)))} · da ${esc(g.granted_by || '')}</div>`).join('') : '<p style="color:var(--muted);font-size:13px">Nessun permesso.</p>';
+    const migs = (data.migrations || []).length ? `<table class="pbt"><tr class="pbt-h">${th('TV vecchia')}${th('Cliente')}${th('Come')}${th('Quando')}<th></th></tr>
+        ${data.migrations.map(m => `<tr>${td('…' + esc(String(m.legacy_device_id || '').slice(-6)), 'font-family:monospace;font-size:12px;white-space:nowrap', 'TV vecchia')}${td(esc(m.email || ''), 'overflow-wrap:anywhere', 'Cliente')}${td(esc(MIG_HOW[m.how] || m.how), 'font-size:11px', 'Come')}${td(esc(fmtDateTime(m.migrated_at)), 'color:var(--muted);font-size:11px;white-space:nowrap', 'Quando')}${td((m.conflict_at && !m.undone_at ? `<span class="tag err" title="Dopo la migrazione senza accesso la TV vecchia era ancora attiva, o un'altra TV ha riprovato con lo stesso codice (${esc(fmtDateTime(m.conflict_at))}): forse non e' stato il cliente" style="display:inline-block;margin:0 6px 4px 0">TV vecchia ancora attiva</span>` : '') + (m.undone_at ? `<span class="tag">annullata</span>` : `<button type="button" class="danger" style="${small}" data-act="undoMigration" data-id="${esc(m.id)}" data-email="${esc(m.email || '')}">Annulla migrazione</button>`))}</tr>`).join('')}</table>`
         : '<p style="color:var(--muted);font-size:13px">Nessuna TV aggiornata finora.</p>';
     // REVISIONE 2b 04/11: e-mail ai clienti (solo eventi sospetti) di oggi e tetto giornaliero del piano Resend
     const nt = data.notices || {};
