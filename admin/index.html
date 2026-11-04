@@ -483,6 +483,7 @@
                 </select>
                 <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="loadSecurity()" title="Aggiorna">↻</button>
                 <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="openBlacklist()" title="Vedi device/IP bannati">🚫 Blacklist</button>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="openPremiumBans()" title="Clienti e acquisti Apple bannati, collegamento TV, date">Premium e ban</button>
             </div>
             <div id="sec-status" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
             <div class="err" id="sec-err"></div>
@@ -700,6 +701,7 @@
             <button class="secondary" onclick="openResetLink()">Invia link per nuova password</button>
             <button class="secondary" onclick="openPlanChange()">Cambia piano</button>
             <button class="secondary" onclick="udCancelSub()">Annulla abbonamento Stripe</button>
+            <button class="danger" id="ud-ban-btn" onclick="udBanAccount()">Ban cliente (niente Premium)</button>
             <button class="danger" onclick="udCleanup()">Elimina account (irreversibile)</button>
         </div>
         <details class="adv">
@@ -1269,6 +1271,7 @@ async function openUser(email) {
         <div class="info"><div class="name">${esc(d.device_name||'')} <span style="color:var(--muted);font-weight:400">#${esc((d.device_id||'').slice(-6))}</span></div><div class="code">${esc(d.device_code||'')} · ${esc(d.device_model||'')} · ${esc((d.last_active||'').slice(0,10))}</div></div>
         <div class="actions">
           <button class="secondary small" data-act="renameDevice" data-id="${esc(d.device_id)}" data-name="${esc(d.device_name||'')}">Rinomina</button>
+          ${/^(t1-|m1-)/.test(d.device_id||'') ? '' : `<button class="secondary small" data-act="grantTv" data-id="${esc(d.device_id)}" title="La TV aggiornata prende questo posto senza email e password (24 ore, una volta)">Consenti TV aggiornata</button>`}
           <button class="danger small" data-act="removeDevice" data-id="${esc(d.device_id)}" data-name="${esc(d.device_name||'')}">Rimuovi</button>
         </div>
       </div>
@@ -1280,6 +1283,19 @@ async function openUser(email) {
     }).join('');
     const plans = (data.plan_changes||[]).map(c => `<div>Piano ${fmt(c.created_at)}: ${esc(c.from_type)} -> ${esc(c.to_type)}${c.to_expires_at?' (scade '+fmt(c.to_expires_at).slice(0,10)+')':''} · ${esc(c.admin_email||'')} · "${esc(c.reason)}"${c.payment_note?' · pagamento: '+esc(c.payment_note):''}${c.stripe_action && c.stripe_action!=='none'?' · Stripe '+esc(c.stripe_action)+': '+esc(c.stripe_result||''):''}</div>`).join('');
     document.getElementById('ud-history').innerHTML = (plans + links) || 'Nessun cambio piano o link password registrato.';
+    udShowBan(email);
+}
+// 04/11: il cliente e' bannato? (riga nella scheda e pulsante Ban/Sblocca)
+async function udShowBan(email) {
+    const { ok, data } = await api('admin/premium-bans-list', { session_token: session });
+    if (!ok || currentUserEmail !== email) return;
+    const b = (data.accounts || []).find(a => a.email === String(email).toLowerCase() && !a.scaduto);
+    const btn = document.getElementById('ud-ban-btn');
+    btn.textContent = b ? 'Sblocca cliente' : 'Ban cliente (niente Premium)';
+    btn.className = b ? 'secondary' : 'danger';
+    btn.onclick = b ? () => unbanAccount(email, () => openUser(email)) : udBanAccount;
+    const old = document.getElementById('ud-ban-row'); if (old) old.remove();
+    if (b) document.getElementById('ud-info').insertAdjacentHTML('afterbegin', `<div class="row" id="ud-ban-row"><div class="k">Premium</div><div><span class="tag err">Bannato</span> dal ${esc(fmtDateTime(b.banned_at))} da ${esc(b.banned_by || '')} · motivo: "${esc(b.reason || '')}"${b.expires_at ? ' · fino al ' + esc(fmtDateTime(b.expires_at)) : ''}</div></div>`);
 }
 function closeUserModal(){ document.getElementById('user-modal').classList.remove('show'); }
 
@@ -2611,6 +2627,101 @@ async function unbanIp(ip) {
     if (!ok) { alert(data?.error || 'Errore'); return; }
     openBlacklist();
 }
+
+
+// ===== 04/11 Premium e ban solidi =====
+// Ban cliente: niente Premium su TV, telefoni Android e iPhone collegati all'email; non puo' accedere, aggiungere
+// dispositivi ne' pagare. Non cancella dati e non annulla Stripe (per quello: "Annulla abbonamento Stripe").
+async function udBanAccount() {
+    const email = currentUserEmail;
+    const reason = await askInput({ title: 'Ban cliente', text: `${email}: niente Premium su TV, telefoni e iPhone collegati; non puo' accedere ne' pagare. Il cliente vede solo "Il Premium non e' disponibile per questo account". Motivo (resta nel registro, il cliente non lo vede):`,
+        validate: v => v.length >= 5 ? null : 'Scrivi il motivo (almeno 5 caratteri)' });
+    if (!reason) return;
+    const totp = await askTotp('bannare ' + email); if (!totp) return;
+    const { ok, data } = await api('admin/premium-ban-account', { session_token: session, email, reason, totp_code: totp });
+    if (!ok) { err('ud-err', data.error || 'Errore'); return; }
+    const o = document.getElementById('ud-ok'); o.textContent = 'Cliente bannato: le app lo vedono al prossimo controllo (entro un minuto). L\'abbonamento Stripe NON e\' stato annullato.'; o.classList.add('show');
+    udShowBan(email);
+}
+async function unbanAccount(email, after) {
+    if (!confirm(`Sbloccare ${email}? Il Premium torna su tutti i suoi dispositivi.`)) return;
+    const totp = await askTotp('sbloccare ' + email); if (!totp) return;
+    const { ok, data } = await api('admin/premium-unban-account', { session_token: session, email, totp_code: totp });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    if (after) after();
+}
+async function banAppleTx() {
+    const tx = await askInput({ title: 'Ban acquisto Apple', text: 'Numero dell\'acquisto originale (original transaction id, solo cifre: si trova nel resoconto Apple o nell\'evento di sicurezza). Tutti gli iPhone che usano questo acquisto perdono il Premium.',
+        inputmode: 'numeric', validate: v => /^\d{6,40}$/.test(v) ? null : 'Solo cifre (da 6 a 40)' });
+    if (!tx) return;
+    const reason = await askInput({ title: 'Motivo', text: 'Resta nel registro, il cliente non lo vede', validate: v => v.length >= 5 ? null : 'Almeno 5 caratteri' });
+    if (!reason) return;
+    const totp = await askTotp('bannare l\'acquisto Apple ' + tx); if (!totp) return;
+    const { ok, data } = await api('admin/premium-ban-apple', { session_token: session, original_transaction_id: tx, reason, totp_code: totp });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    alert(`Acquisto bannato: ${data.devices} iPhone collegati perdono il Premium al prossimo controllo.`);
+    openPremiumBans();
+}
+async function unbanAppleTx(tx) {
+    if (!confirm(`Sbloccare l'acquisto Apple ${tx}?`)) return;
+    const totp = await askTotp('sbloccare l\'acquisto Apple ' + tx); if (!totp) return;
+    const { ok, data } = await api('admin/premium-unban-apple', { session_token: session, original_transaction_id: tx, totp_code: totp });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    openPremiumBans();
+}
+async function grantTvBind(known) {
+    const legacy = known || await askInput({ title: 'Consenti il collegamento di questa TV', text: 'Codice dispositivo della TV VECCHIA (quello nella scheda del cliente, prima dell\'aggiornamento). Per 24 ore, una volta sola, la TV aggiornata prende quel posto senza email e password. Usalo solo dopo aver verificato il cliente (es. clienti manuali senza password).',
+        validate: v => v.length >= 4 && v.length <= 128 ? null : 'Codice non valido' });
+    if (!legacy) return;
+    const totp = await askTotp('consentire il collegamento della TV ' + legacy); if (!totp) return;
+    const { ok, data } = await api('admin/premium-tv-grant', { session_token: session, legacy_device_id: legacy, totp_code: totp });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    alert(`Permesso dato per 24 ore (licenza di ${data.email}). Ora il cliente apre la TV aggiornata.`);
+    if (!known) openPremiumBans();
+}
+const PCFG = { legacy_tv_until: 'TV e Android vecchi (verify-license): dopo questa data niente Premium, serve l\'aggiornamento',
+    ios_nonce_required_from: 'iPhone: dopo questa data le versioni senza nonce (fino alla 1.0.19) non hanno Premium' };
+async function setPremiumDate(key) {
+    const v = await askInput({ title: 'Data', text: PCFG[key] + '. Lascia vuoto per togliere la data.', type: 'date',
+        validate: x => !x || /^\d{4}-\d{2}-\d{2}$/.test(x) ? null : 'Data non valida' });
+    if (v === null) return;
+    const value = v ? new Date(v + 'T00:00:00').toISOString() : '';
+    const totp = await askTotp(v ? 'impostare la data ' + v : 'togliere la data'); if (!totp) return;
+    let r = await api('admin/premium-config-set', { session_token: session, key, value, totp_code: totp });
+    if (r.status === 409 && r.data.code === 'confirm_soon') {
+        if (!confirm('La data e\' entro 24 ore: dal quel momento le app vecchie perdono il Premium. Confermi?')) return;
+        r = await api('admin/premium-config-set', { session_token: session, key, value, totp_code: totp, confirm_soon: true });
+    }
+    if (!r.ok) { alert(r.data.error || 'Errore'); return; }
+    openPremiumBans();
+}
+async function openPremiumBans() {
+    const { ok, data } = await api('admin/premium-bans-list', { session_token: session });
+    if (!ok) { alert(data?.error || 'Errore'); return; }
+    const th = t => `<th style="text-align:left;padding:6px">${t}</th>`, td = (t, st = '') => `<td style="padding:6px;${st}">${t}</td>`;
+    const small = 'width:auto;margin:0;padding:4px 10px;font-size:11px';
+    const acc = (data.accounts || []).length ? `<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:var(--bg3)">${th('Email')}${th('Motivo')}${th('Quando')}<th></th></tr>
+        ${data.accounts.map(a => `<tr>${td(esc(a.email) + (a.scaduto ? ' <span class="tag">scaduto</span>' : ''))}${td(esc(a.reason || ''))}${td(esc(fmtDateTime(a.banned_at)), 'color:var(--muted);font-size:11px')}${td(`<button type="button" class="secondary" style="${small}" data-act="unbanAccount" data-email="${esc(a.email)}">Sblocca</button>`)}</tr>`).join('')}</table>`
+        : '<p style="color:var(--muted);font-size:13px">Nessun cliente bannato. Per bannare: scheda del cliente, "Ban cliente".</p>';
+    const apple = (data.apple || []).length ? `<table style="width:100%;font-size:13px;border-collapse:collapse"><tr style="background:var(--bg3)">${th('Acquisto')}${th('Motivo')}${th('iPhone')}<th></th></tr>
+        ${data.apple.map(a => `<tr>${td(esc(a.original_transaction_id), 'font-family:monospace;font-size:12px')}${td(esc(a.reason || ''))}${td(esc(a.iphone))}${td(`<button type="button" class="secondary" style="${small}" data-act="unbanApple" data-tx="${esc(a.original_transaction_id)}">Sblocca</button>`)}</tr>`).join('')}</table>`
+        : '<p style="color:var(--muted);font-size:13px">Nessun acquisto Apple bannato.</p>';
+    const grants = (data.grants || []).length ? data.grants.map(g => `<div style="font-size:12px">${esc(g.legacy_device_id)} · ${esc(g.email || '')} · ${g.used_at ? 'usato ' + esc(fmtDateTime(g.used_at)) : (new Date(g.expires_at) < new Date() ? 'scaduto' : 'valido fino ' + esc(fmtDateTime(g.expires_at)))} · da ${esc(g.granted_by || '')}</div>`).join('') : '<p style="color:var(--muted);font-size:13px">Nessun permesso.</p>';
+    const cfg = Object.fromEntries((data.config || []).map(c => [c.key, c]));
+    const dates = Object.keys(PCFG).map(k => `<div style="display:flex;gap:8px;align-items:center;margin:6px 0;font-size:13px"><div style="flex:1">${esc(PCFG[k])}: <strong>${cfg[k] && cfg[k].value ? esc(fmtDateTime(cfg[k].value)) : 'nessuna data'}</strong></div><button type="button" class="secondary" style="${small}" onclick="setPremiumDate('${k}')">Cambia</button></div>`).join('');
+    openModal(`<h3 style="margin-top:0">Premium e ban</h3>
+        <h4 style="margin-top:16px;font-size:14px">Clienti bannati (${(data.accounts || []).length})</h4>${acc}
+        <h4 style="margin-top:20px;font-size:14px">Acquisti Apple bannati (${(data.apple || []).length})</h4>${apple}
+        <button type="button" class="danger" style="width:auto;margin:8px 0 0" onclick="banAppleTx()">Ban acquisto Apple…</button>
+        <h4 style="margin-top:20px;font-size:14px">Collegamento TV vecchie</h4>${grants}
+        <button type="button" class="secondary" style="width:auto;margin:8px 0 0" onclick="grantTvBind()">Consenti il collegamento di questa TV…</button>
+        <h4 style="margin-top:20px;font-size:14px">Date per le app vecchie</h4>${dates}
+        <p style="color:var(--muted);font-size:12px">Ogni azione chiede il codice 2FA e finisce nel Log.</p>
+        <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
+}
+ACTIONS.unbanAccount = d => unbanAccount(d.email, openPremiumBans);
+ACTIONS.unbanApple = d => unbanAppleTx(d.tx);
+ACTIONS.grantTv = d => grantTvBind(d.id);
 
 // Helpers used by security panel (define if missing)
 if (typeof fmtDateTime !== 'function') {
