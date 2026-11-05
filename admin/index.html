@@ -485,6 +485,7 @@
                 <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="openBlacklist()" title="Vedi device/IP bannati">🚫 Blacklist</button>
                 <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="openPremiumBans()" title="Clienti e acquisti Apple bannati, collegamento TV, date">Premium e ban</button>
                 <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="openGiftIos()" title="Premium regalato a un iPhone o Apple TV, senza acquisto">Regali iOS</button>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="supportLookup()" title="Trova un dispositivo dal codice per il supporto che mostra l'app (TV, Android, iPhone, Apple TV)">Cerca codice supporto</button>
             </div>
             <div id="sec-status" style="font-size:12px;color:var(--muted);margin-bottom:12px"></div>
             <div class="err" id="sec-err"></div>
@@ -2823,6 +2824,45 @@ async function openGiftIos() {
         <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
 }
 ACTIONS.giftRevoke = d => revokeGiftIos(d.tx);
+// ===== 05/11 Cerca per codice supporto (tutte le app, sola lettura, 2FA) =====
+// Si incolla quello che mostra l'app: "XXXX-XXXX" oppure, sulle TV aggiornate, "XXXX-XXXX (vecchio …YYYYYY)".
+function parseSupportInput(v) {
+    const t = String(v || '');
+    const old = (t.match(/(?:vecchio|old|alt|ancien|antiguo)?\s*[….]+\s*([0-9a-fA-F]{6})\b/) || [])[1] || null;
+    const main = t.replace(/\(.*\)/, '').replace(/[….]+\s*[0-9a-fA-F]{6}\b/, '');
+    const s = main.toUpperCase().replace(/[^0-9A-Z]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1');
+    const code = /^[0-9A-HJKMNP-TV-Z]{8}$/.test(s) ? s.slice(0, 4) + '-' + s.slice(4) : null;
+    return (code || old) ? { code, old: old ? old.toLowerCase() : null } : null;
+}
+const PLAT = { tv: 'TV (app nuova)', android: 'Telefono Android', ios: 'iPhone / Apple TV', tv_vecchia: 'TV vecchia', tv_vecchia_migrata: 'TV vecchia, gia\' passata alla nuova' };
+async function supportLookup() {
+    const v = await askInput({ title: 'Cerca per codice supporto', text: 'Il codice che mostra l\'app (Impostazioni → Premium o Info): XXXX-XXXX. Sulle TV aggiornate puoi incollare anche "(vecchio …YYYYYY)". Vale per TV, telefoni Android, iPhone e Apple TV.',
+        placeholder: 'XXXX-XXXX', validate: x => parseSupportInput(x) ? null : 'Scrivi le 8 cifre/lettere del codice (o "vecchio …" e 6 cifre)' });
+    if (!v) return;
+    const p = parseSupportInput(v);
+    const totp = await askTotp('cercare il codice ' + (p.code || '…' + p.old)); if (!totp) return;
+    const { ok, data } = await api('admin/support-lookup', { session_token: session, code: p.code, old: p.old, totp_code: totp });
+    if (!ok) { alert(data.error || 'Errore'); return; }
+    pbStyle();
+    const td = (t, st = '', l = '') => `<td${l ? ` data-l="${esc(l)}"` : ' class="pbt-act"'} style="${st}">${t}</td>`;
+    const yes = (b, okTxt = 'si', noTxt = 'no') => b ? `<span class="tag" style="background:rgba(16,185,129,.2);color:var(--success)">${okTxt}</span>` : `<span class="tag">${noTxt}</span>`;
+    const lic = l => l ? `${esc(l.email || '?')} · ${esc(l.type || '')} · ${esc(l.status || '')}${l.expires_at ? ' · fino al ' + esc(fmtDateTime(l.expires_at)) : ''} · ${esc(l.devices)} dispositivi${l.banned ? ' · <span class="tag err">cliente bannato</span>' : ''}` : '<span style="color:var(--muted)">nessuna licenza</span>';
+    const row = x => {
+        let extra = '';
+        if (x.platform === 'ios') extra = `${td(x.source ? esc(x.source) + (x.expires_at ? ' fino al ' + esc(fmtDateTime(x.expires_at)) : '') : '—', '', 'Fonte')}${td((x.gifts || []).map(g => esc(g.tx) + (g.revoked ? ' (revocato)' : '')).join('<br>') || '—', 'font-size:11px;overflow-wrap:anywhere', 'Regali')}${td(x.trial ? 'prova fino al ' + esc(fmtDateTime(x.trial.ends)) : '—', 'font-size:12px', 'Prova')}`;
+        else if (x.platform === 'tv_vecchia_migrata') extra = `${td(esc(x.migrated_to || ''), 'font-family:monospace', 'TV nuova')}${td(esc(MIG_HOW[x.how] || x.how || '') + ' · ' + esc(fmtDateTime(x.migrated_at)), 'font-size:12px', 'Come')}${td(x.undone_at ? '<span class="tag">annullata</span>' : x.conflict_at ? '<span class="tag err">TV vecchia ancora attiva</span>' : '—', '', 'Stato')}`;
+        else extra = `${td(lic(x.license), 'overflow-wrap:anywhere;font-size:12px', 'Licenza')}${x.platform === 'tv' && x.migration ? td(esc(MIG_HOW[x.migration.how] || x.migration.how) + (x.migration.conflict_at ? ' · <span class="tag err">TV vecchia ancora attiva</span>' : ''), 'font-size:12px', 'Migrazione') : ''}${x.key_pending ? td('<span class="tag warn">chiave nuova in attesa (reinstallazione o copia)</span>', '', 'Chiave') : ''}`;
+        const ban = x.banned_device || x.banned_purchase ? td(`<span class="tag err">${x.banned_device ? 'dispositivo bannato' : ''}${x.banned_device && x.banned_purchase ? ' · ' : ''}${x.banned_purchase ? 'acquisto Apple bannato' : ''}</span>`, '', 'Ban') : '';
+        return `<tr>${td(esc(PLAT[x.platform] || x.platform), 'font-weight:600', 'Piattaforma')}${td(esc(x.support_code || ''), 'font-family:monospace;white-space:nowrap', 'Codice')}${x.platform === 'tv_vecchia_migrata' ? '' : td(yes(x.premium, 'Premium', 'niente Premium'), '', 'Premium')}${td(esc(x.last_seen_at ? fmtDateTime(x.last_seen_at) : '—') + (x.app_version ? ' · app ' + esc(x.app_version) : ''), 'font-size:12px;color:var(--muted)', 'Ultimo contatto')}${extra}${ban}</tr>`;
+    };
+    const res = data.results || [];
+    openModal(`<h3 style="margin-top:0">Codice ${esc(data.code || '')}${data.old ? ' · vecchio …' + esc(data.old) : ''}</h3>
+        ${res.length ? `<p style="font-size:13px;margin:6px 0">${res.length} risultat${res.length === 1 ? 'o' : 'i'}. Sola lettura: per agire usa la scheda del cliente, Regali iOS o Premium e ban.</p>
+        ${res.map(x => `<table class="pbt" style="margin-bottom:10px">${row(x)}</table>`).join('')}`
+        : '<p style="font-size:13px">Nessun dispositivo con questo codice. Per iPhone e Apple TV: fai aprire l\'app (il server ricorda i dispositivi visti negli ultimi 14 giorni) e riprova.</p>'}
+        <p style="color:var(--muted);font-size:12px">La ricerca finisce nel Log (senza identificativi completi).</p>
+        <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
+}
 ACTIONS.unbanAccount = d => unbanAccount(d.email, openPremiumBans);
 ACTIONS.unbanApple = d => unbanAppleTx(d.tx);
 ACTIONS.grantTv = d => grantTvBind(d.id);
