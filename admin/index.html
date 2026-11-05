@@ -2775,30 +2775,26 @@ async function openPremiumBans() {
         <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
 }
 // ===== 05/11 Regali iOS =====
-// Premium per un iPhone / Apple TV senza acquisto (prima: INSERT a mano). Il codice del dispositivo e' l'identificativo
-// iOS (UUID) che l'app manda a check-license. A vita o con scadenza, motivo obbligatorio (senza dati personali),
-// 2FA a ogni azione, al massimo 10 al giorno. Per TV e telefoni Android si usa "Attivazione manuale" (licenza per email).
-const RE_IOS_DEV = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$/;
+// Premium per un iPhone / Apple TV senza acquisto (prima: INSERT a mano). Il dispositivo si indica con il "Codice per il
+// supporto" (XXXX-XXXX) che l'app mostra; l'ID completo non si vede ne' si chiede. Il server lo trova solo tra i
+// dispositivi che hanno aperto l'app negli ultimi 14 giorni. A vita o con scadenza, motivo obbligatorio (senza dati
+// personali), 2FA a ogni azione, al massimo 10 al giorno. Per TV e telefoni Android: "Attivazione manuale".
+function normGiftCode(v) { const s = String(v || '').toUpperCase().replace(/[\s-]/g, '').replace(/O/g, '0').replace(/[IL]/g, '1'); return /^[0-9A-HJKMNP-TV-Z]{8}$/.test(s) ? s.slice(0, 4) + '-' + s.slice(4) : null; }
 async function newGiftIos() {
-    const dev = await askInput({ title: 'Nuovo regalo iOS', text: 'Codice del dispositivo (iPhone o Apple TV): l\'identificativo che l\'app manda al server, formato XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX. Prima il cliente deve aprire l\'app una volta.',
-        placeholder: 'E1A16574-8CEF-4B3B-AAA4-D08009953137', validate: v => RE_IOS_DEV.test(v) ? null : 'Formato non valido (8-4-4-4-12 caratteri esadecimali)' });
-    if (!dev) return;
+    const raw = await askInput({ title: 'Nuovo regalo iOS', text: 'Codice per il supporto (8 caratteri, XXXX-XXXX): lo mostra l\'app su iPhone o Apple TV. Il cliente deve aver aperto l\'app negli ultimi 14 giorni.',
+        placeholder: 'XXXX-XXXX', autocomplete: 'off', validate: v => normGiftCode(v) ? null : '8 caratteri: cifre e lettere (senza I, L, O, U), come XXXX-XXXX' });
+    if (!raw) return;
+    const code = normGiftCode(raw);
     const days = await askInput({ title: 'Durata', text: 'Giorni di Premium: 0 = a vita, altrimenti da 1 a 3650.', inputmode: 'numeric', placeholder: '0',
         validate: v => /^\d{1,4}$/.test(v) && Number(v) <= 3650 ? null : 'Un numero da 0 a 3650' });
     if (days === null) return;
     const reason = await askInput({ title: 'Motivo', text: 'Perche\' questo regalo (resta nel Log). Niente nomi, email o numeri di telefono: per es. "Apple TV del titolare", "tester".',
         validate: v => v.length >= 5 ? null : 'Almeno 5 caratteri' });
     if (!reason) return;
-    const totp = await askTotp('regalare il Premium a ' + dev.toUpperCase()); if (!totp) return;
-    const body = { session_token: session, device_id: dev, days: Number(days), reason, totp_code: totp };
-    let r = await api('admin/gift-ios-create', body);
-    // il server controlla "visto di recente" PRIMA del codice 2FA: il codice non viene consumato da questa risposta
-    if (r.status === 409 && r.data.code === 'not_seen') {
-        if (!confirm('Questo dispositivo non ha aperto l\'app di recente (o il server e\' stato riavviato). Hai controllato il codice? Continuare lo stesso?')) return;
-        r = await api('admin/gift-ios-create', { ...body, confirm_unseen: true });
-    }
+    const totp = await askTotp('regalare il Premium al dispositivo ' + code); if (!totp) return;
+    const r = await api('admin/gift-ios-create', { session_token: session, support_code: code, days: Number(days), reason, totp_code: totp });
     if (!r.ok) { alert(r.data.error || 'Errore'); return; }
-    alert(`Regalo fatto (${r.data.transaction_id}). Il dispositivo ha il Premium al prossimo controllo dell'app (riaprirla).`);
+    alert(`Regalo fatto per ${r.data.support_code} (${r.data.transaction_id}). Il dispositivo ha il Premium al prossimo controllo dell'app (riaprirla).`);
     openGiftIos();
 }
 async function revokeGiftIos(tx) {
@@ -2816,11 +2812,11 @@ async function openGiftIos() {
     const th = t => `<th>${t}</th>`, td = (t, st = '', l = '') => `<td${l ? ` data-l="${esc(l)}"` : ' class="pbt-act"'} style="${st}">${t}</td>`;
     const small = 'width:auto;margin:0;padding:4px 10px;font-size:11px';
     const stato = g => g.is_revoked ? '<span class="tag">revocato</span>' : g.attivo ? '<span class="tag" style="background:rgba(16,185,129,.2);color:var(--success)">attivo</span>' : '<span class="tag">scaduto</span>';
-    const list = (data.gifts || []).length ? `<table class="pbt"><tr class="pbt-h">${th('Dispositivo')}${th('Durata')}${th('Stato')}${th('Motivo')}${th('Quando')}<th></th></tr>
-        ${data.gifts.map(g => `<tr>${td('…' + esc(String(g.device_id || '').slice(-12)), 'font-family:monospace;font-size:12px;white-space:nowrap', 'Dispositivo')}${td(g.expiry_date ? 'fino al ' + esc(fmtDateTime(g.expiry_date)) : 'a vita', 'font-size:12px', 'Durata')}${td(stato(g), '', 'Stato')}${td(esc(g.reason || (String(g.tx).startsWith('GIFT-P-') ? '' : 'inserito a mano')), 'overflow-wrap:anywhere', 'Motivo')}${td(esc(g.created_at ? fmtDateTime(g.created_at) : ''), 'color:var(--muted);font-size:11px;white-space:nowrap', 'Quando')}${td(g.is_revoked ? '' : `<button type="button" class="danger" style="${small}" data-act="giftRevoke" data-tx="${esc(g.tx)}">Revoca</button>`)}</tr>`).join('')}</table>`
+    const list = (data.gifts || []).length ? `<table class="pbt"><tr class="pbt-h">${th('Codice')}${th('Durata')}${th('Stato')}${th('Motivo')}${th('Quando')}<th></th></tr>
+        ${data.gifts.map(g => `<tr>${td(`<div><span style="white-space:nowrap">${esc(g.support_code || '')}</span>${g.manual ? `<div style="font-size:10px;color:var(--muted);overflow-wrap:anywhere">a mano: ${esc(g.device_id || '')}</div>` : ''}</div>`, 'font-family:monospace;font-size:12px', 'Codice')}${td(g.expiry_date ? 'fino al ' + esc(fmtDateTime(g.expiry_date)) : 'a vita', 'font-size:12px', 'Durata')}${td(stato(g), '', 'Stato')}${td(esc(g.reason || (String(g.tx).startsWith('GIFT-P-') ? '' : 'inserito a mano')), 'overflow-wrap:anywhere', 'Motivo')}${td(esc(g.created_at ? fmtDateTime(g.created_at) : ''), 'color:var(--muted);font-size:11px;white-space:nowrap', 'Quando')}${td(g.is_revoked ? '' : `<button type="button" class="danger" style="${small}" data-act="giftRevoke" data-tx="${esc(g.tx)}">Revoca</button>`)}</tr>`).join('')}</table>`
         : '<p style="color:var(--muted);font-size:13px">Nessun regalo.</p>';
     openModal(`<h3 style="margin-top:0">Regali iOS (iPhone e Apple TV)</h3>
-        <p style="font-size:13px;margin:6px 0">Premium senza acquisto per un singolo dispositivo. Ogni azione chiede il codice 2FA e finisce nel Log. Oggi: <strong id="gift-today">${esc(data.today ?? 0)}</strong> su ${esc(data.per_day ?? 10)}.</p>
+        <p style="font-size:13px;margin:6px 0">Premium senza acquisto per un singolo dispositivo, indicato con il codice per il supporto mostrato dall'app. Ogni azione chiede il codice 2FA e finisce nel Log. Oggi: <strong id="gift-today">${esc(data.today ?? 0)}</strong> su ${esc(data.per_day ?? 10)}.</p>
         <p style="color:var(--muted);font-size:12px;margin:6px 0">Per TV e telefoni Android usa "Attivazione" (licenza per email, 5 dispositivi).</p>
         <button type="button" class="secondary" style="width:auto;margin:8px 0 12px" onclick="newGiftIos()">Nuovo regalo…</button>
         ${list}
