@@ -287,6 +287,7 @@
             <a id="tab-system" onclick="showTab('system')">🖥 Sistema</a>
             <a id="tab-admins" onclick="showTab('admins')">Admin</a>
             <a id="tab-sync" onclick="showTab('sync')">Sincronizzazione</a>
+            <a id="tab-backup" onclick="showTab('backup')">Backup R2</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
             <a id="tab-reports" onclick="showTab('reports')">Segnalazioni</a>
         </div>
@@ -450,6 +451,20 @@
                 <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="syLoadLog()">Tutto il registro</button>
             </div>
             <div id="sy-log"></div>
+        </div>
+
+        <!-- Backup R2 (12/11/2026, pacchetto 11): stato del backup notturno cifrato su Cloudflare R2, sola lettura -->
+        <div id="panel-backup" style="display:none">
+            <div class="sys-toolbar">
+                <h2 style="margin:0" class="grow">Backup R2</h2>
+                <span class="indicator" id="br-agg">caricamento…</span>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="brLoad()" title="Rileggi lo stato dal server">Aggiorna</button>
+            </div>
+            <p style="font-size:13px;margin-bottom:12px">Ogni notte alle 03:45 il server copia il database, cifrato, nello spazio Cloudflare R2 (in Europa). Le copie non si possono cancellare per 30 giorni e spariscono da sole dopo 31. Se un backup non riesce, arriva un messaggio su Telegram.</p>
+            <div class="err" id="br-err" role="alert"></div>
+            <div id="br-banner"></div>
+            <div class="sys-grid" id="br-grid"></div>
+            <p style="font-size:12px;color:var(--muted)" id="br-nota"></p>
         </div>
 
         <div id="panel-log" style="display:none">
@@ -988,7 +1003,7 @@ function showPanel(){
     // Restore last-viewed tab so a page reload doesn't bounce the admin back
     // to Dashboard. sessionStorage clears on logout, so a fresh login still
     // starts at Dashboard naturally.
-    const validTabs = ['dashboard','users','activate','admins','log','reports','analytics','security','system','sync'];
+    const validTabs = ['dashboard','users','activate','admins','log','reports','analytics','security','system','sync','backup'];
     const saved = sessionStorage.getItem('admin_tab');
     showTab(validTabs.includes(saved) ? saved : 'dashboard');
 }
@@ -996,7 +1011,7 @@ function showPanel(){
 let sysRefreshTimer = null;
 let anRefreshTimer = null;   // 31/10: Analytics si aggiorna da sola ogni 5 minuti quando e' visibile
 function showTab(name) {
-    ['dashboard','users','activate','admins','log','reports','analytics','security','system','sync'].forEach(t=>{
+    ['dashboard','users','activate','admins','log','reports','analytics','security','system','sync','backup'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
@@ -1009,6 +1024,7 @@ function showTab(name) {
     if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
     if (name==='sync') syLoadLog();
+    if (name==='backup') brLoad();
     if (name==='reports') loadReports(0);
     if (name==='analytics') {
         loadAnalytics();
@@ -2901,6 +2917,93 @@ ACTIONS.unbanAccount = d => unbanAccount(d.email, openPremiumBans);
 ACTIONS.unbanApple = d => unbanAppleTx(d.tx);
 ACTIONS.grantTv = d => grantTvBind(d.id);
 ACTIONS.undoMigration = d => undoMigration(d.id, d.email);
+
+// ===== 12/11 Backup R2 (pacchetto 11) =====
+// Rotta admin/backup-status (sessione admin, sola lettura). Parole semplici per il titolare: niente termini tecnici.
+// 10 GB = 10'000'000'000 byte, come il server (prudente rispetto a 2^30).
+function brSize(n) {
+    n = Number(n) || 0;
+    if (n >= 1e9) return (n / 1e9).toLocaleString('it-CH', { maximumFractionDigits: 2 }) + ' GB';
+    if (n >= 1e6) return (n / 1e6).toLocaleString('it-CH', { maximumFractionDigits: 1 }) + ' MB';
+    return Math.max(1, Math.round(n / 1e3)).toLocaleString('it-CH') + ' KB';
+}
+function brOre(h) {
+    if (h == null) return '';
+    if (h < 1) return 'meno di un\'ora fa';
+    if (h < 48) return Math.floor(h) + (Math.floor(h) === 1 ? ' ora fa' : ' ore fa');
+    return Math.floor(h / 24) + ' giorni fa';
+}
+function brStima(s) {
+    if (!s) return { value: '—', sub: '' };
+    if (s.stato === 'dati_insufficienti') return { value: 'Ancora presto', sub: `Servono ${s.servono} giorni di misure per una stima (ora ${s.giorni_di_dati}).` };
+    if (s.stato === 'non_cresce') return { value: 'Non ci si arriva', sub: 'Lo spazio usato non cresce: le copie vecchie spariscono quando arrivano le nuove.' };
+    if (s.stato === 'superato') return { value: 'Gia\' superati', sub: 'Lo spazio usato e\' oltre i 10 GB gratuiti: si paga la parte in piu\'.' };
+    return { value: zh(s.data + 'T12:00:00Z', false), sub: `Tra circa ${s.giorni} giorni, se continua a crescere di ${brSize(s.crescita_byte_giorno)} al giorno (calcolo su ${s.giorni_di_dati} giorni di misure).` };
+}
+function brRender(d) {
+    const verde = d.stato === 'verde';
+    document.getElementById('br-banner').innerHTML = `<div class="sys-card ${verde ? 'green' : 'red'}" style="margin-bottom:14px">
+        <div class="lbl"><span>${verde ? 'Tutto a posto' : 'Attenzione'}</span><span class="dot"></span></div>
+        <div class="val" style="font-size:18px">${esc(verde ? 'Il backup di questa notte c\'e\'.' : 'Manca un backup recente.')}</div>
+        <div class="sub">${esc(d.motivo || '')}</div></div>`;
+    const cards = [];
+    const ok = d.ultimo_ok;
+    cards.push(sysCard({
+        label: 'Ultimo backup riuscito',
+        value: ok ? esc(zh(ok.quando)) : 'Nessuno',
+        sub: ok ? esc(`${brOre(ok.ore_fa)} · ${ok.byte != null ? brSize(ok.byte) + ' (cifrato)' : ''}`) : 'Nessun backup riuscito nel registro.',
+        status: verde ? 'green' : 'red',
+    }));
+    const t = d.ultimo_tentativo;
+    cards.push(sysCard({
+        label: 'Ultimo tentativo',
+        value: t ? (t.esito === 'ok' ? 'Riuscito' : 'Non riuscito') : '—',
+        sub: t ? esc(zh(t.quando) + (t.esito === 'errore' && t.messaggio ? ' · ' + t.messaggio : '')) : '',
+        status: t ? (t.esito === 'ok' ? 'green' : 'red') : '',
+    }));
+    const b = d.bucket;
+    cards.push(sysCard({
+        label: 'Copie su R2',
+        value: b ? `${Number(b.oggetti).toLocaleString('it-CH')} file` : '—',
+        sub: b ? `circa ${Math.round(b.oggetti / 3)} notti (3 file a notte: database, cancellazioni, registro)` : (d.bucket_errore ? esc('Misura non riuscita: ' + (d.bucket_errore.messaggio || '')) : 'Non ancora misurato.'),
+        status: b ? 'green' : 'yellow',
+    }));
+    const pct = d.percentuale_gratis;
+    cards.push(sysCard({
+        label: 'Spazio usato',
+        value: b ? `${brSize(b.byte)} di 10 GB` : '—',
+        sub: b ? `${Number(pct).toLocaleString('it-CH')}% dello spazio gratuito` : '',
+        pct: b ? pct : undefined,
+        status: b ? (pct >= 90 ? 'red' : pct >= 70 ? 'yellow' : 'green') : '',
+    }));
+    const c = d.costo || {};
+    cards.push(sysCard({
+        label: 'Costo stimato del mese',
+        value: c.usd_mese == null ? '—' : (c.usd_mese === 0 ? 'Gratis' : `${c.usd_mese.toFixed(2)} USD`),
+        sub: 'Gratis fino a 10 GB, poi 0.015 USD per GB al mese. Le operazioni costano praticamente niente.',
+        status: c.usd_mese ? 'yellow' : 'green',
+    }));
+    const st = brStima(d.stima_10gb);
+    cards.push(sysCard({ label: 'Quando si arriva a 10 GB', value: esc(st.value), sub: esc(st.sub),
+        status: d.stima_10gb && d.stima_10gb.stato === 'superato' ? 'yellow' : 'green' }));
+    document.getElementById('br-grid').innerHTML = cards.join('');
+    const note = [];
+    if (b) note.push('Spazio misurato il ' + zh(b.quando) + '.');
+    if (d.controllo && d.controllo.in_ritardo) note.push('Attenzione: il controllo automatico non aggiorna lo stato da piu\' di 3 ore (il cron sul server potrebbe essere fermo).');
+    document.getElementById('br-nota').textContent = note.join(' ');
+    document.getElementById('br-agg').textContent = 'aggiornato ' + new Date().toLocaleTimeString('it-CH');
+}
+async function brLoad() {
+    const errEl = document.getElementById('br-err');
+    const { ok, status, data } = await api('admin/backup-status', { session_token: session });
+    if (!ok) {
+        errEl.textContent = status === 404 ? 'Il server non ha ancora il pacchetto 11 (stato del backup R2).' : (data?.error || 'Errore') + ` (HTTP ${status})`;
+        errEl.classList.add('show');
+        return;
+    }
+    errEl.classList.remove('show');
+    brRender(data);
+}
 
 // ===== 12/11 Sincronizzazione cifrata =====
 // Rotte admin/sync-* (SPEC_BTVSYNC1 12.5): sessione admin + codice 2FA a OGNI chiamata (anche la ricerca), motivo
