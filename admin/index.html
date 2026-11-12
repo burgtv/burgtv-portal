@@ -63,6 +63,8 @@
         .topbar .nav a{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
         .topbar .nav a.active{background:rgba(185,74,142,.15);color:var(--accent)}
         .topbar .nav a:hover{color:var(--text);text-decoration:none}
+        /* 12/11: con la scheda Sincronizzazione la barra non entra piu' sotto i 1400px: spazi piu' stretti e a capo se serve */
+        @media(min-width:601px) and (max-width:1400px){.topbar{gap:10px}.topbar .nav{gap:2px;flex-wrap:wrap;justify-content:center;min-width:0}.topbar .nav a{padding:7px 8px}}
         .container{max-width:1200px;margin:0 auto;padding:24px}
         .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
         .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
@@ -284,6 +286,7 @@
             <a id="tab-security" onclick="showTab('security')">🛡 Sicurezza</a>
             <a id="tab-system" onclick="showTab('system')">🖥 Sistema</a>
             <a id="tab-admins" onclick="showTab('admins')">Admin</a>
+            <a id="tab-sync" onclick="showTab('sync')">Sincronizzazione</a>
             <a id="tab-log" onclick="showTab('log')">Log</a>
             <a id="tab-reports" onclick="showTab('reports')">Segnalazioni</a>
         </div>
@@ -419,6 +422,36 @@
         </div>
 
         <!-- Log -->
+        <!-- Sincronizzazione cifrata (12/11/2026): solo metadati, 2FA a ogni azione (anche la ricerca), motivo obbligatorio -->
+        <div id="panel-sync" style="display:none">
+            <div class="analytics-toolbar">
+                <h2 style="margin:0" class="grow">Sincronizzazione</h2>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="sySeatKey()" title="Il cliente ha cambiato iPhone o reinstallato l'app e la prova e' legata alla chiave vecchia">Registra chiave del posto</button>
+            </div>
+            <p style="font-size:13px;margin-bottom:12px">Il server non ha la chiave dei gruppi: qui si vedono solo tipo di dispositivo, versione, giorni e diritto. Nomi e contenuti restano cifrati. Ogni ricerca e ogni azione chiede il codice 2FA e finisce nel registro.</p>
+            <p style="font-size:13px;margin-bottom:12px;color:var(--warn)"><strong>Con il solo codice supporto si guarda, non si agisce.</strong> Il codice e' corto (le TV e i telefoni Android hanno 32 bit: due dispositivi possono averlo uguale, e un codice iPhone puo' valere anche per un Android). Per revoca, ban o cancellazione cerca per email della licenza, transazione Apple o ID gruppo che il cliente ti conferma.</p>
+            <form class="controls" onsubmit="return syLookup(event)" novalidate>
+                <select id="sy-by" style="width:auto;margin:0" aria-label="Cerca per">
+                    <option value="auto">Automatico</option>
+                    <option value="support">Codice supporto</option>
+                    <option value="email">Email della licenza</option>
+                    <option value="tx">Transazione Apple</option>
+                    <option value="group">ID gruppo</option>
+                </select>
+                <input id="sy-q" placeholder="Codice supporto XXXX-XXXX, email, transazione Apple o ID gruppo" autocomplete="off" spellcheck="false" aria-label="Valore da cercare">
+                <button type="submit" id="sy-go">Cerca</button>
+            </form>
+            <div class="err" id="sy-err" role="alert"></div>
+            <div class="ok" id="sy-ok" role="status"></div>
+            <div id="sy-results"></div>
+            <div class="analytics-toolbar" style="margin-top:24px">
+                <h3 style="margin:0" class="grow">Registro della sincronizzazione</h3>
+                <span id="sy-log-filter" style="font-size:12px;color:var(--muted)"></span>
+                <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px;font-size:13px" onclick="syLoadLog()">Tutto il registro</button>
+            </div>
+            <div id="sy-log"></div>
+        </div>
+
         <div id="panel-log" style="display:none">
             <h2 style="margin-bottom:12px">Registro delle azioni</h2>
             <div class="controls" style="flex-wrap:wrap">
@@ -955,7 +988,7 @@ function showPanel(){
     // Restore last-viewed tab so a page reload doesn't bounce the admin back
     // to Dashboard. sessionStorage clears on logout, so a fresh login still
     // starts at Dashboard naturally.
-    const validTabs = ['dashboard','users','activate','admins','log','reports','analytics','security','system'];
+    const validTabs = ['dashboard','users','activate','admins','log','reports','analytics','security','system','sync'];
     const saved = sessionStorage.getItem('admin_tab');
     showTab(validTabs.includes(saved) ? saved : 'dashboard');
 }
@@ -963,7 +996,7 @@ function showPanel(){
 let sysRefreshTimer = null;
 let anRefreshTimer = null;   // 31/10: Analytics si aggiorna da sola ogni 5 minuti quando e' visibile
 function showTab(name) {
-    ['dashboard','users','activate','admins','log','reports','analytics','security','system'].forEach(t=>{
+    ['dashboard','users','activate','admins','log','reports','analytics','security','system','sync'].forEach(t=>{
         document.getElementById('panel-'+t).style.display = (t===name) ? '' : 'none';
         document.getElementById('tab-'+t).classList.toggle('active', t===name);
     });
@@ -975,6 +1008,7 @@ function showTab(name) {
     if (name==='users') loadUsers('');
     if (name==='admins') loadAdmins();
     if (name==='log') loadLog();
+    if (name==='sync') syLoadLog();
     if (name==='reports') loadReports(0);
     if (name==='analytics') {
         loadAnalytics();
@@ -2867,6 +2901,179 @@ ACTIONS.unbanAccount = d => unbanAccount(d.email, openPremiumBans);
 ACTIONS.unbanApple = d => unbanAppleTx(d.tx);
 ACTIONS.grantTv = d => grantTvBind(d.id);
 ACTIONS.undoMigration = d => undoMigration(d.id, d.email);
+
+// ===== 12/11 Sincronizzazione cifrata =====
+// Rotte admin/sync-* (SPEC_BTVSYNC1 12.5): sessione admin + codice 2FA a OGNI chiamata (anche la ricerca), motivo
+// obbligatorio per le azioni, registro admin_log senza dati dei dispositivi. Dopo un'azione la scheda si aggiorna in
+// locale (una nuova ricerca chiederebbe un altro codice 2FA): "Ricarica dal server" ripete l'ultima ricerca.
+const SY_PLAT = { androidtv: 'Android TV', firetv: 'Fire TV', googletv: 'Google TV', android: 'Telefono/tablet Android', ios: 'iPhone', ipados: 'iPad', macos: 'Mac', tvos: 'Apple TV' };
+const SY_ENT = { android: 'Licenza Android', android_gift: 'Regalo Android', apple: 'Acquisto Apple', apple_trial: 'Prova Apple' };
+const SY_ACT = { sync_lookup: 'Ricerca', sync_revoke_pending: 'Revoca in attesa', sync_ban: 'Ban', sync_unban: 'Sblocco', sync_delete: 'Cancellato subito',
+    sync_delete_cancel: 'Cancellazione annullata', sync_seat_key_set: 'Chiave del posto' };
+const SY_BY = { support: 'codice supporto', email: 'email', apple: 'transazione Apple', group: 'ID gruppo' };
+let syLast = null;          // { body, label } dell'ultima ricerca
+let syGroups = [];
+let syMatches = null;       // ricerca per codice supporto: posti trovati [{source, groups}] (server pacchetto 8)
+const SY_SRC = { apple_trial: 'Prova Apple (iPhone, iPad, Apple TV)', android_tv: 'TV Android', android_phone: 'Telefono/tablet Android' };
+// solo lettura quando la ricerca e' per codice supporto (regola del revisore 12/11)
+function syReadOnly() { return !!(syLast && syLast.support_code); }
+function syAmbiguous() {
+    if (!syReadOnly()) return false;
+    if (Array.isArray(syMatches)) return syMatches.length > 1;
+    return syGroups.length > 1;            // server senza "matches": piu' di un gruppo = da trattare come ambiguo
+}
+function syDay(d) { return d == null ? '—' : new Date(d * 86400000).toLocaleDateString('it-CH', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' }); }
+function syShort(id) { return id ? '…' + String(id).slice(-6) : '—'; }
+function syKB(n) { return n < 1048576 ? Math.max(1, Math.round((n || 0) / 1024)) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; }
+function syMsg(okText, errText) {
+    const o = document.getElementById('sy-ok'), e = document.getElementById('sy-err');
+    o.textContent = okText || ''; o.classList.toggle('show', !!okText);
+    e.textContent = errText || ''; e.classList.toggle('show', !!errText);
+}
+function syParseSupport(v) { const p = parseSupportInput(v); return p && p.code ? p.code : null; }
+function syDetect(by, v) {
+    const t = String(v || '').trim();
+    if (!t) return null;
+    if (by === 'email' || (by === 'auto' && t.includes('@'))) return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(t) && t.length <= 320 ? { email: t, label: 'email ' + t } : null;
+    if (by === 'tx' || (by === 'auto' && /^\d{9,32}$/.test(t))) return /^\d{1,32}$/.test(t) ? { transaction_id: t, label: 'transazione Apple ' + t } : null;
+    if (by === 'support' || (by === 'auto' && syParseSupport(t))) { const c = syParseSupport(t); return c ? { support_code: c, label: 'codice supporto ' + c } : null; }
+    if (by === 'group' || by === 'auto') return /^[A-Za-z0-9_-]{22}$/.test(t) ? { group_id: t, label: 'gruppo ' + syShort(t) } : null;
+    return null;
+}
+async function syLookup(ev, again) {
+    if (ev) ev.preventDefault();
+    let q = again ? syLast : syDetect(document.getElementById('sy-by').value, document.getElementById('sy-q').value);
+    if (!q) { syMsg('', 'Valore non riconosciuto: codice supporto XXXX-XXXX, email, transazione Apple (solo cifre) o ID gruppo (22 caratteri).'); return false; }
+    const totp = await askTotp('cercare per ' + q.label); if (!totp) return false;
+    const body = { ...q }; delete body.label;
+    const btn = document.getElementById('sy-go'); btn.disabled = true;
+    const { ok, status, data } = await api('admin/sync-lookup', { session_token: session, ...body, totp_code: totp });
+    btn.disabled = false;
+    if (!ok) { syMsg('', status === 404 && data.error === 'Not found' ? 'Il server non ha ancora le rotte della sincronizzazione (pacchetto non installato).' : (data.error || 'Errore') + ` (HTTP ${status})`); return false; }
+    syLast = q; syGroups = Array.isArray(data.groups) ? data.groups : [];
+    syMatches = Array.isArray(data.matches) ? data.matches : null;
+    syMsg(`${syGroups.length} grupp${syGroups.length === 1 ? 'o' : 'i'} per ${q.label}.`, '');
+    syRender(); syLoadLog();
+    return false;
+}
+function syRender() {
+    pbStyle();
+    const el = document.getElementById('sy-results');
+    if (!syLast) { el.innerHTML = ''; return; }
+    if (!syGroups.length) { el.innerHTML = '<p style="font-size:13px;margin:8px 0">Nessun gruppo. Con l\'email si vedono solo i gruppi dove la licenza ha una voce attiva (non uscita, Premium negli ultimi 90 giorni); con il codice supporto anche quelli dove il dispositivo e\' uscito.</p>'; return; }
+    let head = '';
+    if (syReadOnly()) {
+        const n = Array.isArray(syMatches) ? syMatches.length : syGroups.length;
+        head = syAmbiguous()
+            ? `<div class="err show" role="alert" style="display:block"><strong>Codice ambiguo:</strong> ${esc(syLast.support_code)} corrisponde a ${esc(n)} ${Array.isArray(syMatches) ? 'posti' : 'gruppi'} diversi${Array.isArray(syMatches) ? ' (' + syMatches.map(m => esc(SY_SRC[m.source] || m.source)).join(', ') + ')' : ''}. Non si sa quale sia il cliente: nessuna azione da qui. Cerca per email della licenza, transazione Apple o ID gruppo confermato dal cliente.</div>`
+            : `<div class="field-hint" style="margin:0 0 10px;color:var(--warn)">Ricerca per codice supporto: solo lettura. Per agire cerca per email della licenza, transazione Apple o ID gruppo.</div>`;
+    }
+    el.innerHTML = head + `<div style="text-align:right;margin-bottom:8px"><button type="button" class="secondary small" data-act="syAgain">Ricarica dal server (2FA)</button></div>` + syGroups.map(syGroupHtml).join('');
+}
+function syGroupHtml(g) {
+    const devs = g.devices || [];
+    const byKey = Object.fromEntries(devs.map(d => [d.key_id, d]));
+    const tags = [];
+    if (g.banned) tags.push(`<span class="tag err">bannato${g.ban_reason ? ': ' + esc(g.ban_reason) : ''}</span>`);
+    if (g.delete_after) tags.push(`<span class="tag err">cancellazione il ${esc(zh(g.delete_after))}</span>`);
+    if (g.revoke_requested_day != null) tags.push(`<span class="tag warn">revoca in attesa dal ${esc(syDay(g.revoke_requested_day))}</span>`);
+    if (g.no_premium_since != null) tags.push(`<span class="tag">senza Premium dal ${esc(syDay(g.no_premium_since))}</span>`);
+    if (!tags.length) tags.push('<span class="tag success">attivo</span>');
+    const td = (t, l, st = '') => `<td data-l="${esc(l)}" style="${st}">${t}</td>`;
+    const rows = devs.map(d => {
+        const state = d.revoked ? '<span class="tag">revocato</span>' : d.left ? '<span class="tag">uscito</span>' : d.revoke_pending ? '<span class="tag warn">revoca in attesa</span>' : '<span class="tag success">attivo</span>';
+        const adder = d.added_by === undefined ? '' : d.added_by === null ? 'fondatore' : byKey[d.added_by] ? 'da ' + esc(SY_PLAT[byKey[d.added_by].platform] || byKey[d.added_by].platform) + ' ' + esc(syShort(d.added_by)) : 'da ' + esc(syShort(d.added_by));
+        const ent = d.revoked || d.left ? (d.ent_kind ? esc(SY_ENT[d.ent_kind] || d.ent_kind) : '—') : d.ent_kind ? `${esc(SY_ENT[d.ent_kind] || d.ent_kind)} · ${d.premium ? '<span class="tag success">Premium</span>' : '<span class="tag">scaduto</span>'}` : '<span class="tag">nessuno</span>';
+        const act = !syReadOnly() && !d.revoked && !d.left && !d.revoke_pending ? `<button type="button" class="danger small" data-act="syRevoke" data-g="${esc(g.group_id)}" data-k="${esc(d.key_id)}">Revoca in attesa</button>` : '';
+        return `<tr>${td(`<strong>${esc(SY_PLAT[d.platform] || d.platform)}</strong> <span style="font-family:monospace;color:var(--muted)">${esc(syShort(d.key_id))}</span>`, 'Dispositivo')}${td(esc(d.app_version || '—'), 'App')}${td(esc(syDay(d.added_day)) + (adder ? ' · ' + adder : ''), 'Aggiunto', 'font-size:12px')}${td(esc(syDay(d.last_seen_day)), 'Ultimo accesso', 'font-size:12px')}${td(state, 'Stato')}${td(ent, 'Diritto', 'font-size:12px')}<td class="pbt-act">${act}</td></tr>`;
+    }).join('');
+    const gid = esc(g.group_id);
+    return `<div class="sys-section" data-group="${gid}">
+        <h3 style="flex-wrap:wrap">Gruppo <span style="font-family:monospace;font-size:13px;overflow-wrap:anywhere;user-select:all">${gid}</span></h3>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">${tags.join('')}</div>
+        ${syReadOnly() ? `<div style="font-size:13px;margin-bottom:6px">Fonte del codice: ${(Array.isArray(g.sources) && g.sources.length) ? g.sources.map(x => `<span class="tag warn">${esc(SY_SRC[x] || x)}</span>`).join(' ') : '<span class="tag">non indicata dal server</span>'}</div>` : ''}
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">Creato ${esc(syDay(g.created_day))} · ultima attività ${esc(syDay(g.last_activity_day))} · epoca ${esc(g.epoch)} · ${esc(syKB(g.bytes_used))} di 3 MB · ${esc(g.records)} record</div>
+        <div class="table-wrap"><table class="pbt"><tr class="pbt-h"><th>Dispositivo</th><th>App</th><th>Aggiunto</th><th>Ultimo accesso</th><th>Stato</th><th>Diritto</th><th></th></tr>${rows}</table></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+            ${syReadOnly() ? '' : `${g.banned ? `<button type="button" class="secondary small" data-act="syUnban" data-g="${gid}">Sblocca</button>` : `<button type="button" class="danger small" data-act="syBan" data-g="${gid}">Ban del gruppo</button>`}
+            ${g.delete_after ? `<button type="button" class="secondary small" data-act="syDelCancel" data-g="${gid}">Annulla cancellazione</button>` : ''}
+            <button type="button" class="danger small" data-act="syDelete" data-g="${gid}">Cancella subito</button>`}
+            <button type="button" class="secondary small" data-act="syGroupLog" data-g="${gid}">Registro del gruppo</button>
+        </div>
+    </div>`;
+}
+async function syReason(title, text) {
+    return askInput({ title, text: text + ' Scrivi il motivo (senza dati personali): resta nel registro.', placeholder: 'Motivo',
+        validate: v => v.length < 3 ? 'Motivo obbligatorio (almeno 3 caratteri)' : v.length > 500 ? 'Al massimo 500 caratteri' : null });
+}
+// Azione sul gruppo: motivo -> 2FA -> chiamata -> aggiornamento locale della scheda
+async function syAction(route, g, title, text, what, apply, extra = {}) {
+    if (syReadOnly()) { syMsg('', 'Con il solo codice supporto si guarda, non si agisce: cerca per email, transazione Apple o ID gruppo.'); return; }
+    const reason = await syReason(title, text); if (!reason) return;
+    const totp = await askTotp(what); if (!totp) return;
+    const { ok, status, data } = await api(route, { session_token: session, group_id: g, ...extra, reason, totp_code: totp });
+    if (!ok) { syMsg('', (data.error || 'Errore') + ` (HTTP ${status})`); return; }
+    const grp = syGroups.find(x => x.group_id === g);
+    if (grp) apply(grp);
+    syMsg(title + ': fatto.', '');
+    syRender(); syLoadLog();
+}
+ACTIONS.syAgain = () => syLookup(null, true);
+ACTIONS.syRevoke = d => syAction('admin/sync-revoke-pending', d.g, 'Revoca in attesa',
+    `Il dispositivo ${syShort(d.k)} viene bloccato subito e nessuno puo' entrare nel gruppo finche' un altro dispositivo non conferma "Cambia chiave".`,
+    'la revoca in attesa', grp => { const x = (grp.devices || []).find(v => v.key_id === d.k); if (x) x.revoke_pending = true; if (grp.revoke_requested_day == null) grp.revoke_requested_day = Math.floor(Date.now() / 86400000); }, { key_id: d.k });
+ACTIONS.syBan = d => syAction('admin/sync-ban', d.g, 'Ban del gruppo', 'Effetto immediato: il gruppo non sincronizza piu\' (uscire e cancellare restano permessi). Senza sblocco i dati si cancellano dopo 30 giorni.',
+    'il ban del gruppo', grp => { grp.banned = true; });
+ACTIONS.syUnban = d => syAction('admin/sync-unban', d.g, 'Sblocco del gruppo', 'Il gruppo torna a sincronizzare subito.', 'lo sblocco del gruppo', grp => { grp.banned = false; grp.ban_reason = null; });
+ACTIONS.syDelCancel = d => syAction('admin/sync-delete-cancel', d.g, 'Annulla cancellazione', 'La cancellazione programmata (7 giorni) viene annullata.', 'annullare la cancellazione', grp => { grp.delete_after = null; });
+ACTIONS.syDelete = d => {
+    if (!confirm('Cancellare SUBITO tutti i dati del gruppo ' + syShort(d.g) + ' dal server? Non si torna indietro. I dati sui dispositivi restano.')) return;
+    syAction('admin/sync-delete', d.g, 'Cancellazione immediata', 'I dati cifrati del gruppo vengono cancellati ora dal server.', 'cancellare subito il gruppo',
+        () => { syGroups = syGroups.filter(x => x.group_id !== d.g); });
+};
+ACTIONS.syGroupLog = d => syLoadLog(d.g);
+// P2 (SPEC 14, v1.6 C4): mai un azzeramento. Si registra la chiave NUOVA del cliente, quella col codice che legge nell'app.
+async function sySeatKey() {
+    const sc = await askInput({ title: 'Registra chiave del posto (1/3)', text: 'Codice per il supporto che il cliente legge nella schermata di aiuto dell\'app (iPhone, iPad, Apple TV): XXXX-XXXX.',
+        placeholder: 'XXXX-XXXX', validate: v => syParseSupport(v) ? null : '8 cifre/lettere, come XXXX-XXXX' });
+    if (!sc) return;
+    const kc = await askInput({ title: 'Registra chiave del posto (2/3)', text: 'Codice della chiave, accanto al codice per il supporto: XXXXX-XXXXX. Chiedi al cliente di aprire la schermata di aiuto ADESSO e di leggerlo da li\' (l\'app ripete la prova e la sua chiave torna prima tra i candidati).',
+        placeholder: 'XXXXX-XXXXX', className: 'code enroll',
+        validate: v => /^[0-9A-HJKMNP-TV-Z]{5}-[0-9A-HJKMNP-TV-Z]{5}$/.test(v.trim().toUpperCase()) ? null : '10 caratteri nella forma XXXXX-XXXXX, con il trattino. Le lettere I, L, O, U non esistono nel codice: rileggi con il cliente.' });
+    if (!kc) return;
+    const support = syParseSupport(sc), key = kc.trim().toUpperCase();
+    const reason = await syReason('Registra chiave del posto (3/3)', `Posto ${support}, chiave ${key}.`); if (!reason) return;
+    const totp = await askTotp('registrare la chiave ' + key); if (!totp) return;
+    const { ok, status, data } = await api('admin/sync-seat-reset', { session_token: session, support_code: support, key_code: key, reason, totp_code: totp });
+    if (!ok) { syMsg('', (data.error || 'Errore') + ` (HTTP ${status})`); syLoadLog(); return; }
+    syMsg(`Chiave ${key} registrata per il posto ${support}. Il cliente puo' riprovare dall'app.`, '');
+    syLoadLog();
+}
+async function syLoadLog(group) {
+    const el = document.getElementById('sy-log');
+    document.getElementById('sy-log-filter').textContent = group ? 'Solo il gruppo ' + syShort(group) : '';
+    el.innerHTML = '<p style="font-size:13px">Caricamento…</p>';
+    let rows = [];
+    const calls = group ? [api('admin/log', { session_token: session, q: group, limit: 100 })]
+        : Object.keys(SY_ACT).map(a => api('admin/log', { session_token: session, action: a, limit: 50 }));
+    const res = await Promise.all(calls);
+    const bad = res.find(r => !r.ok);
+    if (bad) { el.innerHTML = `<p style="color:var(--error);font-size:13px">${esc(bad.data.error || 'Errore caricamento registro')} (HTTP ${esc(bad.status)})</p>`; return; }
+    for (const r of res) rows.push(...(r.data.rows || []));
+    rows = rows.filter(r => SY_ACT[r.action]).sort((a, b) => String(b.created_at).localeCompare(String(a.created_at))).slice(0, 60);
+    if (!rows.length) { el.innerHTML = '<p style="font-size:13px;color:var(--muted)">Nessuna azione registrata.</p>'; return; }
+    pbStyle();
+    const td = (t, l, st = '') => `<td data-l="${esc(l)}" style="${st}">${t}</td>`;
+    el.innerHTML = `<div class="table-wrap"><table class="pbt"><tr class="pbt-h"><th>Quando</th><th>Admin</th><th>Azione</th><th>Oggetto</th><th>Motivo</th><th>Esito</th></tr>${rows.map(r => {
+        const d = (typeof r.details === 'string' ? JSON.parse(r.details) : r.details) || {};
+        const obj = r.action === 'sync_lookup' ? 'per ' + (SY_BY[d.by] || d.by || '?') + (d.support_code ? ' ' + d.support_code : r.target_email ? ' ' + r.target_email : '')
+            : d.group ? 'gruppo ' + syShort(d.group) + (d.key_id ? ' · disp. ' + syShort(d.key_id) : '')
+            : d.support_code ? 'posto ' + d.support_code + (d.key_code ? ' · chiave ' + d.key_code : '')
+            : d.by ? 'per ' + (SY_BY[d.by] || d.by) + (r.target_email ? ' ' + r.target_email : '') : (r.target_email || '—');
+        const outcome = r.action === 'sync_lookup' ? `${esc(d.results ?? 0)} grupp${d.results === 1 ? 'o' : 'i'}` : d.ok ? '<span class="tag success">fatto</span>' : '<span class="tag err">non trovato</span>';
+        return `<tr>${td(esc(zh(r.created_at)), 'Quando', 'white-space:nowrap;font-size:12px')}${td(esc(r.admin_email || ''), 'Admin', 'font-size:12px')}${td(`<span class="tag">${esc(SY_ACT[r.action])}</span>`, 'Azione')}${td(esc(obj), 'Oggetto', 'font-size:12px;font-family:monospace')}${td(esc(d.reason || '—'), 'Motivo', 'font-size:12px')}${td(outcome, 'Esito')}</tr>`;
+    }).join('')}</table></div>`;
+}
 
 // Helpers used by security panel (define if missing)
 if (typeof fmtDateTime !== 'function') {
