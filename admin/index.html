@@ -2942,9 +2942,17 @@ function brStima(s) {
 }
 function brRender(d) {
     const verde = d.stato === 'verde';
-    document.getElementById('br-banner').innerHTML = `<div class="sys-card ${verde ? 'green' : 'red'}" style="margin-bottom:14px">
-        <div class="lbl"><span>${verde ? 'Tutto a posto' : 'Attenzione'}</span><span class="dot"></span></div>
-        <div class="val" style="font-size:18px">${esc(verde ? 'Il backup di questa notte c\'e\'.' : 'Manca un backup recente.')}</div>
+    // REVISIONE 12/11: se l'ultimo tentativo e' fallito dopo l'ultimo backup riuscito il riquadro e' giallo, mai "tutto a posto";
+    // "di questa notte" solo se il backup riuscito ha meno di 20 ore.
+    const tf = d.ultimo_tentativo && d.ultimo_tentativo.esito === 'errore' && (!d.ultimo_ok || new Date(d.ultimo_tentativo.quando) > new Date(d.ultimo_ok.quando));
+    const oreOk = d.ultimo_ok ? d.ultimo_ok.ore_fa : null;
+    let cls, tit, frase;
+    if (!verde) { cls = 'red'; tit = 'Attenzione'; frase = 'Manca un backup recente.'; }
+    else if (tf) { cls = 'yellow'; tit = 'Attenzione: l\'ultimo tentativo non e\' riuscito'; frase = `C'e' ancora un backup riuscito di ${brOre(oreOk)}.`; }
+    else { cls = 'green'; tit = 'Tutto a posto'; frase = oreOk != null && oreOk < 20 ? 'Il backup di questa notte c\'e\'.' : `L'ultimo backup riuscito e' di ${brOre(oreOk)}.`; }
+    document.getElementById('br-banner').innerHTML = `<div class="sys-card ${cls}" style="margin-bottom:14px">
+        <div class="lbl"><span>${esc(tit)}</span><span class="dot"></span></div>
+        <div class="val" style="font-size:18px">${esc(frase)}</div>
         <div class="sub">${esc(d.motivo || '')}</div></div>`;
     const cards = [];
     const ok = d.ultimo_ok;
@@ -2952,7 +2960,7 @@ function brRender(d) {
         label: 'Ultimo backup riuscito',
         value: ok ? esc(zh(ok.quando)) : 'Nessuno',
         sub: ok ? esc(`${brOre(ok.ore_fa)} · ${ok.byte != null ? brSize(ok.byte) + ' (cifrato)' : ''}`) : 'Nessun backup riuscito nel registro.',
-        status: verde ? 'green' : 'red',
+        status: verde ? (tf ? 'yellow' : 'green') : 'red',
     }));
     const t = d.ultimo_tentativo;
     cards.push(sysCard({
