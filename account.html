@@ -94,6 +94,53 @@
         /* Password form inputs */
         form.info-card input{width:100%;padding:11px 14px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;font-size:14px;outline:none;transition:border-color 0.2s}
         form.info-card input:focus{border-color:var(--accent)}
+        /* Sincronizzazione (12/11/2026) */
+        .sy-intro{font-size:13px;color:var(--text-secondary);line-height:1.55;margin-bottom:12px}
+        .sy-msg{font-size:13px;min-height:0;margin-bottom:8px;color:#6ee7b7}
+        .sy-msg:empty{display:none}
+        .sy-msg.err{color:#fca5a5}
+        .sy-group{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+        .sy-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+        .sy-gtitle{font-weight:600;font-size:14px}
+        .sy-gsub{font-size:12px;color:var(--text-secondary);margin-top:2px}
+        .sy-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+        .sy-chip svg{width:12px;height:12px;stroke:currentColor;stroke-width:2.4;fill:none;flex-shrink:0}
+        .sy-chip.ok{color:#6ee7b7;background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)}
+        .sy-chip.warn{color:#fcd34d;background:rgba(251,191,36,.10);border-color:rgba(251,191,36,.35)}
+        .sy-chip.err{color:#fca5a5;background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.35)}
+        .sy-chip.off{color:var(--text-secondary);background:var(--card-hover);border-color:var(--border)}
+        .sy-alert{display:flex;gap:10px;align-items:flex-start;border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:13px;line-height:1.5}
+        .sy-alert svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;flex-shrink:0;margin-top:1px}
+        .sy-alert strong{display:block;font-weight:600;margin-bottom:2px}
+        .sy-alert.warn{background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.40);color:#fde68a}
+        .sy-alert.err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35);color:#fecaca}
+        .sy-alert.info{background:var(--card-hover);border:1px solid var(--border);color:var(--text-secondary)}
+        .sy-alert .sy-alert-act{margin-top:8px}
+        .sy-space{margin:2px 0 12px}
+        .sy-bar{height:6px;border-radius:3px;background:var(--card-hover);overflow:hidden}
+        .sy-bar>div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:3px;min-width:2px}
+        .sy-space-t{font-size:12px;color:var(--text-secondary);margin-top:4px}
+        .sy-dev{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+        .sy-dev .device-info{min-width:0}
+        .sy-dev-main{min-width:0}
+        .sy-dev-meta{font-size:12px;color:var(--text-secondary);line-height:1.45;overflow-wrap:anywhere}
+        .sy-dev-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}
+        .sy-left{margin:4px 0 10px;font-size:13px;color:var(--text-secondary)}
+        .sy-left summary{cursor:pointer;padding:4px 0}
+        .sy-left .sy-dev{opacity:.75}
+        .sy-actions{display:flex;justify-content:flex-end;margin-top:4px}
+        .sy-actions .btn{width:auto;margin:0;padding:8px 14px;font-size:13px}
+        .sy-label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+        .sy-hint{font-size:12px;color:var(--text-secondary);margin-bottom:6px}
+        .btn.sy-danger-btn{background:var(--error)}
+        .btn.sy-danger-btn:hover{background:#dc2626}
+        .btn.sy-danger-btn.neutral{background:var(--accent)}
+        @media(max-width:420px){
+            .sy-group{padding:12px}
+            .sy-dev{flex-direction:column;align-items:stretch}
+            .sy-dev .device-actions{justify-content:flex-end}
+            .sy-actions .btn{width:100%}
+        }
         /* Tablet+ */
         @media(min-width:769px){
             .header-inner{height:58px;max-width:720px}
@@ -163,6 +210,15 @@
             <p style="font-size:13px;color:var(--text-secondary);margin-top:12px;text-align:center;" data-i18n="devices_hint">La licenza del sito vale su 5 dispositivi in totale tra TV (Fire TV, Google TV, Android TV) e telefoni o tablet Android. Su iPhone e iPad Premium si acquista nell’App Store, a parte. Sui telefoni e tablet Android, fino al 10 novembre 2026 tutte le funzioni sono incluse; poi valgono gli stessi limiti della TV. Chi usa l’app Android prima del 10 novembre 2026 riceve 3 mesi di Premium in regalo.</p>
         </div>
 
+        <!-- 12/11/2026 Sincronizzazione cifrata: compare solo se il server ha le rotte account/sync-* e la licenza ha
+             almeno un gruppo con una voce attiva. Solo metadati: i nomi dei dispositivi e i contenuti sono cifrati. -->
+        <div class="section" id="syncSection" style="display:none;" aria-labelledby="syncTitle">
+            <div class="section-title" id="syncTitle" data-i18n="sy_title">Sincronizzazione</div>
+            <p class="sy-intro" data-i18n="sy_intro">I dispositivi collegati condividono profili, playlist, preferiti e visti. Contenuti e nomi dei dispositivi sono cifrati: qui vedi solo il tipo di dispositivo e le date.</p>
+            <div id="syncMsg" class="sy-msg" role="status" aria-live="polite"></div>
+            <div id="syncGroups"></div>
+        </div>
+
         <div class="section">
             <div class="section-title" data-i18n="sec_change_password">Cambia password</div>
             <form onsubmit="submitChangePassword(event)" class="info-card" style="display:flex;flex-direction:column;gap:12px;">
@@ -214,6 +270,24 @@
                     <span data-i18n="delete_contact">Scrivi a info@burgtv.com</span>
                 </a>
             </div>
+        </div>
+    </div>
+
+    <!-- Sincronizzazione: conferma con la password (Togli dispositivo, Cancella i dati dal server) -->
+    <div class="modal-overlay" id="syModal">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="syModalTitle" aria-describedby="syModalBody">
+            <h2 id="syModalTitle"></h2>
+            <p id="syModalBody"></p>
+            <form id="syModalForm" novalidate>
+                <label for="syPw" class="sy-label" data-i18n="sy_pw">Password dell'account</label>
+                <input type="password" id="syPw" autocomplete="current-password" aria-describedby="syPwHint syModalMsg">
+                <div id="syPwHint" class="sy-hint" data-i18n="sy_pw_hint">Per sicurezza serve la password a ogni azione.</div>
+                <div id="syModalMsg" role="alert" style="font-size:13px;color:#fca5a5;min-height:18px;"></div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" id="syModalCancel" style="margin:0;"><span data-i18n="sy_cancel">Annulla</span></button>
+                    <button type="submit" class="btn btn-primary sy-danger-btn" id="syModalOk"></button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -284,6 +358,7 @@
             document.title = (d.title || 'Account') + ' - BurgTV';
             // Re-render dynamic parts (devices + plan).
             renderState();
+            renderSync();
         }
 
         document.querySelectorAll('.lang-btn').forEach(b => b.addEventListener('click', () => applyLang(b.dataset.lang)));
@@ -534,6 +609,231 @@
             }
         }
 
+        // ===== Sincronizzazione cifrata (12/11/2026) =====
+        // Rotte account/sync-* del server (SPEC_BTVSYNC1 12.5): solo metadati. "Togli" = revoca IN ATTESA (la chiave la
+        // cambia un dispositivo del gruppo, con conferma); "Cancella i dati dal server" = attesa di 7 giorni, annullabile.
+        // Le azioni che tolgono chiedono la password ogni volta. Se il server non ha ancora le rotte (404) o la licenza non
+        // ha gruppi, la sezione resta nascosta.
+        const TS_SY = {
+            it:{sy_title:"Sincronizzazione",sy_intro:"I dispositivi collegati condividono profili, playlist, preferiti e visti. Contenuti e nomi dei dispositivi sono cifrati: qui vedi solo il tipo di dispositivo e le date.",sy_group:"Gruppo {n}",sy_created:"Creato il {date}",sy_ndev:"Dispositivi attivi: {n}",sy_space:"Spazio usato sul server: {used} di {max}",sy_st_premium:"Premium attivo",sy_st_nopremium:"Premium scaduto",sy_st_banned:"Bloccato",sy_st_deleting:"Cancellazione programmata",sy_a_pending_t:"Dispositivo tolto: manca un passaggio",sy_a_pending:"Apri BurgTV su un altro dispositivo del gruppo e conferma «Cambia chiave». Finché non lo fai, nessun nuovo dispositivo può entrare nel gruppo.",sy_a_pending_since:"Richiesta aperta dal {date}.",sy_a_del_t:"I dati sul server verranno cancellati il {date}",sy_a_del:"Fino ad allora puoi annullare. I dati sui tuoi dispositivi restano.",sy_del_cancel:"Annulla la cancellazione",sy_a_ban_t:"Sincronizzazione bloccata dal supporto",sy_a_ban:"Per informazioni scrivi a info@burgtv.com. Puoi comunque cancellare i dati dal server.",sy_a_nop_t:"Nessun dispositivo Premium dal {date}",sy_a_nop:"La sincronizzazione è ferma. La copia sul server si cancella il {date}, se nel frattempo nessun dispositivo torna Premium.",sy_p_android:"Telefono o tablet Android",sy_app:"app {v}",sy_founder:"Ha creato il gruppo il {date}",sy_added:"Aggiunto il {date} da {dev}",sy_added_unknown:"Aggiunto il {date}",sy_seen:"Ultimo accesso: {when}",sy_today:"oggi",sy_yesterday:"ieri",sy_e_android:"Premium (licenza)",sy_e_android_off:"Licenza non attiva",sy_e_android_gift:"Premium in regalo",sy_e_android_gift_off:"Regalo finito",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"Acquisto App Store non attivo",sy_e_apple_trial:"Prova Premium",sy_e_apple_trial_off:"Prova finita",sy_e_none:"Senza Premium",sy_pending:"In attesa del cambio chiave",sy_left_n:"Usciti o tolti: {n}",sy_st_left:"Uscito",sy_st_revoked:"Tolto",sy_remove:"Togli",sy_delete:"Cancella i dati dal server",sy_rv_title:"Togliere «{dev}»?",sy_rv_body:"Il dispositivo smette subito di sincronizzare. Per chiudere l'accesso, poi apri BurgTV su un altro dispositivo del gruppo e conferma «Cambia chiave». I dati già presenti sul dispositivo tolto non vengono cancellati.",sy_rv_ok:"Togli dispositivo",sy_dl_title:"Cancellare i dati dal server?",sy_dl_body:"La copia cifrata sul server verrà cancellata tra 7 giorni. Fino ad allora puoi annullare da qui o da un dispositivo del gruppo. I dati sui tuoi dispositivi restano.",sy_dl_ok:"Cancella tra 7 giorni",sy_pw:"Password dell'account",sy_pw_hint:"Per sicurezza serve la password a ogni azione.",sy_cancel:"Annulla",sy_err_pw_empty:"Scrivi la password",sy_err_pw:"Password non corretta",sy_err_many:"Troppi tentativi: riprova tra 10 minuti",sy_err_gone:"Questo gruppo o dispositivo non c'è più: la pagina è stata aggiornata.",sy_err:"Errore. Riprova o scrivi a info@burgtv.com",sy_ok_removed:"Dispositivo tolto. Ora conferma «Cambia chiave» su un altro dispositivo del gruppo.",sy_ok_delete:"Cancellazione programmata.",sy_ok_cancel:"Cancellazione annullata."},
+            en:{sy_title:"Sync",sy_intro:"Linked devices share profiles, playlists, favorites and watched items. Content and device names are encrypted: here you only see the device type and dates.",sy_group:"Group {n}",sy_created:"Created on {date}",sy_ndev:"Active devices: {n}",sy_space:"Space used on the server: {used} of {max}",sy_st_premium:"Premium active",sy_st_nopremium:"Premium expired",sy_st_banned:"Blocked",sy_st_deleting:"Deletion scheduled",sy_a_pending_t:"Device removed: one step left",sy_a_pending:"Open BurgTV on another device in the group and confirm “Change key”. Until you do, no new device can join the group.",sy_a_pending_since:"Request open since {date}.",sy_a_del_t:"The data on the server will be deleted on {date}",sy_a_del:"You can cancel until then. The data on your devices stays.",sy_del_cancel:"Cancel deletion",sy_a_ban_t:"Sync blocked by support",sy_a_ban:"For details write to info@burgtv.com. You can still delete the data from the server.",sy_a_nop_t:"No Premium device since {date}",sy_a_nop:"Sync is paused. The copy on the server will be deleted on {date} unless a device becomes Premium again.",sy_p_android:"Android phone or tablet",sy_app:"app {v}",sy_founder:"Created the group on {date}",sy_added:"Added on {date} by {dev}",sy_added_unknown:"Added on {date}",sy_seen:"Last seen: {when}",sy_today:"today",sy_yesterday:"yesterday",sy_e_android:"Premium (license)",sy_e_android_off:"License not active",sy_e_android_gift:"Premium gift",sy_e_android_gift_off:"Gift ended",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"App Store purchase not active",sy_e_apple_trial:"Premium trial",sy_e_apple_trial_off:"Trial ended",sy_e_none:"No Premium",sy_pending:"Waiting for key change",sy_left_n:"Left or removed: {n}",sy_st_left:"Left",sy_st_revoked:"Removed",sy_remove:"Remove",sy_delete:"Delete data from the server",sy_rv_title:"Remove “{dev}”?",sy_rv_body:"The device stops syncing right away. To close its access, then open BurgTV on another device in the group and confirm “Change key”. Data already on the removed device is not deleted.",sy_rv_ok:"Remove device",sy_dl_title:"Delete the data from the server?",sy_dl_body:"The encrypted copy on the server will be deleted in 7 days. Until then you can cancel here or from a device in the group. The data on your devices stays.",sy_dl_ok:"Delete in 7 days",sy_pw:"Account password",sy_pw_hint:"For security, every action needs your password.",sy_cancel:"Cancel",sy_err_pw_empty:"Enter your password",sy_err_pw:"Wrong password",sy_err_many:"Too many attempts: try again in 10 minutes",sy_err_gone:"This group or device no longer exists: the page has been refreshed.",sy_err:"Error. Try again or write to info@burgtv.com",sy_ok_removed:"Device removed. Now confirm “Change key” on another device in the group.",sy_ok_delete:"Deletion scheduled.",sy_ok_cancel:"Deletion cancelled."},
+            de:{sy_title:"Synchronisierung",sy_intro:"Verbundene Geräte teilen Profile, Playlists, Favoriten und Gesehenes. Inhalte und Gerätenamen sind verschlüsselt: Hier siehst du nur den Gerätetyp und die Datumsangaben.",sy_group:"Gruppe {n}",sy_created:"Erstellt am {date}",sy_ndev:"Aktive Geräte: {n}",sy_space:"Belegter Speicher auf dem Server: {used} von {max}",sy_st_premium:"Premium aktiv",sy_st_nopremium:"Premium abgelaufen",sy_st_banned:"Gesperrt",sy_st_deleting:"Löschung geplant",sy_a_pending_t:"Gerät entfernt: ein Schritt fehlt",sy_a_pending:"Öffne BurgTV auf einem anderen Gerät der Gruppe und bestätige „Schlüssel ändern“. Bis dahin kann kein neues Gerät der Gruppe beitreten.",sy_a_pending_since:"Anfrage offen seit {date}.",sy_a_del_t:"Die Daten auf dem Server werden am {date} gelöscht",sy_a_del:"Bis dahin kannst du abbrechen. Die Daten auf deinen Geräten bleiben erhalten.",sy_del_cancel:"Löschung abbrechen",sy_a_ban_t:"Synchronisierung vom Support gesperrt",sy_a_ban:"Für Informationen schreib an info@burgtv.com. Du kannst die Daten trotzdem vom Server löschen.",sy_a_nop_t:"Kein Premium-Gerät seit {date}",sy_a_nop:"Die Synchronisierung ist angehalten. Die Kopie auf dem Server wird am {date} gelöscht, falls bis dahin kein Gerät wieder Premium hat.",sy_p_android:"Android-Smartphone oder -Tablet",sy_app:"App {v}",sy_founder:"Hat die Gruppe am {date} erstellt",sy_added:"Am {date} hinzugefügt von {dev}",sy_added_unknown:"Am {date} hinzugefügt",sy_seen:"Zuletzt aktiv: {when}",sy_today:"heute",sy_yesterday:"gestern",sy_e_android:"Premium (Lizenz)",sy_e_android_off:"Lizenz nicht aktiv",sy_e_android_gift:"Premium-Geschenk",sy_e_android_gift_off:"Geschenk beendet",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"App-Store-Kauf nicht aktiv",sy_e_apple_trial:"Premium-Testphase",sy_e_apple_trial_off:"Testphase beendet",sy_e_none:"Kein Premium",sy_pending:"Wartet auf Schlüsselwechsel",sy_left_n:"Ausgetreten oder entfernt: {n}",sy_st_left:"Ausgetreten",sy_st_revoked:"Entfernt",sy_remove:"Entfernen",sy_delete:"Daten vom Server löschen",sy_rv_title:"„{dev}“ entfernen?",sy_rv_body:"Das Gerät synchronisiert ab sofort nicht mehr. Um den Zugriff zu schließen, öffne danach BurgTV auf einem anderen Gerät der Gruppe und bestätige „Schlüssel ändern“. Daten, die schon auf dem entfernten Gerät sind, werden nicht gelöscht.",sy_rv_ok:"Gerät entfernen",sy_dl_title:"Daten vom Server löschen?",sy_dl_body:"Die verschlüsselte Kopie auf dem Server wird in 7 Tagen gelöscht. Bis dahin kannst du hier oder auf einem Gerät der Gruppe abbrechen. Die Daten auf deinen Geräten bleiben erhalten.",sy_dl_ok:"In 7 Tagen löschen",sy_pw:"Passwort des Kontos",sy_pw_hint:"Aus Sicherheitsgründen ist bei jeder Aktion das Passwort nötig.",sy_cancel:"Abbrechen",sy_err_pw_empty:"Gib dein Passwort ein",sy_err_pw:"Falsches Passwort",sy_err_many:"Zu viele Versuche: versuch es in 10 Minuten erneut",sy_err_gone:"Diese Gruppe oder dieses Gerät gibt es nicht mehr: Die Seite wurde aktualisiert.",sy_err:"Fehler. Versuch es erneut oder schreib an info@burgtv.com",sy_ok_removed:"Gerät entfernt. Bestätige jetzt „Schlüssel ändern“ auf einem anderen Gerät der Gruppe.",sy_ok_delete:"Löschung geplant.",sy_ok_cancel:"Löschung abgebrochen."},
+            es:{sy_title:"Sincronización",sy_intro:"Los dispositivos vinculados comparten perfiles, listas, favoritos y lo ya visto. El contenido y los nombres de los dispositivos están cifrados: aquí solo ves el tipo de dispositivo y las fechas.",sy_group:"Grupo {n}",sy_created:"Creado el {date}",sy_ndev:"Dispositivos activos: {n}",sy_space:"Espacio usado en el servidor: {used} de {max}",sy_st_premium:"Premium activo",sy_st_nopremium:"Premium caducado",sy_st_banned:"Bloqueado",sy_st_deleting:"Eliminación programada",sy_a_pending_t:"Dispositivo quitado: falta un paso",sy_a_pending:"Abre BurgTV en otro dispositivo del grupo y confirma «Cambiar clave». Hasta entonces ningún dispositivo nuevo puede entrar en el grupo.",sy_a_pending_since:"Solicitud abierta desde el {date}.",sy_a_del_t:"Los datos del servidor se eliminarán el {date}",sy_a_del:"Hasta entonces puedes cancelar. Los datos de tus dispositivos se mantienen.",sy_del_cancel:"Cancelar la eliminación",sy_a_ban_t:"Sincronización bloqueada por el soporte",sy_a_ban:"Para más información escribe a info@burgtv.com. Aun así puedes eliminar los datos del servidor.",sy_a_nop_t:"Ningún dispositivo Premium desde el {date}",sy_a_nop:"La sincronización está detenida. La copia del servidor se eliminará el {date} si ningún dispositivo vuelve a ser Premium.",sy_p_android:"Móvil o tablet Android",sy_app:"app {v}",sy_founder:"Creó el grupo el {date}",sy_added:"Añadido el {date} por {dev}",sy_added_unknown:"Añadido el {date}",sy_seen:"Último acceso: {when}",sy_today:"hoy",sy_yesterday:"ayer",sy_e_android:"Premium (licencia)",sy_e_android_off:"Licencia no activa",sy_e_android_gift:"Premium de regalo",sy_e_android_gift_off:"Regalo terminado",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"Compra de App Store no activa",sy_e_apple_trial:"Prueba Premium",sy_e_apple_trial_off:"Prueba terminada",sy_e_none:"Sin Premium",sy_pending:"Esperando el cambio de clave",sy_left_n:"Salidos o quitados: {n}",sy_st_left:"Salió",sy_st_revoked:"Quitado",sy_remove:"Quitar",sy_delete:"Eliminar los datos del servidor",sy_rv_title:"¿Quitar «{dev}»?",sy_rv_body:"El dispositivo deja de sincronizar en el acto. Para cerrar su acceso, abre después BurgTV en otro dispositivo del grupo y confirma «Cambiar clave». Los datos que ya están en el dispositivo quitado no se borran.",sy_rv_ok:"Quitar dispositivo",sy_dl_title:"¿Eliminar los datos del servidor?",sy_dl_body:"La copia cifrada del servidor se eliminará dentro de 7 días. Hasta entonces puedes cancelar aquí o desde un dispositivo del grupo. Los datos de tus dispositivos se mantienen.",sy_dl_ok:"Eliminar en 7 días",sy_pw:"Contraseña de la cuenta",sy_pw_hint:"Por seguridad, cada acción requiere la contraseña.",sy_cancel:"Cancelar",sy_err_pw_empty:"Escribe la contraseña",sy_err_pw:"Contraseña incorrecta",sy_err_many:"Demasiados intentos: vuelve a intentarlo en 10 minutos",sy_err_gone:"Este grupo o dispositivo ya no existe: la página se ha actualizado.",sy_err:"Error. Inténtalo de nuevo o escribe a info@burgtv.com",sy_ok_removed:"Dispositivo quitado. Ahora confirma «Cambiar clave» en otro dispositivo del grupo.",sy_ok_delete:"Eliminación programada.",sy_ok_cancel:"Eliminación cancelada."},
+            fr:{sy_title:"Synchronisation",sy_intro:"Les appareils liés partagent profils, playlists, favoris et contenus vus. Le contenu et le nom des appareils sont chiffrés : ici, vous ne voyez que le type d’appareil et les dates.",sy_group:"Groupe {n}",sy_created:"Créé le {date}",sy_ndev:"Appareils actifs : {n}",sy_space:"Espace utilisé sur le serveur : {used} sur {max}",sy_st_premium:"Premium actif",sy_st_nopremium:"Premium expiré",sy_st_banned:"Bloqué",sy_st_deleting:"Suppression programmée",sy_a_pending_t:"Appareil retiré : il reste une étape",sy_a_pending:"Ouvrez BurgTV sur un autre appareil du groupe et confirmez « Changer la clé ». D’ici là, aucun nouvel appareil ne peut rejoindre le groupe.",sy_a_pending_since:"Demande ouverte depuis le {date}.",sy_a_del_t:"Les données du serveur seront supprimées le {date}",sy_a_del:"Vous pouvez annuler d’ici là. Les données de vos appareils sont conservées.",sy_del_cancel:"Annuler la suppression",sy_a_ban_t:"Synchronisation bloquée par le support",sy_a_ban:"Pour en savoir plus, écrivez à info@burgtv.com. Vous pouvez quand même supprimer les données du serveur.",sy_a_nop_t:"Aucun appareil Premium depuis le {date}",sy_a_nop:"La synchronisation est à l’arrêt. La copie sur le serveur sera supprimée le {date} si aucun appareil ne redevient Premium.",sy_p_android:"Téléphone ou tablette Android",sy_app:"app {v}",sy_founder:"A créé le groupe le {date}",sy_added:"Ajouté le {date} par {dev}",sy_added_unknown:"Ajouté le {date}",sy_seen:"Dernière activité : {when}",sy_today:"aujourd’hui",sy_yesterday:"hier",sy_e_android:"Premium (licence)",sy_e_android_off:"Licence inactive",sy_e_android_gift:"Premium offert",sy_e_android_gift_off:"Cadeau terminé",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"Achat App Store inactif",sy_e_apple_trial:"Essai Premium",sy_e_apple_trial_off:"Essai terminé",sy_e_none:"Sans Premium",sy_pending:"En attente du changement de clé",sy_left_n:"Sortis ou retirés : {n}",sy_st_left:"Sorti",sy_st_revoked:"Retiré",sy_remove:"Retirer",sy_delete:"Supprimer les données du serveur",sy_rv_title:"Retirer « {dev} » ?",sy_rv_body:"L’appareil arrête aussitôt de se synchroniser. Pour fermer son accès, ouvrez ensuite BurgTV sur un autre appareil du groupe et confirmez « Changer la clé ». Les données déjà présentes sur l’appareil retiré ne sont pas effacées.",sy_rv_ok:"Retirer l’appareil",sy_dl_title:"Supprimer les données du serveur ?",sy_dl_body:"La copie chiffrée sur le serveur sera supprimée dans 7 jours. D’ici là, vous pouvez annuler ici ou depuis un appareil du groupe. Les données de vos appareils sont conservées.",sy_dl_ok:"Supprimer dans 7 jours",sy_pw:"Mot de passe du compte",sy_pw_hint:"Par sécurité, chaque action demande le mot de passe.",sy_cancel:"Annuler",sy_err_pw_empty:"Saisissez le mot de passe",sy_err_pw:"Mot de passe incorrect",sy_err_many:"Trop de tentatives : réessayez dans 10 minutes",sy_err_gone:"Ce groupe ou cet appareil n’existe plus : la page a été actualisée.",sy_err:"Erreur. Réessayez ou écrivez à info@burgtv.com",sy_ok_removed:"Appareil retiré. Confirmez maintenant « Changer la clé » sur un autre appareil du groupe.",sy_ok_delete:"Suppression programmée.",sy_ok_cancel:"Suppression annulée."},
+            pt:{sy_title:"Sincronização",sy_intro:"Os dispositivos conectados compartilham perfis, playlists, favoritos e o que já foi assistido. O conteúdo e os nomes dos dispositivos são criptografados: aqui você vê só o tipo de dispositivo e as datas.",sy_group:"Grupo {n}",sy_created:"Criado em {date}",sy_ndev:"Dispositivos ativos: {n}",sy_space:"Espaço usado no servidor: {used} de {max}",sy_st_premium:"Premium ativo",sy_st_nopremium:"Premium expirado",sy_st_banned:"Bloqueado",sy_st_deleting:"Exclusão programada",sy_a_pending_t:"Dispositivo removido: falta um passo",sy_a_pending:"Abra o BurgTV em outro dispositivo do grupo e confirme “Trocar chave”. Até lá nenhum dispositivo novo pode entrar no grupo.",sy_a_pending_since:"Pedido aberto desde {date}.",sy_a_del_t:"Os dados no servidor serão excluídos em {date}",sy_a_del:"Até lá você pode cancelar. Os dados nos seus dispositivos continuam.",sy_del_cancel:"Cancelar a exclusão",sy_a_ban_t:"Sincronização bloqueada pelo suporte",sy_a_ban:"Para mais informações escreva para info@burgtv.com. Mesmo assim você pode excluir os dados do servidor.",sy_a_nop_t:"Nenhum dispositivo Premium desde {date}",sy_a_nop:"A sincronização está parada. A cópia no servidor será excluída em {date} se nenhum dispositivo voltar a ser Premium.",sy_p_android:"Celular ou tablet Android",sy_app:"app {v}",sy_founder:"Criou o grupo em {date}",sy_added:"Adicionado em {date} por {dev}",sy_added_unknown:"Adicionado em {date}",sy_seen:"Último acesso: {when}",sy_today:"hoje",sy_yesterday:"ontem",sy_e_android:"Premium (licença)",sy_e_android_off:"Licença inativa",sy_e_android_gift:"Premium de presente",sy_e_android_gift_off:"Presente encerrado",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"Compra da App Store inativa",sy_e_apple_trial:"Teste Premium",sy_e_apple_trial_off:"Teste encerrado",sy_e_none:"Sem Premium",sy_pending:"Aguardando a troca de chave",sy_left_n:"Saíram ou removidos: {n}",sy_st_left:"Saiu",sy_st_revoked:"Removido",sy_remove:"Remover",sy_delete:"Excluir os dados do servidor",sy_rv_title:"Remover “{dev}”?",sy_rv_body:"O dispositivo para de sincronizar na hora. Para fechar o acesso, depois abra o BurgTV em outro dispositivo do grupo e confirme “Trocar chave”. Os dados que já estão no dispositivo removido não são apagados.",sy_rv_ok:"Remover dispositivo",sy_dl_title:"Excluir os dados do servidor?",sy_dl_body:"A cópia criptografada no servidor será excluída em 7 dias. Até lá você pode cancelar aqui ou em um dispositivo do grupo. Os dados nos seus dispositivos continuam.",sy_dl_ok:"Excluir em 7 dias",sy_pw:"Senha da conta",sy_pw_hint:"Por segurança, cada ação pede a senha.",sy_cancel:"Cancelar",sy_err_pw_empty:"Digite a senha",sy_err_pw:"Senha incorreta",sy_err_many:"Muitas tentativas: tente de novo em 10 minutos",sy_err_gone:"Este grupo ou dispositivo não existe mais: a página foi atualizada.",sy_err:"Erro. Tente de novo ou escreva para info@burgtv.com",sy_ok_removed:"Dispositivo removido. Agora confirme “Trocar chave” em outro dispositivo do grupo.",sy_ok_delete:"Exclusão programada.",sy_ok_cancel:"Exclusão cancelada."},
+            tr:{sy_title:"Senkronizasyon",sy_intro:"Bağlı cihazlar profilleri, oynatma listelerini, favorileri ve izlenenleri paylaşır. İçerik ve cihaz adları şifrelidir: burada yalnızca cihaz türünü ve tarihleri görürsün.",sy_group:"Grup {n}",sy_created:"Oluşturulma: {date}",sy_ndev:"Etkin cihazlar: {n}",sy_space:"Sunucuda kullanılan alan: {used} / {max}",sy_st_premium:"Premium etkin",sy_st_nopremium:"Premium sona erdi",sy_st_banned:"Engellendi",sy_st_deleting:"Silme planlandı",sy_a_pending_t:"Cihaz kaldırıldı: bir adım kaldı",sy_a_pending:"Gruptaki başka bir cihazda BurgTV'yi aç ve “Anahtarı değiştir”i onayla. O zamana kadar gruba yeni cihaz katılamaz.",sy_a_pending_since:"İstek {date} tarihinden beri açık.",sy_a_del_t:"Sunucudaki veriler {date} tarihinde silinecek",sy_a_del:"O zamana kadar iptal edebilirsin. Cihazlarındaki veriler kalır.",sy_del_cancel:"Silmeyi iptal et",sy_a_ban_t:"Senkronizasyon destek ekibi tarafından engellendi",sy_a_ban:"Bilgi için info@burgtv.com adresine yaz. Verileri sunucudan yine de silebilirsin.",sy_a_nop_t:"{date} tarihinden beri Premium cihaz yok",sy_a_nop:"Senkronizasyon durdu. Hiçbir cihaz yeniden Premium olmazsa sunucudaki kopya {date} tarihinde silinir.",sy_p_android:"Android telefon veya tablet",sy_app:"uygulama {v}",sy_founder:"Grubu {date} tarihinde oluşturdu",sy_added:"{date} tarihinde {dev} tarafından eklendi",sy_added_unknown:"{date} tarihinde eklendi",sy_seen:"Son erişim: {when}",sy_today:"bugün",sy_yesterday:"dün",sy_e_android:"Premium (lisans)",sy_e_android_off:"Lisans etkin değil",sy_e_android_gift:"Hediye Premium",sy_e_android_gift_off:"Hediye sona erdi",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"App Store satın alımı etkin değil",sy_e_apple_trial:"Premium deneme",sy_e_apple_trial_off:"Deneme sona erdi",sy_e_none:"Premium yok",sy_pending:"Anahtar değişikliği bekleniyor",sy_left_n:"Ayrılan veya kaldırılan: {n}",sy_st_left:"Ayrıldı",sy_st_revoked:"Kaldırıldı",sy_remove:"Kaldır",sy_delete:"Verileri sunucudan sil",sy_rv_title:"“{dev}” kaldırılsın mı?",sy_rv_body:"Cihaz senkronizasyonu hemen durdurur. Erişimini kapatmak için ardından gruptaki başka bir cihazda BurgTV'yi aç ve “Anahtarı değiştir”i onayla. Kaldırılan cihazda zaten bulunan veriler silinmez.",sy_rv_ok:"Cihazı kaldır",sy_dl_title:"Veriler sunucudan silinsin mi?",sy_dl_body:"Sunucudaki şifreli kopya 7 gün sonra silinecek. O zamana kadar buradan veya gruptaki bir cihazdan iptal edebilirsin. Cihazlarındaki veriler kalır.",sy_dl_ok:"7 gün sonra sil",sy_pw:"Hesap şifresi",sy_pw_hint:"Güvenlik için her işlemde şifre gerekir.",sy_cancel:"İptal",sy_err_pw_empty:"Şifreni yaz",sy_err_pw:"Şifre yanlış",sy_err_many:"Çok fazla deneme: 10 dakika sonra tekrar dene",sy_err_gone:"Bu grup veya cihaz artık yok: sayfa yenilendi.",sy_err:"Hata. Tekrar dene veya info@burgtv.com adresine yaz",sy_ok_removed:"Cihaz kaldırıldı. Şimdi gruptaki başka bir cihazda “Anahtarı değiştir”i onayla.",sy_ok_delete:"Silme planlandı.",sy_ok_cancel:"Silme iptal edildi."},
+            nl:{sy_title:"Synchronisatie",sy_intro:"Gekoppelde apparaten delen profielen, playlists, favorieten en wat je hebt gezien. Inhoud en apparaatnamen zijn versleuteld: hier zie je alleen het type apparaat en de datums.",sy_group:"Groep {n}",sy_created:"Aangemaakt op {date}",sy_ndev:"Actieve apparaten: {n}",sy_space:"Gebruikte ruimte op de server: {used} van {max}",sy_st_premium:"Premium actief",sy_st_nopremium:"Premium verlopen",sy_st_banned:"Geblokkeerd",sy_st_deleting:"Verwijdering gepland",sy_a_pending_t:"Apparaat verwijderd: nog één stap",sy_a_pending:"Open BurgTV op een ander apparaat in de groep en bevestig ‘Sleutel wijzigen’. Tot die tijd kan geen nieuw apparaat de groep in.",sy_a_pending_since:"Verzoek open sinds {date}.",sy_a_del_t:"De gegevens op de server worden verwijderd op {date}",sy_a_del:"Tot dan kun je annuleren. De gegevens op je apparaten blijven bewaard.",sy_del_cancel:"Verwijdering annuleren",sy_a_ban_t:"Synchronisatie geblokkeerd door support",sy_a_ban:"Schrijf voor meer informatie naar info@burgtv.com. Je kunt de gegevens toch van de server verwijderen.",sy_a_nop_t:"Geen Premium-apparaat sinds {date}",sy_a_nop:"De synchronisatie staat stil. De kopie op de server wordt verwijderd op {date} als geen enkel apparaat weer Premium wordt.",sy_p_android:"Android-telefoon of -tablet",sy_app:"app {v}",sy_founder:"Heeft de groep aangemaakt op {date}",sy_added:"Toegevoegd op {date} door {dev}",sy_added_unknown:"Toegevoegd op {date}",sy_seen:"Laatst actief: {when}",sy_today:"vandaag",sy_yesterday:"gisteren",sy_e_android:"Premium (licentie)",sy_e_android_off:"Licentie niet actief",sy_e_android_gift:"Premium cadeau",sy_e_android_gift_off:"Cadeau afgelopen",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"App Store-aankoop niet actief",sy_e_apple_trial:"Premium-proef",sy_e_apple_trial_off:"Proef afgelopen",sy_e_none:"Geen Premium",sy_pending:"Wacht op sleutelwijziging",sy_left_n:"Vertrokken of verwijderd: {n}",sy_st_left:"Vertrokken",sy_st_revoked:"Verwijderd",sy_remove:"Verwijderen",sy_delete:"Gegevens van de server verwijderen",sy_rv_title:"‘{dev}’ verwijderen?",sy_rv_body:"Het apparaat stopt meteen met synchroniseren. Om de toegang te sluiten, open je daarna BurgTV op een ander apparaat in de groep en bevestig je ‘Sleutel wijzigen’. Gegevens die al op het verwijderde apparaat staan, worden niet gewist.",sy_rv_ok:"Apparaat verwijderen",sy_dl_title:"Gegevens van de server verwijderen?",sy_dl_body:"De versleutelde kopie op de server wordt over 7 dagen verwijderd. Tot dan kun je hier of op een apparaat in de groep annuleren. De gegevens op je apparaten blijven bewaard.",sy_dl_ok:"Over 7 dagen verwijderen",sy_pw:"Wachtwoord van het account",sy_pw_hint:"Voor de veiligheid vraagt elke actie je wachtwoord.",sy_cancel:"Annuleren",sy_err_pw_empty:"Vul je wachtwoord in",sy_err_pw:"Onjuist wachtwoord",sy_err_many:"Te veel pogingen: probeer het over 10 minuten opnieuw",sy_err_gone:"Deze groep of dit apparaat bestaat niet meer: de pagina is vernieuwd.",sy_err:"Fout. Probeer opnieuw of schrijf naar info@burgtv.com",sy_ok_removed:"Apparaat verwijderd. Bevestig nu ‘Sleutel wijzigen’ op een ander apparaat in de groep.",sy_ok_delete:"Verwijdering gepland.",sy_ok_cancel:"Verwijdering geannuleerd."},
+            pl:{sy_title:"Synchronizacja",sy_intro:"Połączone urządzenia współdzielą profile, playlisty, ulubione i obejrzane. Treści i nazwy urządzeń są zaszyfrowane: tutaj widzisz tylko typ urządzenia i daty.",sy_group:"Grupa {n}",sy_created:"Utworzono {date}",sy_ndev:"Aktywne urządzenia: {n}",sy_space:"Miejsce zajęte na serwerze: {used} z {max}",sy_st_premium:"Premium aktywne",sy_st_nopremium:"Premium wygasło",sy_st_banned:"Zablokowane",sy_st_deleting:"Usunięcie zaplanowane",sy_a_pending_t:"Urządzenie usunięte: został jeden krok",sy_a_pending:"Otwórz BurgTV na innym urządzeniu z grupy i potwierdź „Zmień klucz”. Do tego czasu żadne nowe urządzenie nie może dołączyć do grupy.",sy_a_pending_since:"Prośba otwarta od {date}.",sy_a_del_t:"Dane na serwerze zostaną usunięte {date}",sy_a_del:"Do tego czasu możesz anulować. Dane na twoich urządzeniach zostają.",sy_del_cancel:"Anuluj usunięcie",sy_a_ban_t:"Synchronizacja zablokowana przez pomoc techniczną",sy_a_ban:"Po informacje napisz na info@burgtv.com. Nadal możesz usunąć dane z serwera.",sy_a_nop_t:"Brak urządzenia Premium od {date}",sy_a_nop:"Synchronizacja jest wstrzymana. Kopia na serwerze zostanie usunięta {date}, jeśli żadne urządzenie nie odzyska Premium.",sy_p_android:"Telefon lub tablet z Androidem",sy_app:"aplikacja {v}",sy_founder:"Utworzyło grupę {date}",sy_added:"Dodane {date} przez {dev}",sy_added_unknown:"Dodane {date}",sy_seen:"Ostatnia aktywność: {when}",sy_today:"dzisiaj",sy_yesterday:"wczoraj",sy_e_android:"Premium (licencja)",sy_e_android_off:"Licencja nieaktywna",sy_e_android_gift:"Premium w prezencie",sy_e_android_gift_off:"Prezent zakończony",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"Zakup w App Store nieaktywny",sy_e_apple_trial:"Okres próbny Premium",sy_e_apple_trial_off:"Okres próbny zakończony",sy_e_none:"Bez Premium",sy_pending:"Czeka na zmianę klucza",sy_left_n:"Opuściły grupę lub usunięte: {n}",sy_st_left:"Opuściło grupę",sy_st_revoked:"Usunięte",sy_remove:"Usuń",sy_delete:"Usuń dane z serwera",sy_rv_title:"Usunąć „{dev}”?",sy_rv_body:"Urządzenie od razu przestaje się synchronizować. Aby zamknąć mu dostęp, otwórz potem BurgTV na innym urządzeniu z grupy i potwierdź „Zmień klucz”. Dane, które już są na usuniętym urządzeniu, nie zostaną skasowane.",sy_rv_ok:"Usuń urządzenie",sy_dl_title:"Usunąć dane z serwera?",sy_dl_body:"Zaszyfrowana kopia na serwerze zostanie usunięta za 7 dni. Do tego czasu możesz anulować tutaj lub na urządzeniu z grupy. Dane na twoich urządzeniach zostają.",sy_dl_ok:"Usuń za 7 dni",sy_pw:"Hasło do konta",sy_pw_hint:"Ze względów bezpieczeństwa każda czynność wymaga hasła.",sy_cancel:"Anuluj",sy_err_pw_empty:"Wpisz hasło",sy_err_pw:"Nieprawidłowe hasło",sy_err_many:"Zbyt wiele prób: spróbuj ponownie za 10 minut",sy_err_gone:"Ta grupa lub to urządzenie już nie istnieje: strona została odświeżona.",sy_err:"Błąd. Spróbuj ponownie lub napisz na info@burgtv.com",sy_ok_removed:"Urządzenie usunięte. Teraz potwierdź „Zmień klucz” na innym urządzeniu z grupy.",sy_ok_delete:"Usunięcie zaplanowane.",sy_ok_cancel:"Usunięcie anulowane."},
+            ru:{sy_title:"Синхронизация",sy_intro:"Связанные устройства делят профили, плейлисты, избранное и просмотренное. Содержимое и названия устройств зашифрованы: здесь видны только тип устройства и даты.",sy_group:"Группа {n}",sy_created:"Создана {date}",sy_ndev:"Активные устройства: {n}",sy_space:"Место на сервере: {used} из {max}",sy_st_premium:"Premium активен",sy_st_nopremium:"Premium истёк",sy_st_banned:"Заблокирована",sy_st_deleting:"Удаление запланировано",sy_a_pending_t:"Устройство удалено: остался один шаг",sy_a_pending:"Откройте BurgTV на другом устройстве группы и подтвердите «Сменить ключ». До этого новые устройства не смогут войти в группу.",sy_a_pending_since:"Запрос открыт с {date}.",sy_a_del_t:"Данные на сервере будут удалены {date}",sy_a_del:"До этого можно отменить. Данные на ваших устройствах сохраняются.",sy_del_cancel:"Отменить удаление",sy_a_ban_t:"Синхронизация заблокирована поддержкой",sy_a_ban:"Подробности — по адресу info@burgtv.com. Удалить данные с сервера всё равно можно.",sy_a_nop_t:"Нет устройств с Premium с {date}",sy_a_nop:"Синхронизация остановлена. Копия на сервере будет удалена {date}, если ни одно устройство снова не получит Premium.",sy_p_android:"Телефон или планшет Android",sy_app:"приложение {v}",sy_founder:"Создало группу {date}",sy_added:"Добавлено {date}, добавило: {dev}",sy_added_unknown:"Добавлено {date}",sy_seen:"Последний вход: {when}",sy_today:"сегодня",sy_yesterday:"вчера",sy_e_android:"Premium (лицензия)",sy_e_android_off:"Лицензия неактивна",sy_e_android_gift:"Premium в подарок",sy_e_android_gift_off:"Подарок закончился",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"Покупка в App Store неактивна",sy_e_apple_trial:"Пробный Premium",sy_e_apple_trial_off:"Пробный период закончился",sy_e_none:"Без Premium",sy_pending:"Ожидает смены ключа",sy_left_n:"Вышли или удалены: {n}",sy_st_left:"Вышло",sy_st_revoked:"Удалено",sy_remove:"Удалить",sy_delete:"Удалить данные с сервера",sy_rv_title:"Удалить «{dev}»?",sy_rv_body:"Устройство сразу перестаёт синхронизироваться. Чтобы закрыть ему доступ, затем откройте BurgTV на другом устройстве группы и подтвердите «Сменить ключ». Данные, которые уже есть на удалённом устройстве, не стираются.",sy_rv_ok:"Удалить устройство",sy_dl_title:"Удалить данные с сервера?",sy_dl_body:"Зашифрованная копия на сервере будет удалена через 7 дней. До этого можно отменить здесь или на устройстве группы. Данные на ваших устройствах сохраняются.",sy_dl_ok:"Удалить через 7 дней",sy_pw:"Пароль аккаунта",sy_pw_hint:"Для безопасности каждое действие требует пароль.",sy_cancel:"Отмена",sy_err_pw_empty:"Введите пароль",sy_err_pw:"Неверный пароль",sy_err_many:"Слишком много попыток: повторите через 10 минут",sy_err_gone:"Этой группы или устройства больше нет: страница обновлена.",sy_err:"Ошибка. Повторите попытку или напишите на info@burgtv.com",sy_ok_removed:"Устройство удалено. Теперь подтвердите «Сменить ключ» на другом устройстве группы.",sy_ok_delete:"Удаление запланировано.",sy_ok_cancel:"Удаление отменено."},
+            ar:{sy_title:"المزامنة",sy_intro:"تتشارك الأجهزة المرتبطة الملفات الشخصية وقوائم التشغيل والمفضلة وما تمت مشاهدته. المحتوى وأسماء الأجهزة مشفّرة: هنا ترى نوع الجهاز والتواريخ فقط.",sy_group:"المجموعة {n}",sy_created:"أُنشئت في {date}",sy_ndev:"الأجهزة النشطة: {n}",sy_space:"المساحة المستخدمة على الخادم: {used} من {max}",sy_st_premium:"Premium مفعّل",sy_st_nopremium:"انتهى Premium",sy_st_banned:"محظورة",sy_st_deleting:"الحذف مجدول",sy_a_pending_t:"تمت إزالة الجهاز: بقيت خطوة واحدة",sy_a_pending:"افتح BurgTV على جهاز آخر في المجموعة وأكّد «تغيير المفتاح». حتى ذلك الحين لا يمكن لأي جهاز جديد الانضمام إلى المجموعة.",sy_a_pending_since:"الطلب مفتوح منذ {date}.",sy_a_del_t:"ستُحذف البيانات على الخادم في {date}",sy_a_del:"يمكنك الإلغاء حتى ذلك الحين. تبقى البيانات على أجهزتك.",sy_del_cancel:"إلغاء الحذف",sy_a_ban_t:"المزامنة محظورة من قبل الدعم",sy_a_ban:"لمزيد من المعلومات راسل info@burgtv.com. لا يزال بإمكانك حذف البيانات من الخادم.",sy_a_nop_t:"لا يوجد جهاز Premium منذ {date}",sy_a_nop:"المزامنة متوقفة. ستُحذف النسخة على الخادم في {date} ما لم يعد أحد الأجهزة إلى Premium.",sy_p_android:"هاتف أو جهاز لوحي Android",sy_app:"التطبيق {v}",sy_founder:"أنشأ المجموعة في {date}",sy_added:"أُضيف في {date} بواسطة {dev}",sy_added_unknown:"أُضيف في {date}",sy_seen:"آخر استخدام: {when}",sy_today:"اليوم",sy_yesterday:"أمس",sy_e_android:"Premium (ترخيص)",sy_e_android_off:"الترخيص غير مفعّل",sy_e_android_gift:"Premium هدية",sy_e_android_gift_off:"انتهت الهدية",sy_e_apple:"Premium (App Store)",sy_e_apple_off:"شراء App Store غير مفعّل",sy_e_apple_trial:"تجربة Premium",sy_e_apple_trial_off:"انتهت التجربة",sy_e_none:"بدون Premium",sy_pending:"بانتظار تغيير المفتاح",sy_left_n:"غادرت أو أُزيلت: {n}",sy_st_left:"غادر",sy_st_revoked:"أُزيل",sy_remove:"إزالة",sy_delete:"حذف البيانات من الخادم",sy_rv_title:"إزالة «{dev}»؟",sy_rv_body:"يتوقف الجهاز عن المزامنة فورًا. لإغلاق وصوله، افتح بعد ذلك BurgTV على جهاز آخر في المجموعة وأكّد «تغيير المفتاح». لا تُحذف البيانات الموجودة أصلًا على الجهاز المُزال.",sy_rv_ok:"إزالة الجهاز",sy_dl_title:"حذف البيانات من الخادم؟",sy_dl_body:"ستُحذف النسخة المشفّرة على الخادم بعد 7 أيام. حتى ذلك الحين يمكنك الإلغاء من هنا أو من جهاز في المجموعة. تبقى البيانات على أجهزتك.",sy_dl_ok:"حذف بعد 7 أيام",sy_pw:"كلمة مرور الحساب",sy_pw_hint:"للأمان، يتطلب كل إجراء كلمة المرور.",sy_cancel:"إلغاء",sy_err_pw_empty:"اكتب كلمة المرور",sy_err_pw:"كلمة المرور غير صحيحة",sy_err_many:"محاولات كثيرة: أعد المحاولة بعد 10 دقائق",sy_err_gone:"هذه المجموعة أو هذا الجهاز لم يعد موجودًا: تم تحديث الصفحة.",sy_err:"خطأ. أعد المحاولة أو راسل info@burgtv.com",sy_ok_removed:"تمت إزالة الجهاز. أكّد الآن «تغيير المفتاح» على جهاز آخر في المجموعة.",sy_ok_delete:"تمت جدولة الحذف.",sy_ok_cancel:"تم إلغاء الحذف."}
+        };
+        Object.keys(TS_SY).forEach(l => { if (T[l]) Object.assign(T[l], TS_SY[l]); });
+        const SY_LOCALE = { it:'it-CH', en:'en-GB', de:'de-CH', es:'es-ES', fr:'fr-CH', pt:'pt-BR', tr:'tr-TR', nl:'nl-NL', pl:'pl-PL', ru:'ru-RU', ar:'ar' };
+        const SY_QUOTA = 3 * 1024 * 1024;           // SPEC 15: 3 MB per gruppo
+        const SY_NO_PREMIUM_DAYS = 90;              // SPEC 14: copia cancellata 90 giorni dopo l'ultimo dispositivo Premium
+        const SY_BRAND = { androidtv:'Android TV', firetv:'Fire TV', googletv:'Google TV', ios:'iPhone', ipados:'iPad', macos:'Mac', tvos:'Apple TV' };
+        const SY_ICON = {
+            tv: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+            phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></svg>',
+            tablet: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>',
+            laptop: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="11" rx="1.5"/><path d="M2 19h20"/></svg>',
+            check: '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>',
+            clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>',
+            alert: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+            lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+            trash: '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+            remove: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+            undo: '<svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>'
+        };
+        let _sync = null;          // risposta di account/sync-groups (null = sezione nascosta)
+        let _syAction = null;      // azione in corso nella finestra della password
+        let _syReturnFocus = null;
+
+        function syT(k, vars) {
+            const d = T[lang] || T.it;
+            let s = d[k] != null ? d[k] : (T.it[k] != null ? T.it[k] : k);
+            if (vars) Object.keys(vars).forEach(v => { s = s.split('{' + v + '}').join(vars[v]); });
+            return s;
+        }
+        function syEsc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
+        function syLoc() { return SY_LOCALE[lang] || 'it-CH'; }
+        // giorni = giorni UTC dal 1970 (come il server)
+        function syDay(day) { return new Date(day * 86400000).toLocaleDateString(syLoc(), { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: 'numeric' }); }
+        function syWhen(ms) { return new Date(ms).toLocaleString(syLoc(), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+        function syToday() { return Math.floor(Date.now() / 86400000); }
+        function sySeen(day) { const t = syToday(); return day >= t ? syT('sy_today') : day === t - 1 ? syT('sy_yesterday') : syDay(day); }
+        function syBytes(n) {
+            const nf = new Intl.NumberFormat(syLoc(), { maximumFractionDigits: 1 });
+            return n < 1048576 ? nf.format(Math.max(1, Math.round((n || 0) / 1024))) + ' KB' : nf.format(n / 1048576) + ' MB';
+        }
+        function syPlat(p) { return p === 'android' ? syT('sy_p_android') : (SY_BRAND[p] || String(p || '?')); }
+        function syIconOf(p) { return { android:'phone', ios:'phone', ipados:'tablet', macos:'laptop' }[p] || 'tv'; }
+        function syActive(d) { return !d.revoked && !d.left; }
+        // Nome leggibile: il tipo di dispositivo; se nel gruppo ce ne sono due dello stesso tipo, un numero in ordine di ingresso
+        function syLabels(g) {
+            const by = {}, out = {};
+            (g.devices || []).forEach(d => { (by[d.platform] = by[d.platform] || []).push(d); });
+            Object.keys(by).forEach(p => by[p].forEach((d, i) => { out[d.key_id] = syPlat(p) + (by[p].length > 1 ? ' ' + (i + 1) : ''); }));
+            return out;
+        }
+        function syEntBadge(d) {
+            const k = d.ent_kind;
+            if (!k || !['android', 'android_gift', 'apple', 'apple_trial'].includes(k)) return `<span class="sy-chip off">${syEsc(syT('sy_e_none'))}</span>`;
+            return d.premium ? `<span class="sy-chip ok">${SY_ICON.check}${syEsc(syT('sy_e_' + k))}</span>` : `<span class="sy-chip off">${syEsc(syT('sy_e_' + k + '_off'))}</span>`;
+        }
+        function syDevice(g, d, labels, canAct) {
+            const added = d.added_by === null ? syT('sy_founder', { date: syDay(d.added_day) })
+                : labels[d.added_by] ? syT('sy_added', { date: syDay(d.added_day), dev: labels[d.added_by] }) : syT('sy_added_unknown', { date: syDay(d.added_day) });
+            const state = d.revoked ? `<span class="sy-chip off">${syEsc(syT('sy_st_revoked'))}</span>` : d.left ? `<span class="sy-chip off">${syEsc(syT('sy_st_left'))}</span>`
+                : d.revoke_pending ? `<span class="sy-chip warn">${SY_ICON.clock}${syEsc(syT('sy_pending'))}</span>` : syEntBadge(d);
+            const btn = canAct && syActive(d) && !d.revoke_pending
+                ? `<div class="device-actions"><button type="button" class="device-btn danger" data-sy="revoke" data-g="${syEsc(g.group_id)}" data-k="${syEsc(d.key_id)}">${SY_ICON.remove}${syEsc(syT('sy_remove'))}</button></div>` : '';
+            return `<div class="sy-dev" data-key="${syEsc(d.key_id)}">
+                <div class="device-info">
+                    <div class="device-icon">${SY_ICON[syIconOf(d.platform)]}</div>
+                    <div class="sy-dev-main">
+                        <div class="device-name">${syEsc(labels[d.key_id])}${d.app_version ? ` <span class="sy-dev-meta">· ${syEsc(syT('sy_app', { v: d.app_version }))}</span>` : ''}</div>
+                        <div class="sy-dev-meta">${syEsc(added)}</div>
+                        <div class="sy-dev-meta">${syEsc(syT('sy_seen', { when: sySeen(d.last_seen_day) }))}</div>
+                        <div class="sy-dev-badges">${state}</div>
+                    </div>
+                </div>${btn}
+            </div>`;
+        }
+        function syGroup(g, n) {
+            const labels = syLabels(g);
+            const devs = g.devices || [];
+            const act = devs.filter(syActive), gone = devs.filter(d => !syActive(d));
+            const premium = act.some(d => d.premium);
+            let chip = g.delete_after ? `<span class="sy-chip err">${SY_ICON.trash}${syEsc(syT('sy_st_deleting'))}</span>`
+                : g.banned ? `<span class="sy-chip err">${SY_ICON.lock}${syEsc(syT('sy_st_banned'))}</span>`
+                : premium ? `<span class="sy-chip ok">${SY_ICON.check}${syEsc(syT('sy_st_premium'))}</span>` : `<span class="sy-chip off">${syEsc(syT('sy_st_nopremium'))}</span>`;
+            let alerts = '';
+            if (g.delete_after) alerts += `<div class="sy-alert err">${SY_ICON.trash}<div><strong>${syEsc(syT('sy_a_del_t', { date: syWhen(g.delete_after) }))}</strong>${syEsc(syT('sy_a_del'))}
+                <div class="sy-alert-act"><button type="button" class="device-btn" data-sy="cancel" data-g="${syEsc(g.group_id)}">${SY_ICON.undo}${syEsc(syT('sy_del_cancel'))}</button></div></div></div>`;
+            if (g.revoke_requested_day != null) {
+                const late = syToday() - g.revoke_requested_day >= 1;         // promemoria dopo 24 ore (SPEC 10.5)
+                alerts += `<div class="sy-alert ${late ? 'err' : 'warn'}">${SY_ICON.alert}<div><strong>${syEsc(syT('sy_a_pending_t'))}</strong>${syEsc(syT('sy_a_pending'))} ${syEsc(syT('sy_a_pending_since', { date: syDay(g.revoke_requested_day) }))}</div></div>`;
+            }
+            if (g.banned) alerts += `<div class="sy-alert err">${SY_ICON.lock}<div><strong>${syEsc(syT('sy_a_ban_t'))}</strong>${syEsc(syT('sy_a_ban'))}</div></div>`;
+            if (!premium && g.no_premium_since != null && !g.delete_after) alerts += `<div class="sy-alert info">${SY_ICON.clock}<div><strong>${syEsc(syT('sy_a_nop_t', { date: syDay(g.no_premium_since) }))}</strong>${syEsc(syT('sy_a_nop', { date: syDay(g.no_premium_since + SY_NO_PREMIUM_DAYS) }))}</div></div>`;
+            const pct = Math.min(100, Math.round(100 * (g.bytes_used || 0) / SY_QUOTA));
+            return `<div class="sy-group" data-group="${syEsc(g.group_id)}">
+                <div class="sy-head">
+                    <div><div class="sy-gtitle">${syEsc(syT('sy_group', { n }))}</div>
+                    <div class="sy-gsub">${syEsc(syT('sy_created', { date: syDay(g.created_day) }))} · ${syEsc(syT('sy_ndev', { n: act.length }))}</div></div>
+                    ${chip}
+                </div>
+                ${alerts}
+                <div class="sy-space"><div class="sy-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}" aria-label="${syEsc(syT('sy_space', { used: syBytes(g.bytes_used || 0), max: '3 MB' }))}"><div style="width:${pct}%"></div></div>
+                <div class="sy-space-t">${syEsc(syT('sy_space', { used: syBytes(g.bytes_used || 0), max: '3 MB' }))}</div></div>
+                ${act.map(d => syDevice(g, d, labels, true)).join('')}
+                ${gone.length ? `<details class="sy-left"><summary>${syEsc(syT('sy_left_n', { n: gone.length }))}</summary>${gone.map(d => syDevice(g, d, labels, false)).join('')}</details>` : ''}
+                ${g.delete_after ? '' : `<div class="sy-actions"><button type="button" class="btn btn-danger" data-sy="delete" data-g="${syEsc(g.group_id)}">${SY_ICON.trash}<span>${syEsc(syT('sy_delete'))}</span></button></div>`}
+            </div>`;
+        }
+        function renderSync() {
+            const sec = document.getElementById('syncSection');
+            if (!sec) return;
+            const groups = (_sync && Array.isArray(_sync.groups)) ? _sync.groups.slice() : [];
+            if (!groups.length) { sec.style.display = 'none'; return; }
+            // prima i gruppi con Premium attivo, poi per data di creazione (numerazione stabile tra un caricamento e l'altro)
+            const live = g => (g.devices || []).some(d => d.premium && !d.revoked && !d.left) ? 0 : 1;
+            groups.sort((a, b) => (live(a) - live(b)) || (a.created_day - b.created_day) || String(a.group_id).localeCompare(String(b.group_id)));
+            sec.style.display = 'block';
+            document.getElementById('syncGroups').innerHTML = groups.map((g, i) => syGroup(g, i + 1)).join('');
+        }
+        async function syApi(route, body) {
+            const s = requireSession(); if (!s) return null;
+            const res = await fetch(`${SUPABASE_URL}/${route}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ANON_KEY}` },
+                body: JSON.stringify(Object.assign({ session_token: s.token }, body || {}))
+            });
+            const data = await res.json().catch(() => ({}));
+            return { status: res.status, data };
+        }
+        async function loadSync() {
+            try {
+                const r = await syApi('account/sync-groups', {});
+                if (!r) return;
+                // 404 = server senza le rotte della sincronizzazione; 401 = sessione scaduta (ci pensa loadAccount)
+                _sync = (r.status === 200 && Array.isArray(r.data.groups)) ? r.data : null;
+            } catch (e) { _sync = null; }
+            renderSync();
+        }
+        function syMsg(text, isErr) {
+            const m = document.getElementById('syncMsg');
+            m.textContent = text || ''; m.classList.toggle('err', !!isErr);
+        }
+        function syIsSessionExpired(r) { return r.status === 401 && (r.data.code === 'session_expired' || /^Sessione/i.test(r.data.error || '')); }
+        function syOpenModal(action, trigger) {
+            _syAction = action; _syReturnFocus = trigger || null;
+            document.getElementById('syModalTitle').textContent = action.title;
+            document.getElementById('syModalBody').textContent = action.text;
+            const ok = document.getElementById('syModalOk');
+            ok.textContent = action.okLabel; ok.disabled = false;
+            document.getElementById('syPw').value = '';
+            document.getElementById('syModalMsg').textContent = '';
+            document.getElementById('syModal').classList.add('show');
+            setTimeout(() => document.getElementById('syPw').focus(), 50);
+        }
+        function syCloseModal() {
+            document.getElementById('syModal').classList.remove('show');
+            document.getElementById('syPw').value = '';
+            _syAction = null;
+            if (_syReturnFocus && document.body.contains(_syReturnFocus)) _syReturnFocus.focus();
+        }
+        async function sySubmit(ev) {
+            ev.preventDefault();
+            if (!_syAction) return;
+            const pw = document.getElementById('syPw').value;
+            const msg = document.getElementById('syModalMsg');
+            if (!pw) { msg.textContent = syT('sy_err_pw_empty'); document.getElementById('syPw').focus(); return; }
+            const ok = document.getElementById('syModalOk'); ok.disabled = true;
+            const a = _syAction;
+            let r = null;
+            try { r = await syApi(a.route, Object.assign({ password: pw }, a.req)); } catch (e) { r = null; }
+            ok.disabled = false;
+            if (!r) { msg.textContent = syT('sy_err'); return; }
+            if (r.status === 200) { syCloseModal(); syMsg(syT(a.okMsg)); await loadSync(); return; }
+            if (syIsSessionExpired(r)) { logout(); return; }
+            if (r.status === 401) { msg.textContent = syT('sy_err_pw'); document.getElementById('syPw').value = ''; document.getElementById('syPw').focus(); return; }
+            if (r.status === 429) { msg.textContent = syT('sy_err_many'); return; }
+            if (r.status === 404) { syCloseModal(); syMsg(syT('sy_err_gone'), true); await loadSync(); return; }
+            msg.textContent = syT('sy_err');
+        }
+        async function syCancelDelete(gid, btn) {
+            btn.disabled = true;
+            let r = null;
+            try { r = await syApi('account/sync-delete-cancel', { group_id: gid }); } catch (e) { r = null; }
+            btn.disabled = false;
+            if (r && r.status === 200) { syMsg(syT('sy_ok_cancel')); await loadSync(); return; }
+            if (r && syIsSessionExpired(r)) { logout(); return; }
+            if (r && r.status === 404) { syMsg(syT('sy_err_gone'), true); await loadSync(); return; }
+            syMsg(syT('sy_err'), true);
+        }
+        document.getElementById('syModalForm').addEventListener('submit', sySubmit);
+        document.getElementById('syModalCancel').addEventListener('click', syCloseModal);
+        document.getElementById('syModal').addEventListener('keydown', ev => { if (ev.key === 'Escape') syCloseModal(); });
+        document.getElementById('syncGroups').addEventListener('click', ev => {
+            const b = ev.target.closest('[data-sy]');
+            if (!b) return;
+            const g = (_sync && _sync.groups || []).find(x => x.group_id === b.dataset.g);
+            if (!g) return;
+            syMsg('');
+            if (b.dataset.sy === 'revoke') {
+                const labels = syLabels(g);
+                syOpenModal({ route: 'account/sync-revoke', req: { group_id: g.group_id, key_id: b.dataset.k }, okMsg: 'sy_ok_removed',
+                    title: syT('sy_rv_title', { dev: labels[b.dataset.k] || '?' }), text: syT('sy_rv_body'), okLabel: syT('sy_rv_ok') }, b);
+            } else if (b.dataset.sy === 'delete') {
+                syOpenModal({ route: 'account/sync-delete', req: { group_id: g.group_id }, okMsg: 'sy_ok_delete',
+                    title: syT('sy_dl_title'), text: syT('sy_dl_body'), okLabel: syT('sy_dl_ok') }, b);
+            } else if (b.dataset.sy === 'cancel') {
+                syCancelDelete(g.group_id, b);
+            }
+        });
+
         // ===== Idle timeout (auto-logout after 60 min of inactivity) =====
         let _lastActivity = Date.now();
         function _resetActivity() { _lastActivity = Date.now(); }
@@ -551,6 +851,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             applyLang(lang);
             loadAccount();
+            loadSync();
         });
     </script>
 </body>
