@@ -2863,20 +2863,28 @@ async function revokeGiftIos(tx) {
 const GIFT_SEAT_ACT = new Set(['legato', 'registrato', 'non_in_uso']);
 function giftDay(d) { return d ? zh(d + 'T12:00:00Z', false) : ''; }
 function normKeyCode(v) { const c = String(v || '').trim().toUpperCase(); return /^[0-9A-HJKMNP-TV-Z]{5}-[0-9A-HJKMNP-TV-Z]{5}$/.test(c) ? c : null; }
+// revisione 13/11: chiavi candidate (rifiutate, al massimo 5) con il giorno in cui sono comparse: una chiave estranea si nota
+function giftCandHtml(s) {
+    const c = Array.isArray(s.candidati) ? s.candidati : [];
+    if (!c.length) return '';
+    return `<div style="margin-top:4px;font-size:11px"><span class="tag warn">${c.length} chiav${c.length === 1 ? 'e' : 'i'} in attesa</span>` +
+        c.map(k => `<div style="color:var(--muted)"><code style="font-size:11px;white-space:nowrap">${esc(k.impronta)}</code>${k.dal ? ' dal ' + esc(giftDay(k.dal)) : ''}</div>`).join('') + '</div>';
+}
 function giftSeatHtml(s, okSeats) {
     const muted = t => `<span style="color:var(--muted);font-size:11px">${t}</span>`;
     if (!s) return muted(okSeats === false ? 'non disponibile' : okSeats ? 'non ancora usato' : '');
     const imp = s.impronta ? ` <code style="font-size:11px;white-space:nowrap">${esc(s.impronta)}</code>` : '';
     const small = t => `<div style="color:var(--muted);font-size:11px;margin-top:2px">${t}</div>`;
-    if (s.stato === 'legato') return `<span class="tag success">posto legato</span>${imp}${small('dal ' + esc(giftDay(s.legato_il)) + (s.avviso === false ? ' · <span class="tag warn">avviso Telegram non arrivato</span>' : ''))}`;
-    if (s.stato === 'registrato') return `<span class="tag warn">posto della prova</span>${imp}${small('registrato prima del regalo, non ancora legato: se il cliente riceve "legato a un altro dispositivo", confronta il codice della chiave')}`;
-    return `<span class="tag">non in uso</span>${imp}${small('legato il ' + esc(giftDay(s.legato_il)) + ', posto non piu\' usato dalla sincronizzazione')}`;
+    if (s.stato === 'legato') return `<span class="tag success">posto legato</span>${imp}${small('dal ' + esc(giftDay(s.legato_il)) + (s.avviso === false ? ' · <span class="tag warn">avviso Telegram non arrivato</span>' : ''))}${giftCandHtml(s)}`;
+    if (s.stato === 'registrato') return `<span class="tag warn">posto della prova</span>${imp}${small('registrato prima del regalo, non ancora legato: se il cliente riceve "legato a un altro dispositivo", confronta il codice della chiave')}${giftCandHtml(s)}`;
+    return `<span class="tag">non in uso</span>${imp}${small('legato il ' + esc(giftDay(s.legato_il)) + ', posto non piu\' usato dalla sincronizzazione')}${giftCandHtml(s)}`;
 }
 function giftSeatAsk(d) {
     const box = document.getElementById('gift-seat-box'); if (!box) return;
     box.innerHTML = `<div style="border:1px solid var(--warn);border-radius:10px;padding:12px;margin:0 0 12px;background:rgba(251,191,36,.08)">
         <div style="font-weight:600;margin-bottom:6px">Spostare il posto del regalo ${esc(d.tx)}?</div>
-        <div style="font-size:13px">Ora il posto e' sulla chiave <code>${esc(d.imp || '—')}</code>. Chiedi al cliente il <strong>codice della chiave</strong> (app, schermata di aiuto): se e' uguale, il posto e' gia' suo e non serve spostarlo.</div>
+        <div style="font-size:13px">Ora il posto e' sulla chiave <code>${esc(d.imp || '—')}</code>. Chiedi il <strong>codice della chiave</strong> (app, schermata di aiuto) <strong>solo alla persona a cui hai fatto il regalo, sul contatto che gia' conosci</strong>; mai a chi ti scrive per la prima volta con il solo codice per il supporto. Se e' uguale, il posto e' gia' suo e non serve spostarlo.</div>
+        <div style="font-size:13px;margin-top:6px"><strong>Prima di spostare, falle riaprire la Sincronizzazione</strong>: cosi' la sua chiave e' tra quelle in attesa (le vedi sotto lo stato, con il giorno; una chiave che non conosci non e' sua).</div>
         <div style="font-size:13px;margin-top:6px">Il posto passa <strong>direttamente</strong> alla chiave del cliente: il dispositivo di prima esce dalla sincronizzazione. Il regalo <strong>resta attivo</strong>. Il cliente deve aver provato almeno una volta a usare la sincronizzazione (ha visto "legato a un altro dispositivo"). Senza il codice il posto resta com'e'.</div>
         <label style="display:block;font-size:12px;color:var(--muted);margin-top:10px" for="gift-seat-key">Codice della chiave del cliente</label>
         <input id="gift-seat-key" placeholder="XXXXX-XXXXX" autocomplete="off" style="max-width:220px;margin:4px 0 0">
@@ -2915,7 +2923,7 @@ async function openGiftIos(flash = '') {
         <p style="font-size:13px;margin:6px 0">Premium senza acquisto per un singolo dispositivo, indicato con il codice per il supporto mostrato dall'app. Ogni azione chiede il codice 2FA e finisce nel Log. Oggi: <strong id="gift-today">${esc(data.today ?? 0)}</strong> su ${esc(data.per_day ?? 10)}.</p>
         <p style="color:var(--muted);font-size:12px;margin:6px 0">Per TV e telefoni Android usa "Attivazione" (licenza per email, 5 dispositivi).</p>
         <button type="button" class="secondary" style="width:auto;margin:8px 0 12px" onclick="newGiftIos()">Nuovo regalo…</button>
-        ${okSeats !== null ? `<p style="color:var(--muted);font-size:12px;margin:0 0 10px">Il regalo vale anche per la sincronizzazione: il posto si lega al primo iPhone o Apple TV che la usa con il regalo (avviso su Telegram). L'impronta e' il codice della chiave che l'app mostra nella schermata di aiuto. Se non ti aspettavi un legame: Sposta il posto con il codice del cliente.</p>` : ''}
+        ${okSeats !== null ? `<p style="color:var(--muted);font-size:12px;margin:0 0 10px">Il regalo vale anche per la sincronizzazione: il posto si lega al primo iPhone o Apple TV che la usa con il regalo (avviso su Telegram). L'impronta e' il codice della chiave che l'app mostra nella schermata di aiuto. Se non ti aspettavi un legame: chiedi il codice solo alla persona a cui hai fatto il regalo, sul contatto che gia' conosci; prima di spostare, falle riaprire la Sincronizzazione; poi Sposta il posto con il suo codice.</p>` : ''}
         ${flash ? `<div class="tag success" style="display:block;padding:8px;margin:0 0 12px;white-space:normal">${esc(flash)}</div>` : ''}
         <div id="gift-seat-box"></div>
         ${list}
