@@ -100,7 +100,7 @@ export async function onRequest(ctx) {
 """
 # Percorsi che NON devono passare dalla Function (statici con intestazioni proprie, file .well-known, pannello admin):
 PORTAL_ROUTES = {"version": 1, "include": ["/*"], "exclude": [
-    "/admin/*", "/assets/*", "/.well-known/*", "/collega", "/collega/*", "/reset-password.html", "/reset-password",
+    "/admin/*", "/assets/*", "/.well-known/*", "/collega", "/collega/*", "/accedi", "/accedi/*", "/reset-password.html", "/reset-password",
     "/favicon.ico", "/robots.txt", "/logo.png", "/apple-touch-icon.png"]}
 
 def build(key, repo=None, base=None):
@@ -119,7 +119,7 @@ def build(key, repo=None, base=None):
     if key == "portal":
         # le regole del portale con host e user-agent sono nella Function; qui solo le riscritture (200) che tengono
         # gli indirizzi come su Vercel (senza cleanUrls): /collega e le pagine .html rispondono 200, senza 308
-        red = ["/collega /collega/ 200"]
+        red = ["/collega /collega/ 200", "/accedi /accedi/ 200"]
         for root, _, files in os.walk(pub):
             rel = os.path.relpath(root, pub).replace(os.sep, "/")
             if rel.split("/")[0] in ("legal", "play", "admin", ".well-known"):

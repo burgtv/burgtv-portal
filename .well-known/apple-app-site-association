@@ -13,12 +13,22 @@
           {
             "/": "/collega/",
             "comment": "Collega la TV dal telefono"
+          },
+          {
+            "/": "/accedi",
+            "comment": "Accedi alla TV dal telefono (QR, SPEC BTVSYNC1 7.8)"
+          },
+          {
+            "/": "/accedi/",
+            "comment": "Accedi alla TV dal telefono (QR, SPEC BTVSYNC1 7.8)"
           }
         ],
         "appID": "472ABZFHSC.com.burgtv.mobile.ios",
         "paths": [
           "/collega",
-          "/collega/"
+          "/collega/",
+          "/accedi",
+          "/accedi/"
         ]
       }
     ]
