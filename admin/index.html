@@ -2856,20 +2856,60 @@ async function revokeGiftIos(tx) {
     if (!ok) { alert(data.error || 'Errore'); return; }
     openGiftIos();
 }
-async function openGiftIos() {
+// 13/11 pacchetto 12 (SPEC v1.8.6): il regalo vale anche per la sincronizzazione. Colonna "Sincronizzazione": impronta
+// della chiave del posto legato (la stessa che l'app mostra nella schermata di aiuto, XXXXX-XXXXX) e giorno del legame;
+// "Sciogli posto" con conferma nella pagina (niente confirm()), motivo e 2FA: scioglie solo il legame, il regalo resta.
+const GIFT_SEAT_ACT = new Set(['legato', 'registrato', 'non_in_uso']);
+function giftDay(d) { return d ? zh(d + 'T12:00:00Z', false) : ''; }
+function giftSeatHtml(s, okSeats) {
+    const muted = t => `<span style="color:var(--muted);font-size:11px">${t}</span>`;
+    if (!s) return muted(okSeats === false ? 'non disponibile' : okSeats ? 'non ancora usato' : '');
+    const imp = s.impronta ? ` <code style="font-size:11px;white-space:nowrap">${esc(s.impronta)}</code>` : '';
+    const small = t => `<div style="color:var(--muted);font-size:11px;margin-top:2px">${t}</div>`;
+    if (s.stato === 'legato') return `<span class="tag success">posto legato</span>${imp}${small('dal ' + esc(giftDay(s.legato_il)) + (s.avviso === false ? ' · <span class="tag warn">avviso Telegram non arrivato</span>' : ''))}`;
+    if (s.stato === 'registrato') return `<span class="tag warn">posto della prova</span>${imp}${small('registrato prima del regalo, non ancora legato: se il cliente riceve "legato a un altro dispositivo", confronta il codice della chiave')}`;
+    if (s.stato === 'sciolto') return `<span class="tag">posto sciolto</span>${small('il ' + esc(giftDay(s.sciolto_il)) + ': lo prende il prossimo dispositivo con questo regalo' + (s.impronta_sciolta ? ' (non la chiave ' + esc(s.impronta_sciolta) + ')' : ''))}`;
+    return `<span class="tag">non in uso</span>${imp}${small('legato il ' + esc(giftDay(s.legato_il)) + ', nessun gruppo da 30 giorni')}`;
+}
+function giftSeatAsk(d) {
+    const box = document.getElementById('gift-seat-box'); if (!box) return;
+    box.innerHTML = `<div style="border:1px solid var(--warn);border-radius:10px;padding:12px;margin:0 0 12px;background:rgba(251,191,36,.08)">
+        <div style="font-weight:600;margin-bottom:6px">Sciogliere il posto del regalo ${esc(d.tx)}?</div>
+        <div style="font-size:13px">Impronta del posto legato: <code>${esc(d.imp || '—')}</code>. Prima chiedi al cliente il <strong>codice della chiave</strong> (app, schermata di aiuto): se e' uguale, il posto e' gia' suo e non serve sciogliere.</div>
+        <div style="font-size:13px;margin-top:6px">Il regalo <strong>resta attivo</strong>. Il posto lo prende il prossimo iPhone o Apple TV con questo regalo, tranne la chiave sciolta. Su Telegram arriva l'avviso del nuovo legame.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" class="danger" style="width:auto;margin:0" data-act="giftSeatGo" data-tx="${esc(d.tx)}">Si', sciogli il posto</button><button type="button" class="secondary" style="width:auto;margin:0" data-act="giftSeatNo">Annulla</button></div></div>`;
+    box.scrollIntoView({ block: 'nearest' });
+}
+async function giftSeatGo(tx) {
+    const box = document.getElementById('gift-seat-box');
+    const reason = await askInput({ title: 'Sciogli posto', text: `${tx}: motivo (resta nel Log, senza dati personali):`, validate: v => v.length >= 5 ? null : 'Almeno 5 caratteri' });
+    if (!reason) return;
+    const totp = await askTotp('sciogliere il posto del regalo ' + tx); if (!totp) return;
+    const { ok, data } = await api('admin/gift-ios-seat-release', { session_token: session, transaction_id: tx, reason, totp_code: totp });
+    if (!ok) { if (box) box.innerHTML = `<div class="tag err" style="display:block;padding:8px;margin:0 0 12px;white-space:normal">${esc(data?.error || 'Errore')}</div>`; return; }
+    openGiftIos(`Posto del regalo ${tx} sciolto${data.key_code ? ' (era ' + data.key_code + ')' : ''}. Il regalo resta attivo.`);
+}
+ACTIONS.giftSeatAsk = d => giftSeatAsk(d);
+ACTIONS.giftSeatGo = d => giftSeatGo(d.tx);
+ACTIONS.giftSeatNo = () => { const b = document.getElementById('gift-seat-box'); if (b) b.innerHTML = ''; };
+async function openGiftIos(flash = '') {
     const { ok, data } = await api('admin/gift-ios-list', { session_token: session });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     pbStyle();
     const th = t => `<th>${t}</th>`, td = (t, st = '', l = '') => `<td${l ? ` data-l="${esc(l)}"` : ' class="pbt-act"'} style="${st}">${t}</td>`;
     const small = 'width:auto;margin:0;padding:4px 10px;font-size:11px';
     const stato = g => g.is_revoked ? '<span class="tag">revocato</span>' : g.attivo ? '<span class="tag" style="background:rgba(16,185,129,.2);color:var(--success)">attivo</span>' : '<span class="tag">scaduto</span>';
+    const okSeats = data.sync_seats_ok === undefined ? null : data.sync_seats_ok;   // undefined = server senza pacchetto 12
     const list = (data.gifts || []).length ? `<table class="pbt"><tr class="pbt-h">${th('Codice')}${th('Durata')}${th('Stato')}${th('Motivo')}${th('Quando')}<th></th></tr>
-        ${data.gifts.map(g => `<tr>${td(`<div><span style="white-space:nowrap">${esc(g.support_code || '')}</span>${g.manual ? `<div style="font-size:10px;color:var(--muted);overflow-wrap:anywhere">a mano: ${esc(g.device_id || '')}</div>` : ''}</div>`, 'font-family:monospace;font-size:12px', 'Codice')}${td(g.expiry_date ? 'fino al ' + esc(fmtDateTime(g.expiry_date)) : 'a vita', 'font-size:12px', 'Durata')}${td(stato(g), '', 'Stato')}${td(esc(g.reason || (String(g.tx).startsWith('GIFT-P-') ? '' : 'inserito a mano')), 'overflow-wrap:anywhere', 'Motivo')}${td(esc(g.created_at ? fmtDateTime(g.created_at) : ''), 'color:var(--muted);font-size:11px;white-space:nowrap', 'Quando')}${td(g.is_revoked ? '' : `<button type="button" class="danger" style="${small}" data-act="giftRevoke" data-tx="${esc(g.tx)}">Revoca</button>`)}</tr>`).join('')}</table>`
+        ${data.gifts.map(g => `<tr>${td(`<div><span style="white-space:nowrap">${esc(g.support_code || '')}</span>${g.manual ? `<div style="font-size:10px;color:var(--muted);overflow-wrap:anywhere">a mano: ${esc(g.device_id || '')}</div>` : ''}</div>`, 'font-family:monospace;font-size:12px', 'Codice')}${td(g.expiry_date ? 'fino al ' + esc(fmtDateTime(g.expiry_date)) : 'a vita', 'font-size:12px', 'Durata')}${td(okSeats !== null ? `<div>${stato(g)}<div style="margin-top:6px;font-size:12px;overflow-wrap:anywhere"><div style="color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.03em">Sincronizzazione</div>${giftSeatHtml(g.sync_seat, okSeats)}</div></div>` : stato(g), '', 'Stato')}${td(esc(g.reason || (String(g.tx).startsWith('GIFT-P-') ? '' : 'inserito a mano')), 'overflow-wrap:anywhere', 'Motivo')}${td(esc(g.created_at ? fmtDateTime(g.created_at) : ''), 'color:var(--muted);font-size:11px;white-space:nowrap', 'Quando')}${td((g.is_revoked ? '' : `<button type="button" class="danger" style="${small}" data-act="giftRevoke" data-tx="${esc(g.tx)}">Revoca</button>`) + (g.sync_seat && GIFT_SEAT_ACT.has(g.sync_seat.stato) ? ` <button type="button" class="secondary" style="${small};margin-top:4px" data-act="giftSeatAsk" data-tx="${esc(g.tx)}" data-imp="${esc(g.sync_seat.impronta || '')}">Sciogli posto</button>` : ''))}</tr>`).join('')}</table>`
         : '<p style="color:var(--muted);font-size:13px">Nessun regalo.</p>';
     openModal(`<h3 style="margin-top:0">Regali iOS (iPhone e Apple TV)</h3>
         <p style="font-size:13px;margin:6px 0">Premium senza acquisto per un singolo dispositivo, indicato con il codice per il supporto mostrato dall'app. Ogni azione chiede il codice 2FA e finisce nel Log. Oggi: <strong id="gift-today">${esc(data.today ?? 0)}</strong> su ${esc(data.per_day ?? 10)}.</p>
         <p style="color:var(--muted);font-size:12px;margin:6px 0">Per TV e telefoni Android usa "Attivazione" (licenza per email, 5 dispositivi).</p>
         <button type="button" class="secondary" style="width:auto;margin:8px 0 12px" onclick="newGiftIos()">Nuovo regalo…</button>
+        ${okSeats !== null ? `<p style="color:var(--muted);font-size:12px;margin:0 0 10px">Il regalo vale anche per la sincronizzazione: il posto si lega al primo iPhone o Apple TV che la usa con il regalo (avviso su Telegram). L'impronta e' il codice della chiave che l'app mostra nella schermata di aiuto.</p>` : ''}
+        ${flash ? `<div class="tag success" style="display:block;padding:8px;margin:0 0 12px;white-space:normal">${esc(flash)}</div>` : ''}
+        <div id="gift-seat-box"></div>
         ${list}
         <div style="margin-top:16px;text-align:right"><button type="button" class="secondary" style="width:auto;margin:0" onclick="closeModal()">Chiudi</button></div>`);
 }
