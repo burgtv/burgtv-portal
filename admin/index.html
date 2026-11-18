@@ -396,6 +396,8 @@
                         <option value="prova">Prova</option>
                         <option value="altro">Altro</option>
                     </select>
+                    <!-- 18/11 (L-5): lingua dell'e-mail con il link; vuota = il server usa l'ultima lingua scelta dal cliente (pacchetto 13), altrimenti italiano -->
+                    <select id="act-lang" aria-label="Lingua dell'e-mail"><option value="">Lingua dell'e-mail: quella del cliente (automatica)</option><option value="it">Italiano</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="ru">Русский</option><option value="ar">العربية</option></select>
                     <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--muted);margin-bottom:12px">
                         <input type="checkbox" id="act-reset" style="width:auto;margin:2px 0 0">
                         <span>Se il cliente ha gia' una password: annullala e mandagli un link per sceglierne una nuova (chiude le sue sessioni, serve il codice 2FA)</span>
@@ -772,6 +774,7 @@
         <details class="adv">
             <summary>Avanzate</summary>
             <p style="margin:8px 0">Imposta una password scelta da te solo se il cliente non riceve le e-mail. La password passa per le tue mani: preferisci sempre il link.</p>
+            <select id="ud-pw-lang" aria-label="Lingua dell'avviso" style="margin:0 0 8px"><option value="">Lingua dell'avviso &quot;password cambiata&quot;: quella del cliente (automatica)</option><option value="it">Italiano</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="tr">Türkçe</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="ru">Русский</option><option value="ar">العربية</option></select>
             <button class="secondary small" onclick="udResetPassword()">Imposta password manualmente</button>
         </details>
     </div>
@@ -1402,7 +1405,7 @@ async function udResetPassword() {
         validate: v => v.length >= 8 ? null : 'Almeno 8 caratteri' });
     if (!pwd) return;
     const totp = await askTotp('scegliere la password di ' + currentUserEmail); if (!totp) return;
-    const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd, totp_code: totp });
+    const { ok, data } = await api('admin/password-reset', { session_token: session, target_email: currentUserEmail, new_password: pwd, totp_code: totp, ...(document.getElementById('ud-pw-lang').value ? { lang: document.getElementById('ud-pw-lang').value } : {}) });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     const o = document.getElementById('ud-ok'); o.textContent = 'Password aggiornata e sessioni del cliente chiuse. Comunicagliela a voce o per telefono, non per e-mail.'; o.classList.add('show');
 }
@@ -1645,6 +1648,7 @@ async function doActivate(ev, force, totpCode) {
     const hasCode = code && code.length > 0;
     const endpoint = hasCode ? 'admin/activate' : 'admin/activate-no-code';
     const body = { session_token: session, email, plan, reason, reset_password: reset };
+    const lang = document.getElementById('act-lang').value; if (lang) body.lang = lang;
     if (totp) body.totp_code = totp;
     if (hasCode) body.code = code;
     if (force) body.confirm = true;
