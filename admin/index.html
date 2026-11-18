@@ -89,6 +89,12 @@
         .secret-row{display:flex;align-items:center;gap:8px;background:var(--bg3);padding:10px 14px;border-radius:8px;font-family:monospace;font-size:13px;color:var(--text);margin-bottom:12px;word-break:break-all}
         .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:2000;align-items:center;justify-content:center;padding:16px}
         .modal-overlay.show{display:flex}
+        /* 18/11 (L-2): richiesta di un valore, codice e conferma si aprono SOPRA le schede (stesso z-index 2000 e
+           messe prima nella pagina = disegnate SOTTO la scheda del cliente: "Imposta password a mano" sembrava non fare niente) */
+        .modal-overlay.top{z-index:3000}
+        #cf-text{white-space:pre-line;font-size:14px;line-height:1.5;margin-bottom:14px}
+        #cf-buttons{display:flex;gap:8px;flex-wrap:wrap}
+        #cf-buttons button{flex:1 1 140px;width:auto;margin:0}
         .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
         .row{display:grid;grid-template-columns:140px 1fr;gap:12px;margin-bottom:10px;font-size:14px}
         .row .k{color:var(--muted)}
@@ -696,7 +702,7 @@
 
 <!-- ==================== USER DETAIL MODAL ==================== -->
 <!-- Richiesta di un valore (codice 2FA, password): al posto di window.prompt -->
-<div class="modal-overlay" id="ask-modal" role="dialog" aria-modal="true" aria-labelledby="ask-title">
+<div class="modal-overlay top" id="ask-modal" role="dialog" aria-modal="true" aria-labelledby="ask-title">
     <div class="modal" style="max-width:420px">
         <h3 id="ask-title" style="margin-bottom:8px"></h3>
         <p id="ask-text" style="color:var(--muted);font-size:13px;margin-bottom:12px"></p>
@@ -711,7 +717,7 @@
     </div>
 </div>
 <!-- Codice di attivazione appena creato: mostrato UNA volta, con Copia (al posto di alert) -->
-<div class="modal-overlay" id="code-modal" role="dialog" aria-modal="true" aria-labelledby="code-title">
+<div class="modal-overlay top" id="code-modal" role="dialog" aria-modal="true" aria-labelledby="code-title">
     <div class="modal" style="max-width:460px">
         <h3 id="code-title" style="margin-bottom:8px"></h3>
         <p id="code-text" style="font-size:13px;margin-bottom:4px"></p>
@@ -722,6 +728,15 @@
             <button type="button" class="secondary" id="code-copy" style="flex:1">Copia</button>
             <button type="button" id="code-close" style="flex:1">Ho annotato il codice</button>
         </div>
+    </div>
+</div>
+
+<!-- 18/11 (L-2): conferma nella pagina, unica e riusabile, al posto del confirm del browser (vedi askConfirm) -->
+<div class="modal-overlay top" id="cf-modal" role="alertdialog" aria-modal="true" aria-labelledby="cf-title" aria-describedby="cf-text">
+    <div class="modal" style="max-width:460px">
+        <h3 id="cf-title" style="margin-bottom:8px"></h3>
+        <p id="cf-text"></p>
+        <div id="cf-buttons"></div>
     </div>
 </div>
 
@@ -942,6 +957,30 @@ function askTotp(what, error = '') {
     return askInput({ title: 'Conferma con il codice 2FA', text: `Le 6 cifre dell'app di autenticazione, per: ${what}`, placeholder: '000000',
         inputmode: 'numeric', autocomplete: 'one-time-code', className: 'code', error,
         validate: v => /^\d{6}$/.test(v) ? null : 'Il codice deve avere 6 cifre' });
+}
+// 18/11 (L-2): conferma NELLA PAGINA al posto del confirm del browser (che il browser puo' bloccare: "impedisci a questa
+// pagina di creare altre finestre di dialogo" = il confirm del browser risponde subito Annulla e il pulsante sembra non fare niente).
+// Sta sopra tutte le altre finestre. Annulla ed Esc = false (o null con choices). Il fuoco parte su Annulla.
+//   await askConfirm({ title, text, ok: 'Rimuovi', danger: true })            -> true / false
+//   await askConfirm({ title, text, choices: [{ value, label, danger }, ...] }) -> value / null
+let cfClose = null;
+function askConfirm({ title, text = '', ok = 'Conferma', cancel = 'Annulla', danger = false, choices = null }) {
+    if (cfClose) cfClose();   // una sola conferma per volta: quella vecchia vale come Annulla
+    return new Promise(resolve => {
+        const m = document.getElementById('cf-modal'), box = document.getElementById('cf-buttons');
+        const no = choices ? null : false;
+        document.getElementById('cf-title').textContent = title || 'Conferma';
+        document.getElementById('cf-text').textContent = text;
+        box.textContent = '';
+        const onKey = ev => { if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); done(no); } };
+        const done = v => { cfClose = null; document.removeEventListener('keydown', onKey, true); m.classList.remove('show'); box.textContent = ''; resolve(v); };
+        const add = (label, cls, v) => { const b = document.createElement('button'); b.type = 'button'; if (cls) b.className = cls; b.textContent = label; b.onclick = () => done(v); box.appendChild(b); return b; };
+        const first = add(cancel, 'secondary', no);
+        (choices || [{ value: true, label: ok, danger }]).forEach(c => add(c.label, c.danger ? 'danger' : '', c.value));
+        cfClose = () => done(no);
+        document.addEventListener('keydown', onKey, true);
+        m.classList.add('show'); setTimeout(() => first.focus(), 30);
+    });
 }
 function showEnrollCode(title, text, code) {
     const m = document.getElementById('code-modal');
@@ -1352,13 +1391,13 @@ async function udShowBan(email) {
 function closeUserModal(){ document.getElementById('user-modal').classList.remove('show'); }
 
 async function udRemoveDevice(deviceId, name) {
-    if (!confirm(`Rimuovere "${name}" dall'account di ${currentUserEmail}?`)) return;
+    if (!await askConfirm({ title: 'Rimuovi dispositivo', text: `Rimuovere "${name}" dall'account di ${currentUserEmail}?`, ok: 'Rimuovi', danger: true })) return;
     const { ok, data } = await api('admin/remove-device', { session_token: session, target_email: currentUserEmail, device_id: deviceId });
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     openUser(currentUserEmail);
 }
 async function udResetPassword() {
-    if (!confirm('Sconsigliato: con "Invia link per nuova password" il cliente sceglie la password da solo e tu non la vedi mai. Continuare comunque?')) return;
+    if (!await askConfirm({ title: 'Imposta password a mano', text: 'Sconsigliato: con "Invia link per nuova password" il cliente sceglie la password da solo e tu non la vedi mai. Continuare comunque?', ok: 'Continua comunque', danger: true })) return;
     const pwd = await askInput({ title: 'Nuova password', text: `Per ${currentUserEmail} (almeno 8 caratteri)`, type: 'password', autocomplete: 'new-password',
         validate: v => v.length >= 8 ? null : 'Almeno 8 caratteri' });
     if (!pwd) return;
@@ -1404,7 +1443,7 @@ async function doCopyResetLink() {
     const totp = document.getElementById('rl-totp').value.trim();
     if (reason.length < 5) { err('rl-cerr', 'Scrivi il motivo (almeno 5 caratteri)'); return; }
     if (!/^\d{6}$/.test(totp)) { err('rl-cerr', 'Inserisci il codice 2FA a 6 cifre'); return; }
-    if (!confirm(`Creare un link per ${currentUserEmail} da mandare a mano? Il link precedente (anche quello via e-mail) smette di valere.`)) return;
+    if (!await askConfirm({ title: 'Copia link', text: `Creare un link per ${currentUserEmail} da mandare a mano? Il link precedente (anche quello via e-mail) smette di valere.`, ok: 'Crea il link' })) return;
     const btn = document.getElementById('rl-cbtn'); btn.disabled = true;
     const { ok, data } = await api('admin/copy-reset-link', { session_token: session, target_email: currentUserEmail, reason, totp_code: totp });
     document.getElementById('rl-totp').value = '';
@@ -1510,10 +1549,13 @@ async function doApplyPlanChange() {
 }
 async function udCancelSub() {
     // revisione 29/10: predefinito "a fine periodo" (il cliente tiene cio' che ha pagato); "subito" con 2FA
-    const now = confirm(`Abbonamento Stripe di ${currentUserEmail}.\n\nOK = annulla SUBITO (la licenza si spegne ora, nessun rimborso, serve il 2FA)\nAnnulla = chiudi a FINE PERIODO (nessun rinnovo, licenza attiva fino alla scadenza)`);
-    const body = { session_token: session, target_email: currentUserEmail, mode: now ? 'now' : 'period_end' };
+    // 18/11: tre pulsanti espliciti (prima OK/Annulla del confirm del browser: "Annulla" chiudeva a fine periodo e non si poteva lasciar perdere)
+    const mode = await askConfirm({ title: 'Abbonamento Stripe', text: `Abbonamento Stripe di ${currentUserEmail}.\n\nSUBITO: la licenza si spegne ora, nessun rimborso, serve il 2FA.\nA FINE PERIODO: nessun rinnovo, licenza attiva fino alla scadenza.`,
+        cancel: 'Lascia com\'e\'', choices: [{ value: 'now', label: 'Annulla SUBITO', danger: true }, { value: 'period_end', label: 'Chiudi a fine periodo' }] });
+    if (!mode) return;
+    const now = mode === 'now';
+    const body = { session_token: session, target_email: currentUserEmail, mode };
     if (now) { const t = await askTotp('annullare SUBITO l\'abbonamento di ' + currentUserEmail); if (!t) return; body.totp_code = t; }
-    else if (!confirm('Confermi la chiusura a fine periodo?')) return;
     const { ok, data } = await api('admin/cancel-sub', body);
     if (!ok) { err('ud-err', data.error || 'Errore'); return; }
     const o = document.getElementById('ud-ok'); o.textContent = data.message || 'Abbonamento aggiornato su Stripe'; o.classList.add('show');
@@ -1610,7 +1652,7 @@ async function doActivate(ev, force, totpCode) {
     btn.disabled = false; btn.textContent = 'Attiva';
     if (!ok) { err('act-err', data.error || 'Errore'); return false; }
     if (data.require_confirm) {
-        if (!confirm(data.message + '\n\nVuoi forzare comunque?')) return false;
+        if (!await askConfirm({ title: 'Forzare l\'attivazione?', text: data.message + '\n\nVuoi forzare comunque?', ok: 'Forza comunque', danger: true })) return false;
         return doActivate(null, true, totp);
     }
     const o = document.getElementById('act-ok');
@@ -1707,14 +1749,14 @@ async function doCreateAdmin(ev) {
 ACTIONS.deleteAdmin = d => doDeleteAdmin(d.id, d.email);
 ACTIONS.resetAdminTotp = d => doResetAdminTotp(d.id, d.email);
 async function doDeleteAdmin(adminId, email) {
-    if (!confirm(`Rimuovere definitivamente l'admin ${email}? Le sue sessioni saranno terminate.`)) return;
+    if (!await askConfirm({ title: 'Rimuovi admin', text: `Rimuovere definitivamente l'admin ${email}? Le sue sessioni saranno terminate.`, ok: 'Rimuovi', danger: true })) return;
     const totp = await askTotp('rimuovere l\'admin ' + email); if (!totp) return;
     const { ok, data } = await api('admin/admin-delete', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
     loadAdmins();
 }
 async function doResetAdminTotp(adminId, email) {
-    if (!confirm(`Reset 2FA per ${email}? Dovrà ri-configurare l'authenticator al prossimo accesso e le sue sessioni verranno terminate.`)) return;
+    if (!await askConfirm({ title: 'Reset 2FA', text: `Reset 2FA per ${email}? Dovrà ri-configurare l'authenticator al prossimo accesso e le sue sessioni verranno terminate.`, ok: 'Azzera il 2FA', danger: true })) return;
     const totp = await askTotp('azzerare il 2FA di ' + email); if (!totp) return;
     const { ok, data } = await api('admin/admin-reset-totp', { session_token: session, admin_id: adminId, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
@@ -1790,7 +1832,7 @@ document.getElementById('rep-d-dl').addEventListener('click', () => {
     setTimeout(() => URL.revokeObjectURL(url), 2000);
 });
 document.getElementById('rep-d-del').addEventListener('click', async () => {
-    if (!repCurrent || !confirm(`Eliminare subito la segnalazione ${repCurrent.code}?`)) return;
+    if (!repCurrent || !await askConfirm({ title: 'Elimina segnalazione', text: `Eliminare subito la segnalazione ${repCurrent.code}?`, ok: 'Elimina', danger: true })) return;
     const { ok, data } = await api('admin/report-delete', { session_token: session, code: repCurrent.code });
     if (!ok) { alert(data.error || 'Errore'); return; }
     document.getElementById('rep-d-close').click();
@@ -2019,7 +2061,7 @@ async function enrollPasskey() {
 
 ACTIONS.deletePasskey = d => deletePasskey(d.id, d.name);
 async function deletePasskey(id, label) {
-    if (!confirm(`Rimuovere la passkey "${label}"? Da quel dispositivo dovrai accedere con password + TOTP.`)) return;
+    if (!await askConfirm({ title: 'Rimuovi passkey', text: `Rimuovere la passkey "${label}"? Da quel dispositivo dovrai accedere con password + TOTP.`, ok: 'Rimuovi', danger: true })) return;
     const { ok, data } = await api('admin/webauthn-delete', { session_token: session, id });
     if (!ok) { alert('Errore: ' + (data?.error || 'impossibile rimuovere')); return; }
     renderBioSettings('✓ Passkey rimossa');
@@ -2664,7 +2706,7 @@ async function openBlacklist() {
 }
 
 async function unbanDevice(device_id) {
-    if (!confirm('Sbloccare questo dispositivo?')) return;
+    if (!await askConfirm({ title: 'Sblocca dispositivo', text: 'Sbloccare questo dispositivo?', ok: 'Sblocca' })) return;
     const { ok, data } = await api('admin/security-unban', { session_token: session, device_id });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     const who = (data.previous_customers || []).join(', ');
@@ -2674,7 +2716,7 @@ async function unbanDevice(device_id) {
 }
 
 async function unbanIp(ip) {
-    if (!confirm('Sbloccare questo IP?')) return;
+    if (!await askConfirm({ title: 'Sblocca IP', text: 'Sbloccare questo IP?', ok: 'Sblocca' })) return;
     const { ok, data } = await api('admin/security-unban', { session_token: session, ip });
     if (!ok) { alert(data?.error || 'Errore'); return; }
     openBlacklist();
@@ -2696,7 +2738,7 @@ async function udBanAccount() {
     udShowBan(email);
 }
 async function unbanAccount(email, after) {
-    if (!confirm(`Sbloccare ${email}? Il Premium torna su tutti i suoi dispositivi.`)) return;
+    if (!await askConfirm({ title: 'Sblocca cliente', text: `Sbloccare ${email}? Il Premium torna su tutti i suoi dispositivi.`, ok: 'Sblocca' })) return;
     const totp = await askTotp('sbloccare ' + email); if (!totp) return;
     const { ok, data } = await api('admin/premium-unban-account', { session_token: session, email, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
@@ -2715,7 +2757,7 @@ async function banAppleTx() {
     openPremiumBans();
 }
 async function unbanAppleTx(tx) {
-    if (!confirm(`Sbloccare l'acquisto Apple ${tx}?`)) return;
+    if (!await askConfirm({ title: 'Sblocca acquisto Apple', text: `Sbloccare l'acquisto Apple ${tx}?`, ok: 'Sblocca' })) return;
     const totp = await askTotp('sbloccare l\'acquisto Apple ' + tx); if (!totp) return;
     const { ok, data } = await api('admin/premium-unban-apple', { session_token: session, original_transaction_id: tx, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
@@ -2729,7 +2771,7 @@ async function grantTvBind(known) {
     const { ok, status, data } = await api('admin/premium-tv-grant', { session_token: session, legacy_device_id: legacy, totp_code: totp });
     // REVISIONE 2 04/11: TV vecchia gia' passata alla TV aggiornata -> si propone "Annulla migrazione"
     if (status === 409 && data.code === 'already_migrated') {
-        if (confirm(`${data.error}.\n\nAggiornata il ${fmtDateTime(data.migrated_at)} (licenza di ${data.email || '?'}, ${MIG_HOW[data.how] || data.how}). Annullare la migrazione?`)) await undoMigration(data.migration_id, data.email);
+        if (await askConfirm({ title: 'TV gia\' aggiornata', text: `${data.error}.\n\nAggiornata il ${fmtDateTime(data.migrated_at)} (licenza di ${data.email || '?'}, ${MIG_HOW[data.how] || data.how}). Annullare la migrazione?`, ok: 'Annulla la migrazione', cancel: 'Chiudi', danger: true })) await undoMigration(data.migration_id, data.email);
         return;
     }
     if (!ok) { alert(data.error || 'Errore'); return; }
@@ -2743,7 +2785,11 @@ async function undoMigration(id, email) {
     const reason = await askInput({ title: 'Annulla migrazione', text: `La TV vecchia torna nella licenza${email ? ' di ' + email : ''} e ha di nuovo il Premium con l'app di prima; la TV aggiornata viene scollegata. Per 90 giorni quel codice non passa piu' alla TV aggiornata senza email e password. Motivo (resta nel registro):`,
         validate: v => v.length >= 5 ? null : 'Almeno 5 caratteri' });
     if (!reason) return;
-    const grant = confirm('Dare anche il permesso di 24 ore? La TV aggiornata del cliente vero prende il posto senza email e password. Solo se hai verificato il cliente: per 24 ore lo puo\' usare chiunque conosca il codice della TV vecchia.');
+    // 18/11: due scelte esplicite + Annulla (prima "Annulla" del confirm del browser voleva dire "senza permesso" e non si poteva lasciar perdere)
+    const choice = await askConfirm({ title: 'Permesso di 24 ore', text: 'Dare anche il permesso di 24 ore? La TV aggiornata del cliente vero prende il posto senza email e password. Solo se hai verificato il cliente: per 24 ore lo puo\' usare chiunque conosca il codice della TV vecchia.',
+        cancel: 'Lascia perdere', choices: [{ value: 'no', label: 'Annulla la migrazione senza permesso' }, { value: 'si', label: 'Annulla e dai il permesso', danger: true }] });
+    if (!choice) return;
+    const grant = choice === 'si';
     const totp = await askTotp('annullare la migrazione'); if (!totp) return;
     const { ok, data } = await api('admin/premium-tv-migration-undo', { session_token: session, migration_id: id, reason, grant, totp_code: totp });
     if (!ok) { alert(data.error || 'Errore'); return; }
@@ -2760,7 +2806,7 @@ async function setPremiumDate(key) {
     const totp = await askTotp(v ? 'impostare la data ' + v : 'togliere la data'); if (!totp) return;
     let r = await api('admin/premium-config-set', { session_token: session, key, value, totp_code: totp });
     if (r.status === 409 && r.data.code === 'confirm_soon') {
-        if (!confirm('La data e\' entro 24 ore: dal quel momento le app vecchie perdono il Premium. Confermi?')) return;
+        if (!await askConfirm({ title: 'Data entro 24 ore', text: 'La data e\' entro 24 ore: da quel momento le app vecchie perdono il Premium. Confermi?', ok: 'Confermo la data', danger: true })) return;
         r = await api('admin/premium-config-set', { session_token: session, key, value, totp_code: totp, confirm_soon: true });
     }
     if (!r.ok) { alert(r.data.error || 'Errore'); return; }
@@ -2858,7 +2904,7 @@ async function revokeGiftIos(tx) {
 }
 // 13/11 pacchetto 12 (SPEC v1.8.6): il regalo vale anche per la sincronizzazione. Sotto lo stato: impronta della chiave
 // del posto legato (la stessa che l'app mostra nella schermata di aiuto, XXXXX-XXXXX) e giorno del legame.
-// "Sposta il posto" (revisione 13/11): conferma nella pagina (niente confirm()) con il CODICE DELLA CHIAVE del cliente,
+// "Sposta il posto" (revisione 13/11): conferma nella pagina (niente finestra del browser) con il CODICE DELLA CHIAVE del cliente,
 // poi motivo e 2FA. Il server lega il posto direttamente a quella chiave; senza codice il posto resta com'e'.
 const GIFT_SEAT_ACT = new Set(['legato', 'registrato', 'non_in_uso']);
 function giftDay(d) { return d ? zh(d + 'T12:00:00Z', false) : ''; }
@@ -3193,8 +3239,8 @@ ACTIONS.syBan = d => syAction('admin/sync-ban', d.g, 'Ban del gruppo', 'Effetto 
     'il ban del gruppo', grp => { grp.banned = true; });
 ACTIONS.syUnban = d => syAction('admin/sync-unban', d.g, 'Sblocco del gruppo', 'Il gruppo torna a sincronizzare subito.', 'lo sblocco del gruppo', grp => { grp.banned = false; grp.ban_reason = null; });
 ACTIONS.syDelCancel = d => syAction('admin/sync-delete-cancel', d.g, 'Annulla cancellazione', 'La cancellazione programmata (7 giorni) viene annullata.', 'annullare la cancellazione', grp => { grp.delete_after = null; });
-ACTIONS.syDelete = d => {
-    if (!confirm('Cancellare SUBITO tutti i dati del gruppo ' + syShort(d.g) + ' dal server? Non si torna indietro. I dati sui dispositivi restano.')) return;
+ACTIONS.syDelete = async d => {
+    if (!await askConfirm({ title: 'Cancellazione immediata', text: 'Cancellare SUBITO tutti i dati del gruppo ' + syShort(d.g) + ' dal server? Non si torna indietro. I dati sui dispositivi restano.', ok: 'Cancella subito', danger: true })) return;
     syAction('admin/sync-delete', d.g, 'Cancellazione immediata', 'I dati cifrati del gruppo vengono cancellati ora dal server.', 'cancellare subito il gruppo',
         () => { syGroups = syGroups.filter(x => x.group_id !== d.g); });
 };
