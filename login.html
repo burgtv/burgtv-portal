@@ -256,7 +256,8 @@
 
             if (!response.ok) {
                 let msg = T[lang].errGeneric;
-                if (data.error_code && String(data.error_code).indexOf('turnstile') === 0) msg = T[lang].errVerify;
+                // 400 dall'accesso = verifica anti-bot fallita (il server non manda error_code); email e password vuote si fermano prima
+                if (response.status === 400 || (data.error_code && String(data.error_code).indexOf('turnstile') === 0)) msg = T[lang].errVerify;
                 else if (response.status === 429) msg = T[lang].errTooMany;
                 else if (response.status >= 500) msg = T[lang].errBusy;
                 else if (response.status === 401) msg = T[lang].errInvalid;
