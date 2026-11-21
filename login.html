@@ -109,7 +109,7 @@
         
         <form id="loginForm">
             <div class="form-group">
-                <input type="email" id="email" class="form-input" placeholder=" " required autocomplete="email">
+                <input type="email" id="email" class="form-input" placeholder=" " required autocomplete="username" inputmode="email">
                 <label for="email" class="form-label" data-i18n="email">Email</label>
             </div>
             
@@ -142,17 +142,17 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnc3BtcWZkdWFiZm1mc294cW9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NTMyMDEsImV4cCI6MjA2MDEyOTIwMX0.1Xj4sa51Wi8U1Ebm4B3DE5JxCR3eTx2TQUxfV0TaA-I';
         
         const T = {
-            it:{back:"Indietro",title:"Accedi",subtitle:"Inserisci le tue credenziali",email:"Email",password:"Password",loginBtn:"Accedi",forgot:"Password dimenticata?",noAccount:"Non hai un account?",registerLink:"Registrati",privacy:"Privacy",terms:"Termini",errInvalid:"Email o password non validi",errGeneric:"Errore. Riprova.",showPwd:"Mostra o nascondi la password",backAria:"Torna a burgtv.com",errVerify:"Verifica di sicurezza non completata. Attendi qualche secondo e riprova."},
-            en:{back:"Back",title:"Sign In",subtitle:"Enter your credentials",email:"Email",password:"Password",loginBtn:"Sign In",forgot:"Forgot password?",noAccount:"Don't have an account?",registerLink:"Sign up",privacy:"Privacy",terms:"Terms",errInvalid:"Invalid email or password",errGeneric:"Error. Try again.",showPwd:"Show or hide password",backAria:"Back to burgtv.com",errVerify:"Security check not completed. Wait a few seconds and try again."},
-            de:{back:"Zurück",title:"Anmelden",subtitle:"Gib deine Zugangsdaten ein",email:"E-Mail",password:"Passwort",loginBtn:"Anmelden",forgot:"Passwort vergessen?",noAccount:"Kein Konto?",registerLink:"Registrieren",privacy:"Datenschutz",terms:"AGB",errInvalid:"E-Mail oder Passwort ungültig",errGeneric:"Fehler. Versuche es erneut.",showPwd:"Passwort anzeigen oder verbergen",backAria:"Zurück zu burgtv.com",errVerify:"Sicherheitsprüfung nicht abgeschlossen. Warte ein paar Sekunden und versuche es erneut."},
-            es:{back:"Volver",title:"Iniciar sesión",subtitle:"Introduce tus credenciales",email:"Correo",password:"Contraseña",loginBtn:"Entrar",forgot:"¿Olvidaste tu contraseña?",noAccount:"¿No tienes cuenta?",registerLink:"Regístrate",privacy:"Privacidad",terms:"Términos",errInvalid:"Correo o contraseña inválidos",errGeneric:"Error. Inténtalo de nuevo.",showPwd:"Mostrar u ocultar la contraseña",backAria:"Volver a burgtv.com",errVerify:"La verificación de seguridad no se ha completado. Espera unos segundos e inténtalo de nuevo."},
-            fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié ?",noAccount:"Pas encore de compte ?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez.",showPwd:"Afficher ou masquer le mot de passe",backAria:"Retour à burgtv.com",errVerify:"Vérification de sécurité non terminée. Patientez quelques secondes et réessayez."},
-            pt:{back:"Voltar",title:"Entrar",subtitle:"Digite suas credenciais",email:"E-mail",password:"Senha",loginBtn:"Entrar",forgot:"Esqueceu a senha?",noAccount:"Não tem uma conta?",registerLink:"Cadastre-se",privacy:"Privacidade",terms:"Termos",errInvalid:"E-mail ou senha inválidos",errGeneric:"Erro. Tente novamente.",showPwd:"Mostrar ou ocultar a senha",backAria:"Voltar para burgtv.com",errVerify:"A verificação de segurança não foi concluída. Aguarde alguns segundos e tente novamente."},
-            tr:{back:"Geri",title:"Giriş yap",subtitle:"Bilgilerini gir",email:"E-posta",password:"Şifre",loginBtn:"Giriş yap",forgot:"Şifreni mi unuttun?",noAccount:"Hesabın yok mu?",registerLink:"Kayıt ol",privacy:"Gizlilik",terms:"Şartlar",errInvalid:"E-posta veya şifre geçersiz",errGeneric:"Hata. Tekrar dene.",showPwd:"Şifreyi göster veya gizle",backAria:"burgtv.com'a dön",errVerify:"Güvenlik doğrulaması tamamlanmadı. Birkaç saniye bekle ve tekrar dene."},
-            nl:{back:"Terug",title:"Inloggen",subtitle:"Vul je gegevens in",email:"E-mail",password:"Wachtwoord",loginBtn:"Inloggen",forgot:"Wachtwoord vergeten?",noAccount:"Nog geen account?",registerLink:"Registreren",privacy:"Privacy",terms:"Voorwaarden",errInvalid:"Ongeldig e-mailadres of wachtwoord",errGeneric:"Fout. Probeer opnieuw.",showPwd:"Wachtwoord tonen of verbergen",backAria:"Terug naar burgtv.com",errVerify:"Beveiligingscontrole niet voltooid. Wacht een paar seconden en probeer het opnieuw."},
-            pl:{back:"Wstecz",title:"Zaloguj się",subtitle:"Wpisz swoje dane",email:"E-mail",password:"Hasło",loginBtn:"Zaloguj się",forgot:"Nie pamiętasz hasła?",noAccount:"Nie masz konta?",registerLink:"Zarejestruj się",privacy:"Prywatność",terms:"Warunki",errInvalid:"Nieprawidłowy e-mail lub hasło",errGeneric:"Błąd. Spróbuj ponownie.",showPwd:"Pokaż lub ukryj hasło",backAria:"Wróć do burgtv.com",errVerify:"Weryfikacja bezpieczeństwa nie została ukończona. Poczekaj kilka sekund i spróbuj ponownie."},
-            ru:{back:"Назад",title:"Войти",subtitle:"Введите ваши данные",email:"Email",password:"Пароль",loginBtn:"Войти",forgot:"Забыли пароль?",noAccount:"Нет аккаунта?",registerLink:"Зарегистрироваться",privacy:"Конфиденциальность",terms:"Условия",errInvalid:"Неверный email или пароль",errGeneric:"Ошибка. Попробуйте снова.",showPwd:"Показать или скрыть пароль",backAria:"Вернуться на burgtv.com",errVerify:"Проверка безопасности не завершена. Подождите несколько секунд и попробуйте снова."},
-            ar:{back:"رجوع",title:"تسجيل الدخول",subtitle:"أدخل بيانات اعتمادك",email:"البريد الإلكتروني",password:"كلمة المرور",loginBtn:"تسجيل الدخول",forgot:"نسيت كلمة المرور؟",noAccount:"ليس لديك حساب؟",registerLink:"التسجيل",privacy:"الخصوصية",terms:"الشروط",errInvalid:"البريد أو كلمة المرور غير صحيحة",errGeneric:"خطأ. حاول مرة أخرى.",showPwd:"إظهار كلمة المرور أو إخفاؤها",backAria:"العودة إلى burgtv.com",errVerify:"لم يكتمل التحقق الأمني. انتظر بضع ثوانٍ ثم حاول مرة أخرى."}
+            it:{back:"Indietro",title:"Accedi",subtitle:"Inserisci le tue credenziali",email:"Email",password:"Password",loginBtn:"Accedi",forgot:"Password dimenticata?",noAccount:"Non hai un account?",registerLink:"Registrati",privacy:"Privacy",terms:"Termini",errInvalid:"Email o password non validi",errGeneric:"Errore. Riprova.",showPwd:"Mostra o nascondi la password",backAria:"Torna a burgtv.com",errVerify:"Verifica di sicurezza non completata. Attendi qualche secondo e riprova.",errTooMany:"Troppi tentativi sbagliati. Riprova tra qualche minuto.",errBusy:"Servizio momentaneamente non disponibile. Riprova tra poco.",errNet:"Connessione non riuscita. Controlla la rete e riprova."},
+            en:{back:"Back",title:"Sign In",subtitle:"Enter your credentials",email:"Email",password:"Password",loginBtn:"Sign In",forgot:"Forgot password?",noAccount:"Don't have an account?",registerLink:"Sign up",privacy:"Privacy",terms:"Terms",errInvalid:"Invalid email or password",errGeneric:"Error. Try again.",showPwd:"Show or hide password",backAria:"Back to burgtv.com",errVerify:"Security check not completed. Wait a few seconds and try again.",errTooMany:"Too many failed attempts. Try again in a few minutes.",errBusy:"Service temporarily unavailable. Please try again shortly.",errNet:"Connection failed. Check your network and try again."},
+            de:{back:"Zurück",title:"Anmelden",subtitle:"Gib deine Zugangsdaten ein",email:"E-Mail",password:"Passwort",loginBtn:"Anmelden",forgot:"Passwort vergessen?",noAccount:"Kein Konto?",registerLink:"Registrieren",privacy:"Datenschutz",terms:"AGB",errInvalid:"E-Mail oder Passwort ungültig",errGeneric:"Fehler. Versuche es erneut.",showPwd:"Passwort anzeigen oder verbergen",backAria:"Zurück zu burgtv.com",errVerify:"Sicherheitsprüfung nicht abgeschlossen. Warte ein paar Sekunden und versuche es erneut.",errTooMany:"Zu viele Fehlversuche. Versuche es in ein paar Minuten erneut.",errBusy:"Dienst vorübergehend nicht verfügbar. Bitte versuche es gleich noch einmal.",errNet:"Verbindung fehlgeschlagen. Prüfe dein Netzwerk und versuche es erneut."},
+            es:{back:"Volver",title:"Iniciar sesión",subtitle:"Introduce tus credenciales",email:"Correo",password:"Contraseña",loginBtn:"Entrar",forgot:"¿Olvidaste tu contraseña?",noAccount:"¿No tienes cuenta?",registerLink:"Regístrate",privacy:"Privacidad",terms:"Términos",errInvalid:"Correo o contraseña inválidos",errGeneric:"Error. Inténtalo de nuevo.",showPwd:"Mostrar u ocultar la contraseña",backAria:"Volver a burgtv.com",errVerify:"La verificación de seguridad no se ha completado. Espera unos segundos e inténtalo de nuevo.",errTooMany:"Demasiados intentos fallidos. Vuelve a intentarlo en unos minutos.",errBusy:"Servicio no disponible temporalmente. Inténtalo de nuevo en breve.",errNet:"No se ha podido conectar. Revisa tu conexión e inténtalo de nuevo."},
+            fr:{back:"Retour",title:"Connexion",subtitle:"Entrez vos identifiants",email:"Email",password:"Mot de passe",loginBtn:"Se connecter",forgot:"Mot de passe oublié ?",noAccount:"Pas encore de compte ?",registerLink:"S'inscrire",privacy:"Confidentialité",terms:"Conditions",errInvalid:"Email ou mot de passe invalide",errGeneric:"Erreur. Réessayez.",showPwd:"Afficher ou masquer le mot de passe",backAria:"Retour à burgtv.com",errVerify:"Vérification de sécurité non terminée. Patientez quelques secondes et réessayez.",errTooMany:"Trop de tentatives échouées. Réessayez dans quelques minutes.",errBusy:"Service momentanément indisponible. Réessayez dans un instant.",errNet:"Échec de la connexion. Vérifiez votre réseau et réessayez."},
+            pt:{back:"Voltar",title:"Entrar",subtitle:"Digite suas credenciais",email:"E-mail",password:"Senha",loginBtn:"Entrar",forgot:"Esqueceu a senha?",noAccount:"Não tem uma conta?",registerLink:"Cadastre-se",privacy:"Privacidade",terms:"Termos",errInvalid:"E-mail ou senha inválidos",errGeneric:"Erro. Tente novamente.",showPwd:"Mostrar ou ocultar a senha",backAria:"Voltar para burgtv.com",errVerify:"A verificação de segurança não foi concluída. Aguarde alguns segundos e tente novamente.",errTooMany:"Muitas tentativas sem sucesso. Tente de novo em alguns minutos.",errBusy:"Serviço temporariamente indisponível. Tente de novo em instantes.",errNet:"Falha na conexão. Verifique sua rede e tente de novo."},
+            tr:{back:"Geri",title:"Giriş yap",subtitle:"Bilgilerini gir",email:"E-posta",password:"Şifre",loginBtn:"Giriş yap",forgot:"Şifreni mi unuttun?",noAccount:"Hesabın yok mu?",registerLink:"Kayıt ol",privacy:"Gizlilik",terms:"Şartlar",errInvalid:"E-posta veya şifre geçersiz",errGeneric:"Hata. Tekrar dene.",showPwd:"Şifreyi göster veya gizle",backAria:"burgtv.com'a dön",errVerify:"Güvenlik doğrulaması tamamlanmadı. Birkaç saniye bekle ve tekrar dene.",errTooMany:"Çok fazla hatalı deneme. Birkaç dakika sonra tekrar dene.",errBusy:"Hizmet geçici olarak kullanılamıyor. Birazdan tekrar dene.",errNet:"Bağlantı kurulamadı. Ağını kontrol edip tekrar dene."},
+            nl:{back:"Terug",title:"Inloggen",subtitle:"Vul je gegevens in",email:"E-mail",password:"Wachtwoord",loginBtn:"Inloggen",forgot:"Wachtwoord vergeten?",noAccount:"Nog geen account?",registerLink:"Registreren",privacy:"Privacy",terms:"Voorwaarden",errInvalid:"Ongeldig e-mailadres of wachtwoord",errGeneric:"Fout. Probeer opnieuw.",showPwd:"Wachtwoord tonen of verbergen",backAria:"Terug naar burgtv.com",errVerify:"Beveiligingscontrole niet voltooid. Wacht een paar seconden en probeer het opnieuw.",errTooMany:"Te veel mislukte pogingen. Probeer het over een paar minuten opnieuw.",errBusy:"Dienst tijdelijk niet beschikbaar. Probeer het zo opnieuw.",errNet:"Verbinding mislukt. Controleer je netwerk en probeer het opnieuw."},
+            pl:{back:"Wstecz",title:"Zaloguj się",subtitle:"Wpisz swoje dane",email:"E-mail",password:"Hasło",loginBtn:"Zaloguj się",forgot:"Nie pamiętasz hasła?",noAccount:"Nie masz konta?",registerLink:"Zarejestruj się",privacy:"Prywatność",terms:"Warunki",errInvalid:"Nieprawidłowy e-mail lub hasło",errGeneric:"Błąd. Spróbuj ponownie.",showPwd:"Pokaż lub ukryj hasło",backAria:"Wróć do burgtv.com",errVerify:"Weryfikacja bezpieczeństwa nie została ukończona. Poczekaj kilka sekund i spróbuj ponownie.",errTooMany:"Zbyt wiele nieudanych prób. Spróbuj ponownie za kilka minut.",errBusy:"Usługa jest chwilowo niedostępna. Spróbuj ponownie za chwilę.",errNet:"Nie udało się połączyć. Sprawdź sieć i spróbuj ponownie."},
+            ru:{back:"Назад",title:"Войти",subtitle:"Введите ваши данные",email:"Email",password:"Пароль",loginBtn:"Войти",forgot:"Забыли пароль?",noAccount:"Нет аккаунта?",registerLink:"Зарегистрироваться",privacy:"Конфиденциальность",terms:"Условия",errInvalid:"Неверный email или пароль",errGeneric:"Ошибка. Попробуйте снова.",showPwd:"Показать или скрыть пароль",backAria:"Вернуться на burgtv.com",errVerify:"Проверка безопасности не завершена. Подождите несколько секунд и попробуйте снова.",errTooMany:"Слишком много неудачных попыток. Повторите через несколько минут.",errBusy:"Сервис временно недоступен. Повторите чуть позже.",errNet:"Не удалось подключиться. Проверьте сеть и повторите попытку."},
+            ar:{back:"رجوع",title:"تسجيل الدخول",subtitle:"أدخل بيانات اعتمادك",email:"البريد الإلكتروني",password:"كلمة المرور",loginBtn:"تسجيل الدخول",forgot:"نسيت كلمة المرور؟",noAccount:"ليس لديك حساب؟",registerLink:"التسجيل",privacy:"الخصوصية",terms:"الشروط",errInvalid:"البريد أو كلمة المرور غير صحيحة",errGeneric:"خطأ. حاول مرة أخرى.",showPwd:"إظهار كلمة المرور أو إخفاؤها",backAria:"العودة إلى burgtv.com",errVerify:"لم يكتمل التحقق الأمني. انتظر بضع ثوانٍ ثم حاول مرة أخرى.",errTooMany:"محاولات فاشلة كثيرة جدًا. حاول مرة أخرى بعد بضع دقائق.",errBusy:"الخدمة غير متاحة مؤقتًا. حاول مرة أخرى بعد قليل.",errNet:"تعذّر الاتصال. تحقّق من الشبكة وحاول مرة أخرى."}
         };
         
         function _initLang(){
@@ -233,8 +233,11 @@
             const turnstileToken = window.BVTS ? await BVTS.token() : null;
             if (!turnstileToken) { showError(T[lang].errVerify); setLoading(false); return; }
             
+            // 21/11: un messaggio per ogni causa (prima "Email o password non validi" anche per troppi tentativi,
+            // servizio occupato o rete assente: il cliente credeva di aver sbagliato la password)
+            let response, data = {};
             try {
-                const response = await fetch(`${SUPABASE_URL}/functions/v1/login`, {
+                response = await fetch(`${SUPABASE_URL}/functions/v1/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -242,34 +245,45 @@
                     },
                     body: JSON.stringify({ email, password, turnstile_token: turnstileToken, source: 'web' })
                 });
-                
-                const data = await response.json();
-                if (window.BVTS) BVTS.consume(); // il token vale una sola volta
-                
-                if (!response.ok) {
-                    if (data.error_code && String(data.error_code).indexOf('turnstile') === 0) { showError(T[lang].errVerify); setLoading(false); return; }
-                    throw new Error(data.error || 'Login failed');
-                }
-
-                // Salva sessione
-                localStorage.setItem('session_token', data.session_token);
-                localStorage.setItem('user_email', email);
-                localStorage.setItem('user_id', data.user.id);
-
-                // Salva info licenza se presente
-                if (data.license) {
-                    localStorage.setItem('license_type', data.license.type);
-                    localStorage.setItem('license_status', data.license.status);
-                }
-
-                window.location.href = 'account.html';
+                try { data = await response.json(); } catch (_) { data = {}; }
             } catch (error) {
-                console.error('Login error:', error);
                 if (window.BVTS) BVTS.consume();
-                showError(T[lang].errInvalid);
+                showError(T[lang].errNet);
                 setLoading(false);
+                return;
             }
+            if (window.BVTS) BVTS.consume(); // il token vale una sola volta
+
+            if (!response.ok) {
+                let msg = T[lang].errGeneric;
+                if (data.error_code && String(data.error_code).indexOf('turnstile') === 0) msg = T[lang].errVerify;
+                else if (response.status === 429) msg = T[lang].errTooMany;
+                else if (response.status >= 500) msg = T[lang].errBusy;
+                else if (response.status === 401) msg = T[lang].errInvalid;
+                showError(msg);
+                setLoading(false);
+                return;
+            }
+
+            // Salva sessione
+            localStorage.setItem('session_token', data.session_token);
+            localStorage.setItem('user_email', email);
+            localStorage.setItem('user_id', data.user.id);
+
+            // Salva info licenza se presente
+            if (data.license) {
+                localStorage.setItem('license_type', data.license.type);
+                localStorage.setItem('license_status', data.license.status);
+            }
+
+            window.location.href = 'account.html';
         });
+
+        // 21/11: arrivando dalla pagina "Nuova password" l'email e' gia' scritta (solo in questa scheda)
+        try {
+            const pre = sessionStorage.getItem('bv_login_email');
+            if (pre) { sessionStorage.removeItem('bv_login_email'); document.getElementById('email').value = pre; setTimeout(() => document.getElementById('password').focus(), 50); }
+        } catch (_) {}
         
         // Initialize
         setLang(lang);
